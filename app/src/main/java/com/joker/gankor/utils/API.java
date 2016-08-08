@@ -11,6 +11,8 @@ public class API {
     public static final String GANK_VIDEO = "休息视频/15/";
 
     //    知乎 API
-    public static final String ZHIHU_BASIC_URL = "http://news-at.zhihu.com/api/4/";
-    public static final String ZHIHU_START = "start-image/1080*1776";
+    public static final String ZHIHU_BASIC_URL = "http://news-at.zhihu.com/api/";
+    public static final String ZHIHU_START = "4/start-image/1080*1776";
+    public static final String ZHIHU_NEWS_LATEST = "4/news/latest";
+    public static final String ZHIHU_NEWS_HOT = "3/news/hot";
 }

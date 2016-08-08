@@ -5,18 +5,22 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.joker.gankor.R;
 import com.joker.gankor.adapter.MainAdapter;
 import com.joker.gankor.ui.BaseActivity;
 import com.joker.gankor.ui.fragment.GankFragment;
+import com.joker.gankor.ui.fragment.ZhihuDailyNewsFragment;
+import com.joker.gankor.ui.fragment.ZhihuHotNewsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +32,16 @@ public class MainActivity extends BaseActivity {
     private NavigationView mContentNavigationView;
     private ViewPager mContentViewPager;
     private SwipeRefreshLayout mContentSwipeRefreshLayout;
+    private List<Fragment> mZhihuFragments;
     private List<Fragment> mFragments;
-    private List<Integer> mLayouts;
+    private List<String> mZhihuTitles;
     private List<String> mTitles;
     private DrawerLayout mMainDrawerLayout;
     private AppBarLayout mTitleAppBarLayout;
     private long firstTime;
+    private GankFragment mGankFragment;
+    private ZhihuDailyNewsFragment mDailyNewsFragment;
+    private ZhihuHotNewsFragment mHotNewsFragment;
 
     @Override
     protected void initView() {
@@ -49,7 +57,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        mTitleToolbar.setTitle("干乎");
         setSupportActionBar(mTitleToolbar);
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
@@ -61,20 +68,84 @@ public class MainActivity extends BaseActivity {
         mMainDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+        loadGankFragment();
+
+//        导航栏内容设置
+        setupDrawerContent();
+        mContentNavigationView.setCheckedItem(0);
+    }
+
+    private void setupDrawerContent() {
+        mContentNavigationView.setNavigationItemSelectedListener(new NavigationView
+                .OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                item.setChecked(true);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                hideAllFragment(transaction);
+                switch (item.getItemId()) {
+                    case R.id.nav_knowledge:
+//                      知乎界面
+                        loadZhihuFragments();
+                        break;
+                    case R.id.nav_beauty:
+//                      妹纸界面
+                        loadGankFragment();
+                        break;
+                    default:
+                        break;
+                }
+                transaction.commit();
+                mMainDrawerLayout.closeDrawers();
+
+                return true;
+            }
+        });
+    }
+
+    private void loadGankFragment() {
         mFragments = new ArrayList<Fragment>();
-        GankFragment gankFragment = new GankFragment();
-        gankFragment.setArguments(getIntent().getExtras());
-        mFragments.add(gankFragment);
-//        mFragments.add(new GankFragment());
-        mLayouts = new ArrayList<Integer>();
-        mLayouts.add(R.layout.fragment_gank);
-//        mLayouts.add(R.layout.fragment_gank);
+        mGankFragment = new GankFragment();
+        mFragments.add(mGankFragment);
+
         mTitles = new ArrayList<String>();
         mTitles.add("妹纸");
-//        mTitles.add("知乎");
 
-        mContentViewPager.setAdapter(new MainAdapter(getSupportFragmentManager(), mFragments, mTitles));
+        setupViewPager(mFragments, mTitles);
+    }
+
+    private void loadZhihuFragments() {
+        hideTabLayout(false);
+        setToolbarScroll(false);
+        mZhihuFragments = new ArrayList<Fragment>();
+        mDailyNewsFragment = new ZhihuDailyNewsFragment();
+        mHotNewsFragment = new ZhihuHotNewsFragment();
+        mZhihuFragments.add(mDailyNewsFragment);
+        mZhihuFragments.add(mHotNewsFragment);
+
+        mZhihuTitles = new ArrayList<String>();
+        mZhihuTitles.add("知乎日報");
+        mZhihuTitles.add("熱門消息");
+
+        setupViewPager(mZhihuFragments, mZhihuTitles);
+    }
+
+    private void setupViewPager(List<Fragment> fragments, List<String> titles) {
+        mContentViewPager.setAdapter(new MainAdapter(getSupportFragmentManager(), fragments, titles));
         mTitleTabLayout.setupWithViewPager(mContentViewPager);
+        mContentViewPager.setCurrentItem(0);
+    }
+
+    private void hideAllFragment(FragmentTransaction transaction) {
+        if (mGankFragment != null) {
+            transaction.hide(mGankFragment);
+        }
+        if (mDailyNewsFragment != null) {
+            transaction.hide(mDailyNewsFragment);
+        }
+        if (mHotNewsFragment != null) {
+            transaction.hide(mHotNewsFragment);
+        }
     }
 
     public void hideTabLayout(boolean hide) {
@@ -110,6 +181,5 @@ public class MainActivity extends BaseActivity {
         } else {
             finish();
         }
-
     }
 }

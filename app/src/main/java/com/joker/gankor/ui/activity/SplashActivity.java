@@ -31,7 +31,7 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        OkUtil.getInstance().OkHttpZhihuJObject(API.ZHIHU_START, "img", new OkUtil.JObjectCallback() {
+        OkUtil.getInstance().okHttpZhihuJObject(API.ZHIHU_START, "img", new OkUtil.JObjectCallback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();

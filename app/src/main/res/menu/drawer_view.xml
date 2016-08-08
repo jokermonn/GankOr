@@ -4,6 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_beauty"
+            android:checked="true"
             android:icon="@drawable/ic_beauty"
             android:title="妹纸"/>
 

@@ -27,10 +27,13 @@ public class OkUtil {
     private OkHttpClient mOkHttpClient;
     private Handler mHandler;
     private Gson mGson;
+    private Request mRequest;
+    private Thread mThread;
 
     private OkUtil() {
         mOkHttpClient = new OkHttpClient();
         mHandler = new Handler(Looper.getMainLooper());
+        mThread = new Thread();
         mGson = new Gson();
     }
 
@@ -41,34 +44,8 @@ public class OkUtil {
         return instance;
     }
 
-    //    获取 Gank Gson
-    public void OkHttpGankGson(String url, final Class<?> subclass, final GsonCallback callback) {
-        final Request request = new Request.Builder()
-                .url(API.GANK_BASIC_URL + url)
-                .build();
-        Call call = mOkHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                callback.onFailure(call, e);
-            }
-
-            @Override
-            public void onResponse(final Call call, Response response) throws IOException {
-                String string = response.body().string();
-                final Object o = new Gson().fromJson(string, subclass);
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onResponse(call, o);
-                    }
-                });
-            }
-        });
-    }
-
     //    获取知乎 Gson
-    public void OkHttpZhihuGson(String url, final Class<?> subclass, final GsonCallback callback) {
+    public void okHttpZhihuGson(String url, final Class<?> subclass, final GsonCallback callback) {
         final Request request = new Request.Builder()
                 .url(API.ZHIHU_BASIC_URL + url)
                 .build();
@@ -93,7 +70,7 @@ public class OkUtil {
     }
 
     //    获取知乎 JsonObject
-    public void OkHttpZhihuJObject(String url, final String object, final JObjectCallback callback) {
+    public void okHttpZhihuJObject(String url, final String object, final JObjectCallback callback) {
         final Request request = new Request.Builder()
                 .url(API.ZHIHU_BASIC_URL + url)
                 .build();
@@ -122,7 +99,8 @@ public class OkUtil {
         });
     }
 
-    public void OkHttpGankGsonTest(String url, final ResultCallback callback) {
+    //    异步获取 Gank Gson
+    public void okHttpGankGson(String url, final ResultCallback callback) {
         final Request request = new Request.Builder()
                 .url(API.GANK_BASIC_URL + url)
                 .build();

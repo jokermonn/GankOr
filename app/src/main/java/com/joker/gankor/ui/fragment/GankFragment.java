@@ -19,10 +19,8 @@ import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.OkUtil;
 import com.joker.gankor.view.SpacesItemDecoration;
 
-import java.io.IOException;
 import java.util.List;
 
-import okhttp3.Call;
 import okhttp3.Request;
 
 /**
@@ -35,9 +33,6 @@ public class GankFragment extends BaseFragment implements GankRecyclerViewAdapte
     private List<GankWelfare.ResultsBean> mVideo;
     private GankRecyclerViewAdapter mAdapter;
     private int page = 1;
-    private GankWelfare welfare;
-    private GankWelfare video;
-
 
     public GankFragment() {
         // Required empty public constructor
@@ -46,23 +41,7 @@ public class GankFragment extends BaseFragment implements GankRecyclerViewAdapte
     @Override
     protected void initData() {
         //        Gank 福利图片
-        /*OkUtil.getInstance().OkHttpGankGson(API.GANK_WELFARE + page, GankWelfare.class, new OkUtil
-                .GsonCallback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Object object) {
-                welfare = (GankWelfare) object;
-                if (welfare != null && !welfare.isError()) {
-                    mWelfare = welfare.getResults();
-                    loadVideo();
-                }
-            }
-        });*/
-        OkUtil.getInstance().OkHttpGankGsonTest(API.GANK_WELFARE + page, new OkUtil
+        OkUtil.getInstance().okHttpGankGson(API.GANK_WELFARE + page, new OkUtil
                 .ResultCallback<GankWelfare>() {
             @Override
             public void onError(Request request, Exception e) {
@@ -79,22 +58,19 @@ public class GankFragment extends BaseFragment implements GankRecyclerViewAdapte
         });
     }
 
+    //        Gank 休息视频
     private void loadVideo() {
-        //        Gank 休息视频
-        OkUtil.getInstance().OkHttpGankGson(API.GANK_VIDEO + page, GankWelfare.class, new OkUtil
-                .GsonCallback() {
-
+        OkUtil.getInstance().okHttpGankGson(API.GANK_VIDEO + page, new OkUtil.ResultCallback<GankWelfare>
+                () {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onError(Request request, Exception e) {
                 e.printStackTrace();
             }
 
             @Override
-            public void onResponse(Call call, Object object) {
-                video = (GankWelfare) object;
-                if (video != null && !video.isError()) {
-                    mVideo = video.getResults();
-//                    初始化 RecyclerView
+            public void onResponse(GankWelfare response) {
+                if (response != null && !response.isError()) {
+                    mVideo = response.getResults();
                     initRecyclerView();
                 }
             }

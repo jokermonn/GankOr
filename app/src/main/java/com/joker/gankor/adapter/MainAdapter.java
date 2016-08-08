@@ -16,7 +16,7 @@ public class MainAdapter extends FragmentStatePagerAdapter {
     public MainAdapter(FragmentManager fm, List<Fragment> fragments, List<String> titles) {
         super(fm);
         mFragments = fragments;
-//        mTitles = titles;
+        mTitles = titles;
     }
 
     @Override
@@ -29,8 +29,8 @@ public class MainAdapter extends FragmentStatePagerAdapter {
         return mFragments.size();
     }
 
-    /*@Override
+    @Override
     public CharSequence getPageTitle(int position) {
         return mTitles.get(position);
-    }*/
+    }
 }
