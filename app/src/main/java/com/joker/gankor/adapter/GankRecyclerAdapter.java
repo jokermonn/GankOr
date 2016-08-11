@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by joker on 2016/8/5.
  */
-public class GankRecyclerViewAdapter extends RecyclerView.Adapter<GankRecyclerViewAdapter.ViewHolder> {
+public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapter.ViewHolder> {
     private Context mContext;
     private List<GankWelfare.ResultsBean> mWelfare;
     private List<GankWelfare.ResultsBean> mVideo;
@@ -26,8 +26,8 @@ public class GankRecyclerViewAdapter extends RecyclerView.Adapter<GankRecyclerVi
     private ImageViewListener mImageListener;
 
 
-    public GankRecyclerViewAdapter(Context context, List<GankWelfare.ResultsBean> welfare,
-                                   List<GankWelfare.ResultsBean> video) {
+    public GankRecyclerAdapter(Context context, List<GankWelfare.ResultsBean> welfare,
+                               List<GankWelfare.ResultsBean> video) {
         mContext = context;
         mWelfare = welfare;
         mVideo = video;
