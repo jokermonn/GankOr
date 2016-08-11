@@ -28,6 +28,8 @@
         </activity>
         <activity android:name=".ui.activity.AboutMeActivity">
         </activity>
+        <activity android:theme="@stGankOrTheme" android:name=".ui.activity.PictureActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -1,13 +1,17 @@
 package com.joker.gankor.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by joker on 2016/8/5.
  */
-public class GankWelfare {
+public class GankWelfare implements Parcelable {
     /**
      * error : false
      * results : [{"_id":"57a159ee421aa91e2606476b","createdAt":"2016-08-03T10:41:50.299Z","desc":"8-3",
@@ -158,4 +162,36 @@ public class GankWelfare {
             this.who = who;
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.error ? (byte) 1 : (byte) 0);
+        dest.writeList(this.results);
+    }
+
+    public GankWelfare() {
+    }
+
+    protected GankWelfare(Parcel in) {
+        this.error = in.readByte() != 0;
+        this.results = new ArrayList<ResultsBean>();
+        in.readList(this.results, ResultsBean.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<GankWelfare> CREATOR = new Parcelable.Creator<GankWelfare>() {
+        @Override
+        public GankWelfare createFromParcel(Parcel source) {
+            return new GankWelfare(source);
+        }
+
+        @Override
+        public GankWelfare[] newArray(int size) {
+            return new GankWelfare[size];
+        }
+    };
 }

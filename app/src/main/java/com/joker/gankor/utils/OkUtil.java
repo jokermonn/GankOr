@@ -117,12 +117,17 @@ public class OkUtil {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callback.onResponse(o,string);
+                            callback.onResponse(o, string);
                         }
                     });
                 }
             }
         });
+    }
+
+    //    取消全部网络请求
+    public void cancelAll(OkUtil instance) {
+        instance.mOkHttpClient.dispatcher().cancelAll();
     }
 
     public interface JObjectCallback {
@@ -150,6 +155,6 @@ public class OkUtil {
 
         public abstract void onError(Call call, Exception e);
 
-        public abstract void onResponse(T response,String json);
+        public abstract void onResponse(T response, String json);
     }
 }

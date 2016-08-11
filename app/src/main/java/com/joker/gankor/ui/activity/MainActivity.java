@@ -1,9 +1,12 @@
 package com.joker.gankor.ui.activity;
 
+import android.content.Intent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -30,7 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements GankRecyclerAdapter.TextViewListener,
-        GankRecyclerAdapter.ImageViewListener, DailyNewsRecyclerAdapter.ItemClickListener {
+        GankRecyclerAdapter.ImageViewListener, DailyNewsRecyclerAdapter.OnItemClickListener,
+        ZhihuDailyNewsFragment.OnBannerClickListener {
 
     private Toolbar mTitleToolbar;
     private TabLayout mTitleTabLayout;
@@ -90,10 +94,10 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
                 if (item.getItemId() != mLastItemId) {
                     item.setChecked(true);
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    hideAllFragment(transaction);
                     switch (item.getItemId()) {
                         case R.id.nav_knowledge:
 //                      知乎界面
-//                            hideFragment();
                             loadZhihuFragments();
                             break;
                         case R.id.nav_beauty:
@@ -126,6 +130,8 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     private void loadZhihuFragments() {
         mZhihuFragments = new ArrayList<Fragment>();
         mDailyNewsFragment = new ZhihuDailyNewsFragment();
+        mDailyNewsFragment.setOnItemClickListener(this);
+        mDailyNewsFragment.setOnBannerClickListener(this);
         mHotNewsFragment = new ZhihuHotNewsFragment();
         mZhihuFragments.add(mDailyNewsFragment);
         mZhihuFragments.add(mHotNewsFragment);
@@ -179,6 +185,10 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     @Override
     public void onBackPressed() {
+        if (mContentNavigationView.isShown()) {
+            mMainDrawerLayout.closeDrawers();
+            return;
+        }
         long secondTime = System.currentTimeMillis();
         if (secondTime - firstTime > 2000) {
             Snackbar sb = Snackbar.make(mContentNavigationView, "再按一次退出", Snackbar.LENGTH_SHORT);
@@ -190,24 +200,48 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         }
     }
 
-    //    知乎点击事件
+    //    Gank 点击事件
+    @Override
+    public void onClick(View view, View image, String url) {
+        switch (view.getId()) {
+            case R.id.tv_content:
+                clickVideo( url);
+                break;
+            case R.id.iv_content:
+                clickWelfare(image, url);
+                break;
+            default:
+                break;
+        }
+    }
+
+    //    知乎日报列表点击事件
     @Override
     public void onClick(ZhihuDailyNews.StoriesBean bean) {
         Toast.makeText(this, bean.getTitle(), Toast.LENGTH_SHORT).show();
     }
 
-    //    Gank 点击事件
+    //    知乎日报头条点击事件
     @Override
-    public void onClick(View view, String url) {
-        switch (view.getId()) {
-            case R.id.tv_content:
-                Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.iv_content:
-                Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
+    public void onBannerClickListener(ZhihuDailyNews.TopStoriesBean topStories) {
+        Toast.makeText(this, topStories.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    //    Gank 图片点击
+    private void clickWelfare(View image, String url) {
+        Intent intent = PictureActivity.newIntent(MainActivity.this, url);
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                MainActivity.this, image, PictureActivity.TRANSIT_PIC);
+        try {
+            ActivityCompat.startActivity(MainActivity.this, intent, optionsCompat.toBundle());
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            startActivity(intent);
         }
+    }
+
+    //    Gank 文字点击
+    private void clickVideo(String url) {
+        Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
     }
 }

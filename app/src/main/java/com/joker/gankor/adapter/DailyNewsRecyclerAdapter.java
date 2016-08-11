@@ -23,7 +23,7 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
     private Context mContext;
     private List<ZhihuDailyNews.StoriesBean> mBean;
     private LayoutInflater mInflater;
-    private ItemClickListener mListener;
+    private OnItemClickListener mListener;
     private View mHeaderView;
 
     public DailyNewsRecyclerAdapter(Context context, List<ZhihuDailyNews.StoriesBean> storiesBeen) {
@@ -66,11 +66,11 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
         mHeaderView = headerView;
     }
 
-    public void setItemClickListener(ItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
 
-    public interface ItemClickListener {
+    public interface OnItemClickListener {
         void onClick(ZhihuDailyNews.StoriesBean bean);
     }
 

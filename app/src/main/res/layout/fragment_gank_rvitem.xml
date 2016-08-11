@@ -3,18 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
     android:orientation="vertical">
 
-    <ImageView
+    <com.joker.gankor.view.RatioImageView
         android:id="@+id/iv_content"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"/>
 
 </LinearLayout>

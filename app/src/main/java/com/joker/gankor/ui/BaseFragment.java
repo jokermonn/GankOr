@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.joker.gankor.utils.LogUtil;
+import com.joker.gankor.utils.OkUtil;
 
 /**
  * 懒加载 fragment
@@ -24,6 +25,7 @@ public abstract class BaseFragment extends Fragment {
     protected boolean isDataLoaded = false;
     //    视图是否创建完毕
     protected boolean isViewCreated = false;
+    protected OkUtil mOkUtil;
 
 
     public BaseFragment() {
@@ -43,6 +45,7 @@ public abstract class BaseFragment extends Fragment {
     @CallSuper
     protected void initData() {
         isDataLoaded = true;
+        mOkUtil = OkUtil.getInstance();
     }
 
     protected abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle
@@ -78,18 +81,19 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        LogUtil.Log(getClass().getName() +  "   onStart");
+        LogUtil.Log(getClass().getName() + "   onStart");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LogUtil.Log(getClass().getName() +  "   onPause");
+        LogUtil.Log(getClass().getName() + "   onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        OkUtil.getInstance().cancelAll(mOkUtil);
         LogUtil.Log(getClass().getName() + "    onStop");
     }
 

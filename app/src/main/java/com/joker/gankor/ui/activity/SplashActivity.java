@@ -1,7 +1,7 @@
 package com.joker.gankor.ui.activity;
 
 import android.content.Intent;
-import android.view.WindowManager;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
@@ -26,8 +26,9 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
-                .FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_splash);
         mSplashImageView = (ImageView) findViewById(R.id.iv_splash);
     }
@@ -60,8 +61,7 @@ public class SplashActivity extends BaseActivity {
         scaleAnimation.setDuration(3000);
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-            }
+            public void onAnimationStart(Animation animation) {}
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -69,8 +69,7 @@ public class SplashActivity extends BaseActivity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
+            public void onAnimationRepeat(Animation animation) {}
         });
         mSplashImageView.startAnimation(scaleAnimation);
     }

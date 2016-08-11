@@ -38,10 +38,8 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
     private List<GankWelfare.ResultsBean> mVideo;
     private GankRecyclerAdapter.TextViewListener mTextListener;
     private GankRecyclerAdapter.ImageViewListener mImageListener;
-    private GankRecyclerAdapter mAdapter;
     private int page = 1;
     private CacheUtil mCache;
-    private Gson mGson;
 
     public GankFragment() {
         // Required empty public constructor
@@ -67,7 +65,7 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
 //        有网络的情况下
         if (NetUtil.isNetConnected(mActivity)) {
             //        Gank 福利图片
-            OkUtil.getInstance().okHttpGankGson(API.GANK_WELFARE + page, new OkUtil
+            mOkUtil.okHttpGankGson(API.GANK_WELFARE + page, new OkUtil
                     .ResultCallback<GankWelfare>() {
                 @Override
                 public void onError(Call call, Exception e) {
@@ -84,7 +82,7 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
                 }
             });
         } else {
-            mGson = new Gson();
+            Gson mGson = new Gson();
             mWelfare = mGson.fromJson(mCache.getAsString(GANK_WELFARE_JSON), GankWelfare
                     .class).getResults();
             mVideo = mGson.fromJson(mCache.getAsString(GANK_VIDEO_JSON), GankWelfare
@@ -95,7 +93,7 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
 
     //        Gank 休息视频
     private void loadVideo() {
-        OkUtil.getInstance().okHttpGankGson(API.GANK_VIDEO + page, new OkUtil.ResultCallback<GankWelfare>
+        mOkUtil.okHttpGankGson(API.GANK_VIDEO + page, new OkUtil.ResultCallback<GankWelfare>
                 () {
             @Override
             public void onError(Call call, Exception e) {
@@ -115,14 +113,14 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
 
     //    初始化 RecyclerView
     private void initRecyclerView() {
-        SpacesItemDecoration decoration = new SpacesItemDecoration(16);
+        SpacesItemDecoration decoration = new SpacesItemDecoration((int) (Math.random() * 5) + 15);
         mGankRecyclerView.addItemDecoration(decoration);
 
         mGankRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
                 StaggeredGridLayoutManager
                         .VERTICAL));
 
-        mAdapter = new GankRecyclerAdapter(mGankRecyclerView
+        GankRecyclerAdapter mAdapter = new GankRecyclerAdapter(mGankRecyclerView
                 .getContext(),
                 mWelfare, mVideo);
         mAdapter.setImageListener(this);
@@ -139,16 +137,16 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
     }
 
     @Override
-    public void onClick(View view, String url) {
+    public void onClick(View view, View image, String url) {
         switch (view.getId()) {
             case R.id.tv_content:
                 if (mTextListener != null) {
-                    mTextListener.onClick(view, url);
+                    mTextListener.onClick(view, image, url);
                 }
                 break;
             case R.id.iv_content:
                 if (mImageListener != null) {
-                    mImageListener.onClick(view, url);
+                    mImageListener.onClick(view, image, url);
                 }
                 break;
             default:

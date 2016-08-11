@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
-import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.joker.gankor.R;
 import com.joker.gankor.adapter.DailyNewsRecyclerAdapter;
 import com.joker.gankor.model.ZhihuDailyNews;
@@ -29,15 +28,17 @@ import okhttp3.Call;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ZhihuDailyNewsFragment extends BaseFragment implements OnItemClickListener,
-        DailyNewsRecyclerAdapter.ItemClickListener {
+public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.convenientbanner.listener
+        .OnItemClickListener,
+        DailyNewsRecyclerAdapter.OnItemClickListener {
     private ConvenientBanner mShowConvenientBanner;
-    private DailyNewsRecyclerAdapter.ItemClickListener mListener;
+    private DailyNewsRecyclerAdapter.OnItemClickListener mItemListener;
     private List<ZhihuDailyNews.TopStoriesBean> mTopStories;
     private List<ZhihuDailyNews.StoriesBean> mNewsStories;
     private RecyclerView mDailyNewsRecyclerView;
     private SwipeRefreshLayout mContentSwipeRefreshLayout;
     private DailyNewsRecyclerAdapter mAdapter;
+    private OnBannerClickListener mBannerListener;
 
     public ZhihuDailyNewsFragment() {
         // Required empty public constructor
@@ -63,7 +64,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements OnItemClickL
         super.initData();
 
 //        获取知乎最新消息
-        OkUtil.getInstance().okHttpZhihuGson(API.ZHIHU_NEWS_LATEST, new OkUtil
+        mOkUtil.okHttpZhihuGson(API.ZHIHU_NEWS_LATEST, new OkUtil
                 .ResultCallback<ZhihuDailyNews>() {
             @Override
             public void onError(Call call, Exception e) {
@@ -85,7 +86,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements OnItemClickL
     private void initRecyclerView() {
         mAdapter = new DailyNewsRecyclerAdapter(mActivity, mNewsStories);
         mAdapter.setHeaderView(mShowConvenientBanner);
-        mAdapter.setItemClickListener(this);
+        mAdapter.setOnItemClickListener(this);
         mDailyNewsRecyclerView.setAdapter(mAdapter);
     }
 
@@ -122,17 +123,27 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements OnItemClickL
     //    Banner 点击事件
     @Override
     public void onItemClick(int position) {
-
+        if (mBannerListener != null) {
+            mBannerListener.onBannerClickListener(mTopStories.get(position));
+        }
     }
 
-    public void setItemClickListener(DailyNewsRecyclerAdapter.ItemClickListener listener) {
-        mListener = listener;
+    public void setOnItemClickListener(DailyNewsRecyclerAdapter.OnItemClickListener itemClickListener) {
+        mItemListener = itemClickListener;
+    }
+
+    public void setOnBannerClickListener(OnBannerClickListener bannerClickListener) {
+        mBannerListener = bannerClickListener;
     }
 
     @Override
     public void onClick(ZhihuDailyNews.StoriesBean bean) {
-        if (mListener != null) {
-            mListener.onClick(bean);
+        if (mItemListener != null) {
+            mItemListener.onClick(bean);
         }
+    }
+
+    public interface OnBannerClickListener {
+        void onBannerClickListener(ZhihuDailyNews.TopStoriesBean topStories);
     }
 }
