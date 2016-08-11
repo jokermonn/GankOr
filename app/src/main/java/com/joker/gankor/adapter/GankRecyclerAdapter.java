@@ -51,6 +51,22 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
         return mWelfare.size();
     }
 
+    public void setTextListener(TextViewListener listener) {
+        this.mTextListener = listener;
+    }
+
+    public void setImageListener(ImageViewListener listener) {
+        this.mImageListener = listener;
+    }
+
+    public interface TextViewListener {
+        void onClick(View v, String url);
+    }
+
+    public interface ImageViewListener {
+        void onClick(View v, String url);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textView;
         ImageView imageView;
@@ -68,32 +84,17 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
             switch (v.getId()) {
                 case R.id.tv_content:
                     if (mTextListener != null) {
-                        mTextListener.onClick(v, getAdapterPosition());
+                        mTextListener.onClick(v, mVideo.get(getAdapterPosition()).getUrl());
                     }
                     break;
                 case R.id.iv_content:
                     if (mImageListener != null) {
-                        mImageListener.onClick(v, getAdapterPosition());
+                        mImageListener.onClick(v, mWelfare.get(getAdapterPosition()).getUrl());
                     }
+                    break;
                 default:
                     break;
             }
         }
-    }
-
-    public void setTextListener(TextViewListener listener) {
-        this.mTextListener = listener;
-    }
-
-    public void setImageListener(ImageViewListener listener) {
-        this.mImageListener = listener;
-    }
-
-    public interface TextViewListener {
-        void onClick(View view, int position);
-    }
-
-    public interface ImageViewListener {
-        void onClick(View view, int position);
     }
 }

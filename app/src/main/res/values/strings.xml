@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">GankOr</string>
+    <string name="app_name">干乎</string>
+    <string name="meizhi">妹纸</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

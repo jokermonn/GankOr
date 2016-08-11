@@ -1,26 +1,30 @@
 package com.joker.gankor.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.joker.gankor.R;
 import com.joker.gankor.model.ZhihuDailyNews;
-import com.joker.gankor.utils.ImageUtil;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
 /**
  * Created by joker on 2016/8/8.
  */
-public class DailyNewsRecyclerAdapter extends BaseAdapter {
+public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecyclerAdapter.ViewHolder> {
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_HEADER = 1;
     private Context mContext;
     private List<ZhihuDailyNews.StoriesBean> mBean;
     private LayoutInflater mInflater;
+    private ItemClickListener mListener;
+    private View mHeaderView;
 
     public DailyNewsRecyclerAdapter(Context context, List<ZhihuDailyNews.StoriesBean> storiesBeen) {
         mContext = context;
@@ -29,42 +33,66 @@ public class DailyNewsRecyclerAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_HEADER) {
+            return new ViewHolder(mHeaderView);
+        }
+        return new ViewHolder(mInflater.inflate(R.layout.daily_news_item, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        if (getItemViewType(position) == TYPE_HEADER) {
+            return;
+        }
+        ImageLoader.getInstance().displayImage(mBean.get(position).getImages().get(0), holder.mImageView);
+        holder.mTextView.setText(mBean.get(position).getTitle());
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return TYPE_HEADER;
+        }
+        return TYPE_ITEM;
+    }
+
+    @Override
+    public int getItemCount() {
         return mBean.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return mBean.get(position);
+    public void setHeaderView(View headerView) {
+        mHeaderView = headerView;
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
+    public void setItemClickListener(ItemClickListener listener) {
+        mListener = listener;
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            viewHolder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.daily_news_item, parent, false);
-            viewHolder.mTextView = (TextView) convertView.findViewById(R.id.tv_item);
-            viewHolder.mImageView = (ImageView) convertView.findViewById(R.id.iv_item);
-
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-        System.out.println(mBean.get(position).getImages().get(0));
-        ImageUtil.getInstance().displayImage(mBean.get(position).getImages().get(0), viewHolder.mImageView);
-        viewHolder.mTextView.setText(mBean.get(position).getTitle());
-
-        return convertView;
+    public interface ItemClickListener {
+        void onClick(ZhihuDailyNews.StoriesBean bean);
     }
 
-    static class ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView mTextView;
         ImageView mImageView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            if (itemView == mHeaderView) {
+                return;
+            }
+            mTextView = (TextView) itemView.findViewById(R.id.tv_item);
+            mImageView = (ImageView) itemView.findViewById(R.id.iv_item);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mListener != null) {
+                mListener.onClick(mBean.get(getAdapterPosition()));
+            }
+        }
     }
 }

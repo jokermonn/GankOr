@@ -27,13 +27,10 @@ public class OkUtil {
     private OkHttpClient mOkHttpClient;
     private Handler mHandler;
     private Gson mGson;
-    private Request mRequest;
-    private Thread mThread;
 
     private OkUtil() {
         mOkHttpClient = new OkHttpClient();
         mHandler = new Handler(Looper.getMainLooper());
-        mThread = new Thread();
         mGson = new Gson();
     }
 
@@ -45,7 +42,7 @@ public class OkUtil {
     }
 
     //    获取知乎 Gson
-    public void okHttpZhihuGson(String url, final Class<?> subclass, final GsonCallback callback) {
+    public void okHttpZhihuGson(String url, final ResultCallback callback) {
         final Request request = new Request.Builder()
                 .url(API.ZHIHU_BASIC_URL + url)
                 .build();
@@ -53,16 +50,17 @@ public class OkUtil {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                callback.onFailure(call, e);
+                callback.onError(call, e);
             }
 
             @Override
             public void onResponse(final Call call, Response response) throws IOException {
-                final Object o = new Gson().fromJson(response.body().string(), subclass);
+                final String string = response.body().string();
+                final Object o = mGson.fromJson(string, callback.mType);
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onResponse(call, o);
+                        callback.onResponse(o, string);
                     }
                 });
             }
@@ -99,7 +97,7 @@ public class OkUtil {
         });
     }
 
-    //    异步获取 Gank Gson
+    //    获取 Gank Gson
     public void okHttpGankGson(String url, final ResultCallback callback) {
         final Request request = new Request.Builder()
                 .url(API.GANK_BASIC_URL + url)
@@ -108,27 +106,23 @@ public class OkUtil {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                callback.onError(null, e);
+                callback.onError(call, e);
             }
 
             @Override
             public void onResponse(final Call call, Response response) throws IOException {
-                String string = response.body().string();
-                final Object o = mGson.fromJson(string, callback.mType);
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onResponse(o);
-                    }
-                });
+                if (response.isSuccessful()) {
+                    final String string = response.body().string();
+                    final Object o = mGson.fromJson(string, callback.mType);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onResponse(o,string);
+                        }
+                    });
+                }
             }
         });
-    }
-
-    public interface GsonCallback {
-        void onFailure(Call call, IOException e);
-
-        void onResponse(Call call, Object object);
     }
 
     public interface JObjectCallback {
@@ -154,8 +148,8 @@ public class OkUtil {
             return $Gson$Types.canonicalize(parameterized.getActualTypeArguments()[0]);
         }
 
-        public abstract void onError(Request request, Exception e);
+        public abstract void onError(Call call, Exception e);
 
-        public abstract void onResponse(T response);
+        public abstract void onResponse(T response,String json);
     }
 }

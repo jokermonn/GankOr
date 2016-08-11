@@ -2,13 +2,12 @@ package com.joker.gankor.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by joker on 2016/8/5.
  */
-public class GankWelfare implements Serializable {
+public class GankWelfare {
     /**
      * error : false
      * results : [{"_id":"57a159ee421aa91e2606476b","createdAt":"2016-08-03T10:41:50.299Z","desc":"8-3",

@@ -1,12 +1,14 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.joker.gankor.ui.fragment.ZhihuDailyNewsFragment">
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/srl_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.joker.gankor.ui.fragment.ZhihuDailyNewsFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hello zhihuDailyNews Fragment"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_daily_news"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-</FrameLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

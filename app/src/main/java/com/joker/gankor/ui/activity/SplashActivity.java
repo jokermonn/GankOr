@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.joker.gankor.R;
 import com.joker.gankor.ui.BaseActivity;
 import com.joker.gankor.utils.API;
+import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.ImageUtil;
 import com.joker.gankor.utils.NetUtil;
 import com.joker.gankor.utils.OkUtil;
@@ -19,7 +20,9 @@ import java.io.IOException;
 import okhttp3.Call;
 
 public class SplashActivity extends BaseActivity {
+    public final String IMG = "img";
     private ImageView mSplashImageView;
+    private CacheUtil mCache;
 
     @Override
     protected void initView() {
@@ -31,18 +34,25 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        OkUtil.getInstance().okHttpZhihuJObject(API.ZHIHU_START, "img", new OkUtil.JObjectCallback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                startToMainActivity();
-            }
+        mCache = CacheUtil.get(this);
+        if (NetUtil.isNetConnected(SplashActivity.this)) {
+            OkUtil.getInstance().okHttpZhihuJObject(API.ZHIHU_START, IMG, new OkUtil.JObjectCallback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                    startToMainActivity();
+                }
 
-            @Override
-            public void onResponse(Call call, String jObjectUrl) {
-                ImageUtil.getInstance().displayImage(jObjectUrl, mSplashImageView);
-            }
-        });
+                @Override
+                public void onResponse(Call call, String jObjectUrl) {
+                    mCache.put(IMG, jObjectUrl);
+                    ImageUtil.getInstance().displayImage(jObjectUrl, mSplashImageView);
+                }
+            });
+        } else {
+            Toast.makeText(SplashActivity.this, "网络连接错误", Toast.LENGTH_SHORT).show();
+            ImageUtil.getInstance().displayImage(mCache.getAsString(IMG), mSplashImageView);
+        }
 
         ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.2f, 1.0f, 1.2f, Animation
                 .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -51,9 +61,6 @@ public class SplashActivity extends BaseActivity {
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                if (!NetUtil.isNetConnected(SplashActivity.this)) {
-                    Toast.makeText(SplashActivity.this, "网络连接错误", Toast.LENGTH_SHORT).show();
-                }
             }
 
             @Override
@@ -62,7 +69,8 @@ public class SplashActivity extends BaseActivity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
         mSplashImageView.startAnimation(scaleAnimation);
     }
