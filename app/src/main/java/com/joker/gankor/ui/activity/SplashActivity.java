@@ -5,13 +5,13 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.joker.gankor.R;
 import com.joker.gankor.ui.BaseActivity;
 import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.ImageUtil;
+import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.NetUtil;
 import com.joker.gankor.utils.OkUtil;
 
@@ -51,8 +51,12 @@ public class SplashActivity extends BaseActivity {
                 }
             });
         } else {
-            Toast.makeText(SplashActivity.this, "网络连接错误", Toast.LENGTH_SHORT).show();
-            ImageUtil.getInstance().displayImage(mCache.getAsString(IMG), mSplashImageView);
+            LazyUtil.showToast(this, "网络连接错误");
+            if (ImageUtil.getInstance().isExist(IMG)) {
+                ImageUtil.getInstance().displayImage(mCache.getAsString(IMG), mSplashImageView);
+            } else {
+                startToMainActivity();
+            }
         }
 
         ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.2f, 1.0f, 1.2f, Animation
