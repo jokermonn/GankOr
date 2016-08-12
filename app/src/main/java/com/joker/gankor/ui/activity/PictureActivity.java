@@ -1,27 +1,42 @@
 package com.joker.gankor.ui.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Environment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.joker.gankor.R;
 import com.joker.gankor.ui.BaseActivity;
 import com.joker.gankor.utils.ImageUtil;
+import com.joker.gankor.utils.LazyUtil;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 public class PictureActivity extends BaseActivity implements View.OnClickListener {
     public static final String EXTRA_IMAGE_URL = "image_url";
+    public static final String EXTRA_IMAGE_TITLE = "image_title";
     public static final String TRANSIT_PIC = "picture";
     private String mImageUrl;
+    private String mName;
     private ImageView mPicImageView;
     private Toolbar mTitleToolbar;
 
-    public static Intent newIntent(Context context, String url) {
+    public static Intent newIntent(Context context, String url, String desc) {
         Intent intent = new Intent(context, PictureActivity.class);
         intent.putExtra(PictureActivity.EXTRA_IMAGE_URL, url);
+        intent.putExtra(PictureActivity.EXTRA_IMAGE_TITLE, desc);
         return intent;
     }
 
@@ -32,11 +47,11 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
         mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
         mPicImageView = (ImageView) findViewById(R.id.iv_pic);
 
+        mTitleToolbar.setNavigationOnClickListener(this);
         setSupportActionBar(mTitleToolbar);
         getSupportActionBar().setTitle("妹纸");
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-        mTitleToolbar.setNavigationOnClickListener(this);
         mPicImageView.setOnClickListener(this);
 
         ViewCompat.setTransitionName(mPicImageView, TRANSIT_PIC);
@@ -52,6 +67,7 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
 
     private void parseIntent() {
         mImageUrl = getIntent().getStringExtra(EXTRA_IMAGE_URL);
+        mName = getIntent().getStringExtra(EXTRA_IMAGE_TITLE);
     }
 
     private void loadPic(String imageUrl, ImageView imageView) {
@@ -61,9 +77,6 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tb_title:
-                onBackPressed();
-                break;
             case R.id.iv_pic:
                 changeToolbar();
                 break;
@@ -78,5 +91,80 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
         } else {
             mTitleToolbar.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_picture, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.menu_save:
+                saveImage();
+                return true;
+            case R.id.menu_share:
+                LazyUtil.showToast(this, "暂时不支持分享功能哦");
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void saveImage() {
+//        6.0 检查权限
+        if (Build.VERSION.SDK_INT >= 23) {
+            int write = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int read = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (write != PackageManager.PERMISSION_GRANTED || read != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest
+                        .permission.READ_EXTERNAL_STORAGE}, 300);
+            }
+        }
+        File saveFile = new File(Environment.getExternalStorageDirectory(), "GankOr");
+        if (!saveFile.exists()) {
+            saveFile.mkdirs();
+        }
+        if (copyImage(saveFile.getAbsolutePath() + "//" + mName + ".png")) {
+            LazyUtil.showToast(this, String.format(getString(R.string.picture_save_on), saveFile
+                    .getAbsolutePath()));
+        } else {
+            LazyUtil.showToast(this, "保存失败");
+        }
+    }
+
+    public boolean copyImage(String newPath) {
+        String oldPath = ImageUtil.getInstance().getAbsolutePath(mImageUrl);
+        InputStream inStream = null;
+        FileOutputStream fs = null;
+        try {
+            int bytesum = 0;
+            int byteread = 0;
+            File oldfile = new File(oldPath);
+            if (oldfile.exists()) { //文件存在时
+                inStream = new FileInputStream(oldPath); //读入原文件
+                fs = new FileOutputStream(newPath);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((byteread = inStream.read(buffer)) != -1) {
+                    bytesum += byteread; //字节数 文件大小
+                    System.out.println(bytesum);
+                    fs.write(buffer, 0, byteread);
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            LazyUtil.close(inStream);
+            LazyUtil.close(fs);
+        }
+        return false;
     }
 }
