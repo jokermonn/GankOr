@@ -49,7 +49,7 @@
         android:background="@color/primary_light"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/drawer_view"
+        app:menu="@menu/menu_drawer"
         app:theme="@style/GankOrTheme"/>
 
 </android.support.v4.widget.DrawerLayout>

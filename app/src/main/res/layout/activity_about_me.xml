@@ -8,7 +8,6 @@
     tools:context="com.joker.gankor.ui.activity.AboutMeActivity">
 
     <TextView
-        android:background="@drawable/joker"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:id="@+id/ib_show"

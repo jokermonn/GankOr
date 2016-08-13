@@ -11,6 +11,7 @@
 
     <TextView
         android:id="@+id/tv_header"
+        android:textColor="@color/dark_transparent"
         android:paddingBottom="20dp"
         android:textSize="15sp"
         android:layout_alignParentBottom="true"
