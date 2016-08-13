@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activity.PictureActivity">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".ui.activity.PictureActivity">
 
     <item
-        android:id="@+id/save"
+        android:id="@+id/menu_save"
         android:icon="@drawable/save_picture"
-        android:title="save"/>
+        android:orderInCategory="99"
+        android:title="@string/app_name"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_share"
+        android:icon="@drawable/share_picture"
+        android:orderInCategory="100"
+        android:title="@string/app_name"
+        app:showAsAction="always"/>
 
 </menu>
