@@ -19,11 +19,11 @@
     </style>
 
     <style name="DefultTheme" parent="GankOrTheme">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorPrimary">@color/BDBDBD</item>
+        <item name="colorPrimaryDark">@color/BDBDBD</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/icons</item>
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/dark_transparent</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/BDBDBD</item>
     </style>
 
 </resources>

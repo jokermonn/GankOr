@@ -4,4 +4,5 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="picture_save_on">图片已保存至 %s 文件夹</string>
 </resources>
