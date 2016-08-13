@@ -24,7 +24,7 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
     private ImageUtil mImageUtil;
     private TextViewListener mTextListener;
     private ImageViewListener mImageListener;
-
+    private RecyclerView mRecyclerView;
 
     public GankRecyclerAdapter(Context context, List<GankWelfare.ResultsBean> welfare,
                                List<GankWelfare.ResultsBean> video) {
@@ -36,14 +36,36 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mRecyclerView == null) {
+            mRecyclerView= (RecyclerView) parent;
+        }
         return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.fragment_gank_rvitem,
                 parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        mImageUtil.displayImage(mWelfare.get(position).getUrl(), holder.imageView);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        mImageUtil.displayImageOnLoading(mWelfare.get(position).getUrl(), holder.imageView);
         holder.textView.setText(mVideo.get(position).getDesc());
+//        mRecyclerView.findViewWithTag(mWelfare.get(position).getUrl());
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mImageListener != null) {
+                    mImageListener.onGankImageClick(holder.imageView, mWelfare.get(position).getUrl(),
+                            mWelfare.get(position).getDesc());
+                }
+            }
+        });
+        holder.textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mTextListener != null) {
+                    mTextListener.onGankTextClick(mVideo.get(position).getUrl());
+                }
+            }
+        });
     }
 
     @Override
@@ -60,14 +82,14 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
     }
 
     public interface TextViewListener {
-        void onClick(View v, View image, String url);
+        void onGankTextClick(String url);
     }
 
     public interface ImageViewListener {
-        void onClick(View v, View image, String url);
+        void onGankImageClick(View image, String url, String desc);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         RatioImageView imageView;
 
@@ -75,27 +97,7 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.tv_content);
             imageView = (RatioImageView) itemView.findViewById(R.id.iv_content);
-            textView.setOnClickListener(this);
-            imageView.setOnClickListener(this);
             imageView.setOriginalSize(50, 50);
-        }
-
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.tv_content:
-                    if (mTextListener != null) {
-                        mTextListener.onClick(v, imageView, mVideo.get(getAdapterPosition()).getUrl());
-                    }
-                    break;
-                case R.id.iv_content:
-                    if (mImageListener != null) {
-                        mImageListener.onClick(v, imageView, mWelfare.get(getAdapterPosition()).getUrl());
-                    }
-                    break;
-                default:
-                    break;
-            }
         }
     }
 }

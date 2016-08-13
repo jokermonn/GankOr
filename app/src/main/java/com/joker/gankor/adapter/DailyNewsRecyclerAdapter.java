@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.joker.gankor.R;
 import com.joker.gankor.model.ZhihuDailyNews;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.joker.gankor.utils.ImageUtil;
 
 import java.util.List;
 
@@ -45,21 +45,35 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
         if (getItemViewType(position) == TYPE_HEADER) {
             return;
         }
-        ImageLoader.getInstance().displayImage(mBean.get(position).getImages().get(0), holder.mImageView);
-        holder.mTextView.setText(mBean.get(position).getTitle());
+        final int newPosition = getNewPosition(holder);
+        ImageUtil.getInstance().displayImageOnLoading(mBean.get(newPosition).getImages().get(0), holder
+                .mImageView);
+        holder.mTextView.setText(mBean.get(newPosition).getTitle());
+        holder.item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onZhihuItemClick(mBean.get(newPosition));
+                }
+            }
+        });
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
-            return TYPE_HEADER;
-        }
-        return TYPE_ITEM;
+        return mHeaderView != null && position == 0 ? TYPE_HEADER : TYPE_ITEM;
     }
 
+    //    添加头布局后，count 应该 +1
     @Override
     public int getItemCount() {
-        return mBean.size();
+        return mHeaderView == null ? mBean.size() : mBean.size() + 1;
+    }
+
+    //    添加头布局后的新 position
+    public int getNewPosition(RecyclerView.ViewHolder viewHolder) {
+        int position = viewHolder.getAdapterPosition();
+        return mHeaderView == null ? position : position - 1;
     }
 
     public void setHeaderView(View headerView) {
@@ -71,12 +85,13 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
     }
 
     public interface OnItemClickListener {
-        void onClick(ZhihuDailyNews.StoriesBean bean);
+        void onZhihuItemClick(ZhihuDailyNews.StoriesBean bean);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
         ImageView mImageView;
+        View item;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -85,14 +100,7 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
             }
             mTextView = (TextView) itemView.findViewById(R.id.tv_item);
             mImageView = (ImageView) itemView.findViewById(R.id.iv_item);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (mListener != null) {
-                mListener.onClick(mBean.get(getAdapterPosition()));
-            }
+            item = itemView;
         }
     }
 }
