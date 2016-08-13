@@ -24,7 +24,6 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
     private ImageUtil mImageUtil;
     private TextViewListener mTextListener;
     private ImageViewListener mImageListener;
-    private RecyclerView mRecyclerView;
 
     public GankRecyclerAdapter(Context context, List<GankWelfare.ResultsBean> welfare,
                                List<GankWelfare.ResultsBean> video) {
@@ -36,9 +35,6 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (mRecyclerView == null) {
-            mRecyclerView= (RecyclerView) parent;
-        }
         return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.fragment_gank_rvitem,
                 parent, false));
     }
