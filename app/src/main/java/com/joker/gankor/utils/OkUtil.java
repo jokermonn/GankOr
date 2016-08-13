@@ -24,6 +24,7 @@ import okhttp3.Response;
  */
 public class OkUtil {
     private static OkUtil instance = null;
+    private Call mCall;
     private OkHttpClient mOkHttpClient;
     private Handler mHandler;
     private Gson mGson;
@@ -102,8 +103,8 @@ public class OkUtil {
         final Request request = new Request.Builder()
                 .url(API.GANK_BASIC_URL + url)
                 .build();
-        Call call = mOkHttpClient.newCall(request);
-        call.enqueue(new Callback() {
+        mCall = mOkHttpClient.newCall(request);
+        mCall.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 callback.onError(call, e);
@@ -127,7 +128,9 @@ public class OkUtil {
 
     //    取消全部网络请求
     public void cancelAll(OkUtil instance) {
-        instance.mOkHttpClient.dispatcher().cancelAll();
+        if (instance != null && mCall != null && !mCall.isCanceled()) {
+            instance.mCall.cancel();
+        }
     }
 
     public interface JObjectCallback {
