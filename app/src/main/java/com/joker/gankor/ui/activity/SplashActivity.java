@@ -1,9 +1,6 @@
 package com.joker.gankor.ui.activity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -25,6 +22,7 @@ import okhttp3.Call;
 public class SplashActivity extends BaseActivity {
     public final String IMG = "img";
     private ImageView mSplashImageView;
+    private CacheUtil mCache;
 
     @Override
     protected void initView() {
@@ -37,8 +35,7 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        final CacheUtil cacheUtil = CacheUtil.get(this);
-
+        mCache = CacheUtil.getInstance(this);
         if (NetUtil.isNetConnected(SplashActivity.this)) {
             OkUtil.getInstance().okHttpZhihuJObject(API.ZHIHU_START, IMG, new OkUtil.JObjectCallback() {
                 @Override
@@ -49,14 +46,14 @@ public class SplashActivity extends BaseActivity {
 
                 @Override
                 public void onResponse(Call call, String jObjectUrl) {
-                    cacheUtil.put(IMG, jObjectUrl);
+                    mCache.put(IMG, jObjectUrl);
                     ImageUtil.getInstance().displayImage(jObjectUrl, mSplashImageView);
                 }
             });
         } else {
             LazyUtil.showToast(this, "网络连接错误");
-            if (ImageUtil.getInstance().isExist(cacheUtil.getAsString(IMG))) {
-                ImageUtil.getInstance().displayImage(cacheUtil.getAsString(IMG), mSplashImageView);
+            if (ImageUtil.getInstance().isExist(mCache.getAsString(IMG))) {
+                ImageUtil.getInstance().displayImage(mCache.getAsString(IMG), mSplashImageView);
             } else {
                 startToMainActivity();
             }
@@ -68,8 +65,7 @@ public class SplashActivity extends BaseActivity {
         scaleAnimation.setDuration(3000);
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-            }
+            public void onAnimationStart(Animation animation) {}
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -77,18 +73,7 @@ public class SplashActivity extends BaseActivity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-                //        6.0 检查权限
-                if (Build.VERSION.SDK_INT >= 23) {
-                    int write = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    int read = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-                    if (write != PackageManager.PERMISSION_GRANTED || read != PackageManager
-                            .PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest
-                                .permission.READ_EXTERNAL_STORAGE}, 300);
-                    }
-                }
-            }
+            public void onAnimationRepeat(Animation animation) {}
         });
         mSplashImageView.startAnimation(scaleAnimation);
     }

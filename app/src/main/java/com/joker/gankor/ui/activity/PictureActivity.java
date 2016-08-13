@@ -49,7 +49,6 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
 
         mTitleToolbar.setNavigationOnClickListener(this);
         setSupportActionBar(mTitleToolbar);
-        getSupportActionBar().setTitle("妹纸");
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         mPicImageView.setOnClickListener(this);
@@ -61,6 +60,7 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
     protected void initData() {
         super.initData();
         parseIntent();
+        getSupportActionBar().setTitle(mName);
 
         loadPic(mImageUrl, mPicImageView);
     }
@@ -118,11 +118,12 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
     }
 
     public void saveImage() {
-//        6.0 检查权限
+        //        6.0 检查权限
         if (Build.VERSION.SDK_INT >= 23) {
             int write = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             int read = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-            if (write != PackageManager.PERMISSION_GRANTED || read != PackageManager.PERMISSION_GRANTED) {
+            if (write != PackageManager.PERMISSION_GRANTED || read != PackageManager
+                    .PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest
                         .permission.READ_EXTERNAL_STORAGE}, 300);
             }
@@ -131,7 +132,7 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
         if (!saveFile.exists()) {
             saveFile.mkdirs();
         }
-        if (copyImage(saveFile.getAbsolutePath() + "//" + mName + ".png")) {
+        if (copyImage(saveFile.getAbsolutePath() + "//" + mName + ".jpg")) {
             LazyUtil.showToast(this, String.format(getString(R.string.picture_save_on), saveFile
                     .getAbsolutePath()));
         } else {
@@ -154,7 +155,6 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
                 int length;
                 while ((byteread = inStream.read(buffer)) != -1) {
                     bytesum += byteread; //字节数 文件大小
-                    System.out.println(bytesum);
                     fs.write(buffer, 0, byteread);
                 }
             }

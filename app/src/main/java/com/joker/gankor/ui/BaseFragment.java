@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.joker.gankor.utils.LogUtil;
+import com.google.gson.Gson;
+import com.joker.gankor.utils.CacheUtil;
+import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.OkUtil;
 
 /**
@@ -26,6 +28,8 @@ public abstract class BaseFragment extends Fragment {
     //    视图是否创建完毕
     protected boolean isViewCreated = false;
     protected OkUtil mOkUtil;
+    protected CacheUtil mCache;
+    protected Gson mGson;
 
 
     public BaseFragment() {
@@ -46,6 +50,8 @@ public abstract class BaseFragment extends Fragment {
     protected void initData() {
         isDataLoaded = true;
         mOkUtil = OkUtil.getInstance();
+        mCache = CacheUtil.getInstance(mActivity);
+        mGson = new Gson();
     }
 
     protected abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle
@@ -71,41 +77,46 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        LogUtil.Log(getClass().getName() + "    onAttach");
+        LazyUtil.Log(getClass().getName() + "    onAttach");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        LogUtil.Log(getClass().getName() + "   onStart");
+        LazyUtil.Log(getClass().getName() + "   onStart");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LogUtil.Log(getClass().getName() + "   onPause");
+        LazyUtil.Log(getClass().getName() + "   onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        LazyUtil.Log(getClass().getName() + "    onStop");
         OkUtil.getInstance().cancelAll(mOkUtil);
-        LogUtil.Log(getClass().getName() + "    onStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        LogUtil.Log(getClass().getName() + "    onDestroyView");
+        LazyUtil.Log(getClass().getName() + "    onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LazyUtil.Log(getClass().getName() + "    onDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        LogUtil.Log(getClass().getName() + "    onDetach");
+        LazyUtil.Log(getClass().getName() + "    onDetach");
     }
 }

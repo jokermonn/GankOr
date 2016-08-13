@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">干乎</string>
     <string name="meizhi">妹纸</string>
+    <string name="zhihu">知乎</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="picture_save_on">图片已保存至 %s 文件夹</string>
+    <string name="about_me">关于我</string>
+    <string name="secret">Secret</string>
 </resources>

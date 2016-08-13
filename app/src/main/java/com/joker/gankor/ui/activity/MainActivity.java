@@ -63,10 +63,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         mContentSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_content);
         mContentNavigationView = (NavigationView) findViewById(R.id.nv_content);
         mMainDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
-    }
 
-    @Override
-    protected void initData() {
         setSupportActionBar(mTitleToolbar);
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
@@ -77,10 +74,14 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         mMainDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+        //        导航栏内容设置
+        setupDrawerContent();
+    }
+
+    @Override
+    protected void initData() {
         loadGankFragment();
 
-//        导航栏内容设置
-        setupDrawerContent();
         mContentNavigationView.setCheckedItem(0);
     }
 
@@ -200,24 +201,9 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         }
     }
 
-    //    Gank 点击事件
-    @Override
-    public void onClick(View view, View image, String url) {
-        switch (view.getId()) {
-            case R.id.tv_content:
-                clickVideo( url);
-                break;
-            case R.id.iv_content:
-                clickWelfare(image, url);
-                break;
-            default:
-                break;
-        }
-    }
-
     //    知乎日报列表点击事件
     @Override
-    public void onClick(ZhihuDailyNews.StoriesBean bean) {
+    public void onZhihuItemClick(ZhihuDailyNews.StoriesBean bean) {
         Toast.makeText(this, bean.getTitle(), Toast.LENGTH_SHORT).show();
     }
 
@@ -228,8 +214,19 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     }
 
     //    Gank 图片点击
-    private void clickWelfare(View image, String url) {
-        Intent intent = PictureActivity.newIntent(MainActivity.this, url);
+    @Override
+    public void onGankImageClick(View image, String url, String desc) {
+        clickWelfare(image, url, desc);
+    }
+
+    //    Gank 文字点击
+    @Override
+    public void onGankTextClick(String url) {
+        clickVideo(url);
+    }
+
+    private void clickWelfare(View image, String url, String desc) {
+        Intent intent = PictureActivity.newIntent(MainActivity.this, url, desc);
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 MainActivity.this, image, PictureActivity.TRANSIT_PIC);
         try {
@@ -240,7 +237,6 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         }
     }
 
-    //    Gank 文字点击
     private void clickVideo(String url) {
         Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
     }
