@@ -36,6 +36,12 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void initData() {
         mCache = CacheUtil.getInstance(this);
+        
+//        缓存不为空，加载缓存
+        if (!mCache.isCacheEmpty(IMG)) {
+            ImageUtil.getInstance().displayImage(mCache.getAsString(IMG), mSplashImageView);
+        }
+//        同时在联网情况下，下载最新图片，未联网则跳过
         if (NetUtil.isNetConnected(SplashActivity.this)) {
             OkUtil.getInstance().okHttpZhihuJObject(API.ZHIHU_START, IMG, new OkUtil.JObjectCallback() {
                 @Override
@@ -46,17 +52,15 @@ public class SplashActivity extends BaseActivity {
 
                 @Override
                 public void onResponse(Call call, String jObjectUrl) {
-                    mCache.put(IMG, jObjectUrl);
-                    ImageUtil.getInstance().displayImage(jObjectUrl, mSplashImageView);
+                    if (jObjectUrl != null && (mCache.isNewResponse(IMG, jObjectUrl) || mCache
+                            .isCacheEmpty(IMG))) {
+                        mCache.put(IMG, jObjectUrl);
+                    }
                 }
             });
         } else {
             LazyUtil.showToast(this, "网络连接错误");
-            if (ImageUtil.getInstance().isExist(mCache.getAsString(IMG))) {
-                ImageUtil.getInstance().displayImage(mCache.getAsString(IMG), mSplashImageView);
-            } else {
-                startToMainActivity();
-            }
+            startToMainActivity();
         }
 
         ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.2f, 1.0f, 1.2f, Animation
@@ -65,7 +69,8 @@ public class SplashActivity extends BaseActivity {
         scaleAnimation.setDuration(3000);
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {}
+            public void onAnimationStart(Animation animation) {
+            }
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -73,7 +78,8 @@ public class SplashActivity extends BaseActivity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
         mSplashImageView.startAnimation(scaleAnimation);
     }
