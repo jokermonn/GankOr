@@ -18,30 +18,28 @@ import java.util.List;
  * Created by joker on 2016/8/5.
  */
 public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapter.ViewHolder> {
-    private Context mContext;
+    private LayoutInflater mInflater;
     private List<GankWelfare.ResultsBean> mWelfare;
     private List<GankWelfare.ResultsBean> mVideo;
-    private ImageUtil mImageUtil;
     private TextViewListener mTextListener;
     private ImageViewListener mImageListener;
 
     public GankRecyclerAdapter(Context context, List<GankWelfare.ResultsBean> welfare,
                                List<GankWelfare.ResultsBean> video) {
-        mContext = context;
         mWelfare = welfare;
         mVideo = video;
-        mImageUtil = ImageUtil.getInstance();
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.fragment_gank_rvitem,
+        return new ViewHolder(mInflater.inflate(R.layout.fragment_gank_rvitem,
                 parent, false));
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        mImageUtil.displayImageOnLoading(mWelfare.get(position).getUrl(), holder.imageView);
+        ImageUtil.getInstance().displayImageOnLoading(mWelfare.get(position).getUrl(), holder.imageView);
         holder.textView.setText(mVideo.get(position).getDesc());
 //        mRecyclerView.findViewWithTag(mWelfare.get(position).getUrl());
 

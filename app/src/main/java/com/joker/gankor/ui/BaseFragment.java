@@ -4,24 +4,31 @@ package com.joker.gankor.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
+import com.joker.gankor.R;
 import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.LazyUtil;
+import com.joker.gankor.utils.NetUtil;
 import com.joker.gankor.utils.OkUtil;
+import com.joker.gankor.view.SpacesItemDecoration;
 
 /**
  * 懒加载 fragment
  * A simple {@link Fragment} subclass.
  * Created by joker on 2016/8/8.
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     protected Activity mActivity;
     //    数据是否加载完毕
     protected boolean isDataLoaded = false;
@@ -30,21 +37,66 @@ public abstract class BaseFragment extends Fragment {
     protected OkUtil mOkUtil;
     protected CacheUtil mCache;
     protected Gson mGson;
-
+    protected RecyclerView mContentRecyclerView;
+    protected SwipeRefreshLayout mContentSwipeRefreshLayout;
+    protected Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0x123:
+                    loadLatestData();
+                    break;
+                case 0x122:
+                    LazyUtil.showToast(mActivity, "网络没有连接哦");
+                    break;
+                default:
+                    break;
+            }
+            mContentSwipeRefreshLayout.setRefreshing(false);
+        }
+    };
 
     public BaseFragment() {
         // Required empty public constructor
     }
 
+    protected abstract void loadLatestData();
+
     @Nullable
     @Override
     @CallSuper
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         mActivity = getActivity();
+
+        View view = inflater.inflate(R.layout.fragment_base, container, false);
+        mContentRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
+        mContentSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
+        SpacesItemDecoration decoration = new SpacesItemDecoration((int) (Math.random() * 5 + 15));
+        mContentRecyclerView.addItemDecoration(decoration);
+
+        initView(inflater, container, savedInstanceState);
+        initToolbar();
+        initSwipeRefreshLayout();
+
         isViewCreated = true;
 
-        return initView(inflater, container, savedInstanceState);
+        return view;
     }
+
+    protected void initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    }
+
+    protected void initSwipeRefreshLayout() {
+        mContentSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android
+                .R.color.holo_orange_light, android.R.color.holo_green_light, android.R.color
+                .holo_red_dark);
+        mContentSwipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    protected abstract void initToolbar();
+
+    protected abstract void initRecyclerView();
 
     @CallSuper
     protected void initData() {
@@ -53,9 +105,6 @@ public abstract class BaseFragment extends Fragment {
         mCache = CacheUtil.getInstance(mActivity);
         mGson = new Gson();
     }
-
-    protected abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle
-            savedInstanceState);
 
     @CallSuper
     @Override
@@ -74,6 +123,15 @@ public abstract class BaseFragment extends Fragment {
 //          对于第一个直接呈现在用户面前的 fragment， 我们需要加载数据
         if (getUserVisibleHint()) {
             initData();
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        if (NetUtil.isNetConnected(mActivity)) {
+            mHandler.sendEmptyMessage(0x123);
+        } else {
+            mHandler.sendEmptyMessage(0x122);
         }
     }
 

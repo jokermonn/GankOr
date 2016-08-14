@@ -8,22 +8,23 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.joker.gankor.R;
 import com.joker.gankor.adapter.DailyNewsRecyclerAdapter;
 import com.joker.gankor.adapter.GankRecyclerAdapter;
+import com.joker.gankor.adapter.HotNewsRecyclerAdapter;
 import com.joker.gankor.adapter.MainAdapter;
 import com.joker.gankor.model.ZhihuDailyNews;
+import com.joker.gankor.model.ZhihuHotNews;
 import com.joker.gankor.ui.BaseActivity;
 import com.joker.gankor.ui.fragment.GankFragment;
 import com.joker.gankor.ui.fragment.ZhihuDailyNewsFragment;
@@ -34,23 +35,18 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity implements GankRecyclerAdapter.TextViewListener,
         GankRecyclerAdapter.ImageViewListener, DailyNewsRecyclerAdapter.OnItemClickListener,
-        ZhihuDailyNewsFragment.OnBannerClickListener {
+        ZhihuDailyNewsFragment.OnBannerClickListener, HotNewsRecyclerAdapter.OnItemClickListener,AbsListView.OnScrollListener {
 
+    public MainAdapter mAdapter;
     private Toolbar mTitleToolbar;
     private TabLayout mTitleTabLayout;
     private NavigationView mContentNavigationView;
     private ViewPager mContentViewPager;
-    private SwipeRefreshLayout mContentSwipeRefreshLayout;
-    private List<Fragment> mZhihuFragments;
     private List<Fragment> mFragments;
-    private List<String> mZhihuTitles;
     private List<String> mTitles;
     private DrawerLayout mMainDrawerLayout;
     private AppBarLayout mTitleAppBarLayout;
     private long firstTime;
-    private GankFragment mGankFragment;
-    private ZhihuDailyNewsFragment mDailyNewsFragment;
-    private ZhihuHotNewsFragment mHotNewsFragment;
     private int mLastItemId;
 
     @Override
@@ -60,7 +56,6 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
         mTitleTabLayout = (TabLayout) findViewById(R.id.tl_title);
         mContentViewPager = (ViewPager) findViewById(R.id.vp_content);
-        mContentSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_content);
         mContentNavigationView = (NavigationView) findViewById(R.id.nv_content);
         mMainDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
 
@@ -80,7 +75,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     @Override
     protected void initData() {
-        loadGankFragment();
+        changeFragments(R.id.nav_beauty);
 
         mContentNavigationView.setCheckedItem(0);
     }
@@ -94,21 +89,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
                 mMainDrawerLayout.closeDrawers();
                 if (item.getItemId() != mLastItemId) {
                     item.setChecked(true);
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    hideAllFragment(transaction);
-                    switch (item.getItemId()) {
-                        case R.id.nav_knowledge:
-//                      知乎界面
-                            loadZhihuFragments();
-                            break;
-                        case R.id.nav_beauty:
-//                      妹纸界面
-                            loadGankFragment();
-                            break;
-                        default:
-                            break;
-                    }
-                    transaction.commit();
+                    changeFragments(item.getItemId());
                     mLastItemId = item.getItemId();
                 }
                 return true;
@@ -116,49 +97,51 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         });
     }
 
-    private void loadGankFragment() {
-        mFragments = new ArrayList<Fragment>();
-        mGankFragment = new GankFragment();
-        mGankFragment.setImageListener(this);
-        mGankFragment.setTextListener(this);
-        mFragments.add(mGankFragment);
-        mTitles = new ArrayList<String>();
-        mTitles.add("妹纸");
+    public void changeFragments(int itemId) {
+        if (mFragments == null) {
+            mFragments = new ArrayList<Fragment>();
+            mTitles = new ArrayList<String>();
+        } else {
+            mFragments.clear();
+            mTitles.clear();
+        }
 
+        switch (itemId) {
+            case R.id.nav_knowledge:
+//                      知乎界面
+                ZhihuDailyNewsFragment dailyNewsFragment = new ZhihuDailyNewsFragment();
+                dailyNewsFragment.setOnItemClickListener(this);
+                dailyNewsFragment.setOnBannerClickListener(this);
+                ZhihuHotNewsFragment hotNewsFragment = new ZhihuHotNewsFragment();
+                hotNewsFragment.setOnItemClickListener(this);
+
+                mFragments.add(dailyNewsFragment);
+                mFragments.add(hotNewsFragment);
+                mTitles.add("知乎日報");
+                mTitles.add("熱門消息");
+
+                break;
+            case R.id.nav_beauty:
+//                      妹纸界面
+                GankFragment gankFragment = new GankFragment();
+                gankFragment.setImageListener(this);
+                gankFragment.setTextListener(this);
+
+                mFragments.add(gankFragment);
+                mTitles.add("妹纸");
+
+                break;
+            default:
+                break;
+        }
         setupViewPager(mFragments, mTitles);
     }
 
-    private void loadZhihuFragments() {
-        mZhihuFragments = new ArrayList<Fragment>();
-        mDailyNewsFragment = new ZhihuDailyNewsFragment();
-        mDailyNewsFragment.setOnItemClickListener(this);
-        mDailyNewsFragment.setOnBannerClickListener(this);
-        mHotNewsFragment = new ZhihuHotNewsFragment();
-        mZhihuFragments.add(mDailyNewsFragment);
-        mZhihuFragments.add(mHotNewsFragment);
-        mZhihuTitles = new ArrayList<String>();
-        mZhihuTitles.add("知乎日報");
-        mZhihuTitles.add("熱門消息");
-
-        setupViewPager(mZhihuFragments, mZhihuTitles);
-    }
-
     private void setupViewPager(List<Fragment> fragments, List<String> titles) {
-        mContentViewPager.setAdapter(new MainAdapter(getSupportFragmentManager(), fragments, titles));
+        mAdapter = new MainAdapter(getSupportFragmentManager(), fragments, titles);
+        mContentViewPager.setAdapter(mAdapter);
         mTitleTabLayout.setupWithViewPager(mContentViewPager);
         mContentViewPager.setCurrentItem(0);
-    }
-
-    private void hideAllFragment(FragmentTransaction transaction) {
-        if (mGankFragment != null) {
-            transaction.hide(mGankFragment);
-        }
-        if (mDailyNewsFragment != null) {
-            transaction.hide(mDailyNewsFragment);
-        }
-        if (mHotNewsFragment != null) {
-            transaction.hide(mHotNewsFragment);
-        }
     }
 
     public void hideTabLayout(boolean hide) {
@@ -239,5 +222,21 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     private void clickVideo(String url) {
         Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
+    }
+
+    //    知乎日报热门列表点击事件
+    @Override
+    public void onZhihuItemClick(ZhihuHotNews.RecentBean bean) {
+        Toast.makeText(this, bean.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
     }
 }

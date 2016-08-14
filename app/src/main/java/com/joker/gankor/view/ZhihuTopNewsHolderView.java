@@ -20,7 +20,7 @@ public class ZhihuTopNewsHolderView implements Holder<ZhihuDailyNews.TopStoriesB
 
     @Override
     public View createView(Context context) {
-        View view = LayoutInflater.from(context).inflate(R.layout.daily_news_header,
+        View view = LayoutInflater.from(context).inflate(R.layout.daily_news_header_item,
                 null);
         mHeaderImageView = (ImageView) view.findViewById(R.id.iv_header);
         mHeaderTextView = (TextView) view.findViewById(R.id.tv_header);

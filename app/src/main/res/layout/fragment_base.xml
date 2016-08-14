@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.joker.gankor.ui.fragment.ZhihuDailyNewsFragment">
+    tools:context="com.joker.gankor.ui.BaseFragment">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_daily_news"
-            android:background="@color/divider"
+            android:id="@+id/rv_content"
+            android:background="@color/fragment_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

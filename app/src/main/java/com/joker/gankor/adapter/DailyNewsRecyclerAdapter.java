@@ -20,16 +20,14 @@ import java.util.List;
 public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecyclerAdapter.ViewHolder> {
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_HEADER = 1;
-    private Context mContext;
     private List<ZhihuDailyNews.StoriesBean> mBean;
     private LayoutInflater mInflater;
     private OnItemClickListener mListener;
     private View mHeaderView;
 
     public DailyNewsRecyclerAdapter(Context context, List<ZhihuDailyNews.StoriesBean> storiesBeen) {
-        mContext = context;
         mBean = storiesBeen;
-        mInflater = LayoutInflater.from(mContext);
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -37,7 +35,7 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
         if (viewType == TYPE_HEADER) {
             return new ViewHolder(mHeaderView);
         }
-        return new ViewHolder(mInflater.inflate(R.layout.daily_news_item, parent, false));
+        return new ViewHolder(mInflater.inflate(R.layout.zhihu_news_item, parent, false));
     }
 
     @Override
