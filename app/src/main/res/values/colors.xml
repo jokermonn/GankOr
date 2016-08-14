@@ -24,4 +24,6 @@
     <color name="BDBDBD">#757575</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
+    <color name="fragment_background">#F0F0F0</color>
+    <color name="white">#fff</color>
 </resources>
