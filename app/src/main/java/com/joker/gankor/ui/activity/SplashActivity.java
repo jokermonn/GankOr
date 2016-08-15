@@ -12,7 +12,6 @@ import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.ImageUtil;
 import com.joker.gankor.utils.LazyUtil;
-import com.joker.gankor.utils.NetUtil;
 import com.joker.gankor.utils.OkUtil;
 
 import java.io.IOException;
@@ -36,13 +35,13 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void initData() {
         mCache = CacheUtil.getInstance(this);
-        
-//        缓存不为空，加载缓存
+
+//        缓存不为空加载缓存
         if (!mCache.isCacheEmpty(IMG)) {
             ImageUtil.getInstance().displayImage(mCache.getAsString(IMG), mSplashImageView);
         }
-//        同时在联网情况下，下载最新图片，未联网则跳过
-        if (NetUtil.isNetConnected(SplashActivity.this)) {
+//        在联网情况下，写入新缓存，且如果旧缓存为空则显示图片
+        if (isNetConnect()) {
             OkUtil.getInstance().okHttpZhihuJObject(API.ZHIHU_START, IMG, new OkUtil.JObjectCallback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -52,15 +51,20 @@ public class SplashActivity extends BaseActivity {
 
                 @Override
                 public void onResponse(Call call, String jObjectUrl) {
-                    if (jObjectUrl != null && (mCache.isNewResponse(IMG, jObjectUrl) || mCache
-                            .isCacheEmpty(IMG))) {
+                    if (jObjectUrl != null) {
                         mCache.put(IMG, jObjectUrl);
+                        if (mCache.isCacheEmpty(IMG)) {
+                            ImageUtil.getInstance().displayImage(mCache.getAsString(IMG), mSplashImageView);
+                        }
                     }
                 }
             });
         } else {
+//            没网没缓存
+            if (mCache.isCacheEmpty(IMG)) {
+                startToMainActivity();
+            }
             LazyUtil.showToast(this, "网络连接错误");
-            startToMainActivity();
         }
 
         ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.2f, 1.0f, 1.2f, Animation

@@ -1,7 +1,6 @@
 package com.joker.gankor.ui;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,9 +16,9 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.joker.gankor.R;
+import com.joker.gankor.ui.activity.MainActivity;
 import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.LazyUtil;
-import com.joker.gankor.utils.NetUtil;
 import com.joker.gankor.utils.OkUtil;
 import com.joker.gankor.view.SpacesItemDecoration;
 
@@ -29,7 +28,7 @@ import com.joker.gankor.view.SpacesItemDecoration;
  * Created by joker on 2016/8/8.
  */
 public abstract class BaseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    protected Activity mActivity;
+    protected BaseActivity mActivity;
     //    数据是否加载完毕
     protected boolean isDataLoaded = false;
     //    视图是否创建完毕
@@ -67,7 +66,7 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     @CallSuper
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mActivity = getActivity();
+        mActivity = (BaseActivity) getActivity();
 
         View view = inflater.inflate(R.layout.fragment_base, container, false);
         mContentRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
@@ -75,17 +74,22 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         SpacesItemDecoration decoration = new SpacesItemDecoration((int) (Math.random() * 5 + 15));
         mContentRecyclerView.addItemDecoration(decoration);
 
-        initView(inflater, container, savedInstanceState);
+        initRecyclerView(inflater, container, savedInstanceState);
         initToolbar();
         initSwipeRefreshLayout();
+
+//          对于第一个直接呈现在用户面前的 fragment， 我们需要直接加载数据
+        if (((MainActivity) mActivity).getItemId() == 0) {
+            initData();
+        }
 
         isViewCreated = true;
 
         return view;
     }
 
-    protected void initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    }
+    protected abstract void initRecyclerView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState);
 
     protected void initSwipeRefreshLayout() {
         mContentSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android
@@ -96,7 +100,7 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
 
     protected abstract void initToolbar();
 
-    protected abstract void initRecyclerView();
+    protected abstract void loadRecyclerView();
 
     @CallSuper
     protected void initData() {
@@ -117,18 +121,13 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-//          对于第一个直接呈现在用户面前的 fragment， 我们需要加载数据
-        if (getUserVisibleHint()) {
-            initData();
-        }
+    public boolean isNetConnect() {
+        return mActivity.isNetConnect();
     }
 
     @Override
     public void onRefresh() {
-        if (NetUtil.isNetConnected(mActivity)) {
+        if (mActivity.isNetConnect()) {
             mHandler.sendEmptyMessage(0x123);
         } else {
             mHandler.sendEmptyMessage(0x122);

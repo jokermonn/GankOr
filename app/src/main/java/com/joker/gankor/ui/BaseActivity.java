@@ -5,6 +5,8 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.joker.gankor.utils.NetUtil;
+
 public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,4 +25,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void initData() {}
 
     protected abstract void initView();
+
+    public boolean isNetConnect() {
+        return NetUtil.isNetConnect(this);
+    }
 }

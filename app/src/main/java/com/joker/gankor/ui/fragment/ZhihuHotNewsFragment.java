@@ -12,8 +12,6 @@ import com.joker.gankor.adapter.HotNewsRecyclerAdapter;
 import com.joker.gankor.model.ZhihuHotNews;
 import com.joker.gankor.ui.BaseFragment;
 import com.joker.gankor.utils.API;
-import com.joker.gankor.utils.LazyUtil;
-import com.joker.gankor.utils.NetUtil;
 import com.joker.gankor.utils.OkUtil;
 
 import java.util.List;
@@ -34,7 +32,7 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
     }
 
     @Override
-    protected void initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected void initRecyclerView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
     }
 
@@ -50,9 +48,9 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
             ZhihuHotNews hotNews = mGson.fromJson(mCache.getAsString(HOT_NEWS_JSON), ZhihuHotNews
                     .class);
             mRecent = hotNews.getRecent();
-            initRecyclerView();
+            loadRecyclerView();
         } else {
-            if (NetUtil.isNetConnected(mActivity)) {
+            if (isNetConnect()) {
                 loadLatestData();
             }
         }
@@ -73,14 +71,14 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
                         (HOT_NEWS_JSON))) {
                     mRecent = response.getRecent();
                     mCache.put(HOT_NEWS_JSON, json);
-                    initRecyclerView();
+                    loadRecyclerView();
                 }
             }
         });
     }
 
     @Override
-    public void initRecyclerView() {
+    public void loadRecyclerView() {
         mContentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         HotNewsRecyclerAdapter mAdapter = new HotNewsRecyclerAdapter(mActivity, mRecent);
         mAdapter.setOnItemClickListener(this);

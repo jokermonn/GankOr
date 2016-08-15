@@ -1,6 +1,7 @@
 package com.joker.gankor.ui.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -15,7 +16,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.joker.gankor.R;
@@ -29,13 +29,14 @@ import com.joker.gankor.ui.BaseActivity;
 import com.joker.gankor.ui.fragment.GankFragment;
 import com.joker.gankor.ui.fragment.ZhihuDailyNewsFragment;
 import com.joker.gankor.ui.fragment.ZhihuHotNewsFragment;
+import com.joker.gankor.utils.API;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements GankRecyclerAdapter.TextViewListener,
         GankRecyclerAdapter.ImageViewListener, DailyNewsRecyclerAdapter.OnItemClickListener,
-        ZhihuDailyNewsFragment.OnBannerClickListener, HotNewsRecyclerAdapter.OnItemClickListener,AbsListView.OnScrollListener {
+        ZhihuDailyNewsFragment.OnBannerClickListener, HotNewsRecyclerAdapter.OnItemClickListener {
 
     public MainAdapter mAdapter;
     private Toolbar mTitleToolbar;
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     private AppBarLayout mTitleAppBarLayout;
     private long firstTime;
     private int mLastItemId;
+    private int itemId;
 
     @Override
     protected void initView() {
@@ -140,6 +142,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     private void setupViewPager(List<Fragment> fragments, List<String> titles) {
         mAdapter = new MainAdapter(getSupportFragmentManager(), fragments, titles);
         mContentViewPager.setAdapter(mAdapter);
+        mTitleTabLayout.setSelectedTabIndicatorColor(Color.WHITE);
         mTitleTabLayout.setupWithViewPager(mContentViewPager);
         mContentViewPager.setCurrentItem(0);
     }
@@ -153,18 +156,28 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     }
 
     public void setToolbarScroll(boolean scroll) {
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mTitleAppBarLayout.getChildAt
+                (0).getLayoutParams();
         if (scroll) {
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mTitleAppBarLayout.getChildAt
-                    (0).getLayoutParams();
 //            上滑隐藏，下滑立即可见
             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
                     .LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-            mTitleAppBarLayout.getChildAt(0).setLayoutParams(params);
+        } else {
+//            上滑隐藏，下滑以 minHeight 高度可见
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
+                    .LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams
+                    .SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED);
         }
+        mTitleAppBarLayout.getChildAt(0).setLayoutParams(params);
     }
 
     public void setToolbarTitle(String title) {
         mTitleToolbar.setTitle(title);
+    }
+
+//    获取此 fragment 是 viewPager 的第几个页面
+    public int getItemId() {
+        return itemId < mFragments.size() ? itemId++ : 0;
     }
 
     @Override
@@ -186,14 +199,23 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     //    知乎日报列表点击事件
     @Override
-    public void onZhihuItemClick(ZhihuDailyNews.StoriesBean bean) {
-        Toast.makeText(this, bean.getTitle(), Toast.LENGTH_SHORT).show();
+    public void onZhihuItemClick(ZhihuDailyNews.StoriesBean storiesBean) {
+        startActivity(ZhihhuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_FOUR + String.valueOf
+                (storiesBean.getId()))));
     }
 
     //    知乎日报头条点击事件
     @Override
     public void onBannerClickListener(ZhihuDailyNews.TopStoriesBean topStories) {
-        Toast.makeText(this, topStories.getTitle(), Toast.LENGTH_SHORT).show();
+        startActivity(ZhihhuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_FOUR + String.valueOf
+                (topStories.getId()))));
+    }
+
+    //    知乎日报热门列表点击事件
+    @Override
+    public void onZhihuItemClick(ZhihuHotNews.RecentBean recentBean) {
+        startActivity(ZhihhuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_TWO + String.valueOf
+                (recentBean.getNewsId()))));
     }
 
     //    Gank 图片点击
@@ -222,21 +244,5 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     private void clickVideo(String url) {
         Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
-    }
-
-    //    知乎日报热门列表点击事件
-    @Override
-    public void onZhihuItemClick(ZhihuHotNews.RecentBean bean) {
-        Toast.makeText(this, bean.getTitle(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
     }
 }

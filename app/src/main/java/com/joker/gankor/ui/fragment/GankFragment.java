@@ -13,7 +13,6 @@ import com.joker.gankor.model.GankWelfare;
 import com.joker.gankor.ui.BaseFragment;
 import com.joker.gankor.ui.activity.MainActivity;
 import com.joker.gankor.utils.API;
-import com.joker.gankor.utils.NetUtil;
 import com.joker.gankor.utils.OkUtil;
 
 import java.util.List;
@@ -39,7 +38,8 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
     }
 
     @Override
-    protected void initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected void initRecyclerView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
         mContentRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
                 StaggeredGridLayoutManager
                         .VERTICAL));
@@ -62,9 +62,9 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
                     .class).getResults();
             mVideo = mGson.fromJson(mCache.getAsString(GANK_VIDEO_JSON), GankWelfare
                     .class).getResults();
-            initRecyclerView();
+            loadRecyclerView();
         } else {
-            if (NetUtil.isNetConnected(mActivity)) {
+            if (isNetConnect()) {
                 loadLatestData();
             }
         }
@@ -111,7 +111,7 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
                                 (GANK_VIDEO_JSON))) {
                     mVideo = response.getResults();
                     mCache.put(GANK_VIDEO_JSON, json);
-                    initRecyclerView();
+                    loadRecyclerView();
                 }
             }
         });
@@ -119,7 +119,7 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
 
     //    初始化 RecyclerView
     @Override
-    public void initRecyclerView() {
+    public void loadRecyclerView() {
         GankRecyclerAdapter mAdapter = new GankRecyclerAdapter(mContentRecyclerView
                 .getContext(),
                 mWelfare, mVideo);

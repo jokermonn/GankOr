@@ -17,7 +17,6 @@ import com.joker.gankor.model.ZhihuDailyNews;
 import com.joker.gankor.ui.BaseFragment;
 import com.joker.gankor.ui.activity.MainActivity;
 import com.joker.gankor.utils.API;
-import com.joker.gankor.utils.NetUtil;
 import com.joker.gankor.utils.OkUtil;
 import com.joker.gankor.view.ZhihuTopNewsHolderView;
 
@@ -43,7 +42,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
     }
 
     @Override
-    protected void initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected void initRecyclerView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         View header = inflater.inflate(R.layout.daily_news_header_view, mContentRecyclerView, false);
         mShowConvenientBanner = (ConvenientBanner) header.findViewById(R.id.cb_show);
@@ -66,9 +65,9 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
             mTopStories = dailyNews.getTopStories();
             mNewsStories = dailyNews.getStories();
             initBanner();
-            initRecyclerView();
+            loadRecyclerView();
         } else {
-            if (NetUtil.isNetConnected(mActivity)) {
+            if (isNetConnect()) {
                 loadLatestData();
             }
         }
@@ -77,7 +76,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
     @Override
     public void loadLatestData() {
         //        获取知乎最新消息
-        mOkUtil.okHttpZhihuGson(API.ZHIHU_LATEST_NEWS, new OkUtil
+        mOkUtil.okHttpZhihuGson(API.ZHIHU_NEWS_FOUR + API.ZHIHU_LATEST, new OkUtil
                 .ResultCallback<ZhihuDailyNews>() {
             @Override
             public void onError(Call call, Exception e) {
@@ -94,14 +93,14 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
                     mNewsStories = response.getStories();
                     mCache.put(DAILY_NEWS_JSON, json);
                     initBanner();
-                    initRecyclerView();
+                    loadRecyclerView();
                 }
             }
         });
     }
 
     @Override
-    public void initRecyclerView() {
+    public void loadRecyclerView() {
         DailyNewsRecyclerAdapter mAdapter = new DailyNewsRecyclerAdapter(mActivity, mNewsStories);
         mAdapter.setHeaderView(mShowConvenientBanner);
         mAdapter.setOnItemClickListener(this);
@@ -125,6 +124,13 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
     public void onResume() {
         super.onResume();
         mShowConvenientBanner.startTurning(4000);
+    }
+
+    // 暂停自动翻页
+    @Override
+    public void onPause() {
+        super.onPause();
+        mShowConvenientBanner.stopTurning();
     }
 
     @Override

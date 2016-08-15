@@ -5,13 +5,12 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by joker on 2016/8/8.
  */
-public class ZhihuDailyNews implements Parcelable {
+public class ZhihuDailyNews {
 
     /**
      * date : 20160808
@@ -84,7 +83,7 @@ public class ZhihuDailyNews implements Parcelable {
         this.topStories = topStories;
     }
 
-    public static class StoriesBean {
+    public static class StoriesBean implements Parcelable {
         private int type;
         private int id;
         private String title;
@@ -121,9 +120,44 @@ public class ZhihuDailyNews implements Parcelable {
         public void setImages(List<String> images) {
             this.images = images;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.type);
+            dest.writeInt(this.id);
+            dest.writeString(this.title);
+            dest.writeStringList(this.images);
+        }
+
+        public StoriesBean() {
+        }
+
+        protected StoriesBean(Parcel in) {
+            this.type = in.readInt();
+            this.id = in.readInt();
+            this.title = in.readString();
+            this.images = in.createStringArrayList();
+        }
+
+        public static final Creator<StoriesBean> CREATOR = new Creator<StoriesBean>() {
+            @Override
+            public StoriesBean createFromParcel(Parcel source) {
+                return new StoriesBean(source);
+            }
+
+            @Override
+            public StoriesBean[] newArray(int size) {
+                return new StoriesBean[size];
+            }
+        };
     }
 
-    public static class TopStoriesBean {
+    public static class TopStoriesBean implements Parcelable {
         private String image;
         private int type;
         private int id;
@@ -160,41 +194,40 @@ public class ZhihuDailyNews implements Parcelable {
         public void setTitle(String title) {
             this.title = title;
         }
-    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.date);
-        dest.writeList(this.stories);
-        dest.writeList(this.topStories);
-    }
-
-    public ZhihuDailyNews() {
-    }
-
-    protected ZhihuDailyNews(Parcel in) {
-        this.date = in.readString();
-        this.stories = new ArrayList<StoriesBean>();
-        in.readList(this.stories, StoriesBean.class.getClassLoader());
-        this.topStories = new ArrayList<TopStoriesBean>();
-        in.readList(this.topStories, TopStoriesBean.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<ZhihuDailyNews> CREATOR = new Parcelable
-            .Creator<ZhihuDailyNews>() {
         @Override
-        public ZhihuDailyNews createFromParcel(Parcel source) {
-            return new ZhihuDailyNews(source);
+        public int describeContents() {
+            return 0;
         }
 
         @Override
-        public ZhihuDailyNews[] newArray(int size) {
-            return new ZhihuDailyNews[size];
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.image);
+            dest.writeInt(this.type);
+            dest.writeInt(this.id);
+            dest.writeString(this.title);
         }
-    };
+
+        public TopStoriesBean() {
+        }
+
+        protected TopStoriesBean(Parcel in) {
+            this.image = in.readString();
+            this.type = in.readInt();
+            this.id = in.readInt();
+            this.title = in.readString();
+        }
+
+        public static final Creator<TopStoriesBean> CREATOR = new Creator<TopStoriesBean>() {
+            @Override
+            public TopStoriesBean createFromParcel(Parcel source) {
+                return new TopStoriesBean(source);
+            }
+
+            @Override
+            public TopStoriesBean[] newArray(int size) {
+                return new TopStoriesBean[size];
+            }
+        };
+    }
 }
