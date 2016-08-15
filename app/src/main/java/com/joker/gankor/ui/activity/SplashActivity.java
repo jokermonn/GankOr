@@ -52,9 +52,13 @@ public class SplashActivity extends BaseActivity {
                 @Override
                 public void onResponse(Call call, String jObjectUrl) {
                     if (jObjectUrl != null) {
-                        mCache.put(IMG, jObjectUrl);
                         if (mCache.isCacheEmpty(IMG)) {
-                            ImageUtil.getInstance().displayImage(mCache.getAsString(IMG), mSplashImageView);
+                            ImageUtil.getInstance().displayImage(jObjectUrl, mSplashImageView);
+                        }
+                        mCache.put(IMG, jObjectUrl);
+                    } else {
+                        if (mCache.isCacheEmpty(IMG)) {
+                            startToMainActivity();
                         }
                     }
                 }
