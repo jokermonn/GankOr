@@ -34,7 +34,11 @@ public class LazyUtil {
         }
     }
 
-    public static void Log(String log) {
+    public static void log(String log) {
         Log.e("TAG", log);
+    }
+
+    public static void log(String tag, String log) {
+        Log.e(tag, log);
     }
 }

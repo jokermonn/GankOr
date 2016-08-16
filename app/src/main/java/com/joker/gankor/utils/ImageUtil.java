@@ -39,6 +39,7 @@ public class ImageUtil {
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .showImageOnLoading(R.drawable.download_defualt)
+                .showImageForEmptyUri(R.drawable.download_defualt)
                 .build();
         mImageLoader.displayImage(url, view, options);
     }
