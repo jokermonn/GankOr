@@ -7,6 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 
+import com.joker.gankor.utils.LazyUtil;
+import com.joker.gankor.utils.NetUtil;
+
 /**
  * Created by joker on 2016/8/15.
  */
@@ -45,6 +48,10 @@ public class PullLoadRecyclerView extends RecyclerView {
 
         if (onPullLoadListener != null && mLastVisiblePosition + 1 == getAdapter().getItemCount() &&
                 !isLoading && dy > 0) {
+            if (!NetUtil.isNetConnect(getContext())) {
+                LazyUtil.showToast(getContext(), "网络没有连接，不能加载噢");
+                return;
+            }
             isLoading = true;
             onPullLoadListener.onPullLoad();
         }
@@ -59,16 +66,16 @@ public class PullLoadRecyclerView extends RecyclerView {
         return maxPosition;
     }
 
-//    上拉加载更多接口
+    //    上拉加载更多接口
     public void setPullLoadListener(onPullLoadListener onPullLoadListener) {
         this.onPullLoadListener = onPullLoadListener;
     }
 
-    public interface onPullLoadListener {
-        void onPullLoad();
-    }
-
     public void setIsLoading(boolean isLoading) {
         this.isLoading = isLoading;
+    }
+
+    public interface onPullLoadListener {
+        void onPullLoad();
     }
 }
