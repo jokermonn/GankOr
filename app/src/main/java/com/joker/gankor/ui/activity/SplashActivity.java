@@ -19,7 +19,7 @@ import java.io.IOException;
 import okhttp3.Call;
 
 public class SplashActivity extends BaseActivity {
-    public final String IMG = "img";
+    public static final String IMG = "img";
     private ImageView mSplashImageView;
     private CacheUtil mCache;
 
