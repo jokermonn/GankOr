@@ -1,20 +1,21 @@
 package com.joker.gankor.ui.fragment;
 
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.joker.gankor.adapter.GankRecyclerAdapter;
 import com.joker.gankor.model.GankWelfare;
 import com.joker.gankor.ui.BaseFragment;
 import com.joker.gankor.ui.activity.MainActivity;
 import com.joker.gankor.utils.API;
+import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.OkUtil;
+import com.joker.gankor.view.PullLoadRecyclerView;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import okhttp3.Call;
@@ -27,8 +28,10 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
         GankRecyclerAdapter.ImageViewListener {
     public final static String GANK_WELFARE_JSON = "gank_welfare_json";
     public final static String GANK_VIDEO_JSON = "gank_video_json";
+    public GankRecyclerAdapter mAdapter;
+    public StaggeredGridLayoutManager manager;
     private List<GankWelfare.ResultsBean> mWelfare;
-    private List<GankWelfare.ResultsBean> mVideo;
+    private HashMap<GankWelfare.ResultsBean, GankWelfare.ResultsBean> dataMap;
     private GankRecyclerAdapter.TextViewListener mTextListener;
     private GankRecyclerAdapter.ImageViewListener mImageListener;
     private int page = 1;
@@ -38,19 +41,30 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
     }
 
     @Override
-    protected void initRecyclerView(LayoutInflater inflater, ViewGroup container, Bundle
-            savedInstanceState) {
-        mContentRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
-                StaggeredGridLayoutManager
-                        .VERTICAL));
+    protected String getUrl() {
+        return String.valueOf(page);
     }
 
     @Override
-    protected void initToolbar() {
-        ((MainActivity) mActivity).hideTabLayout(true);
-        ((MainActivity) mActivity).setToolbarScroll(true);
-        ((MainActivity) mActivity).setToolbarTitle("妹纸");
+    protected void initRecyclerView() {
+        dataMap = new LinkedHashMap<GankWelfare.ResultsBean, GankWelfare.ResultsBean>();
+        manager = new StaggeredGridLayoutManager(2,
+                StaggeredGridLayoutManager
+                        .VERTICAL);
+        mContentRecyclerView.setLayoutManager(manager);
+        mAdapter = new GankRecyclerAdapter(mContentRecyclerView
+                .getContext(), dataMap);
+        mAdapter.setImageListener(this);
+        mAdapter.setTextListener(this);
+        mContentRecyclerView.setAdapter(mAdapter);
+        mContentRecyclerView.setPullLoadListener(new PullLoadRecyclerView.onPullLoadListener() {
+            @Override
+            public void onPullLoad() {
+                loadDataFromNet(String.valueOf(++page), false);
+            }
+        });
     }
+
 
     @Override
     protected void initData() {
@@ -58,22 +72,34 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
 
 //        缓存不为空时直接加载缓存，否则在联网情况下加载数据
         if (!mCache.isCacheEmpty(GANK_WELFARE_JSON) && !mCache.isCacheEmpty(GANK_VIDEO_JSON)) {
-            mWelfare = mGson.fromJson(mCache.getAsString(GANK_WELFARE_JSON), GankWelfare
-                    .class).getResults();
-            mVideo = mGson.fromJson(mCache.getAsString(GANK_VIDEO_JSON), GankWelfare
-                    .class).getResults();
-            loadRecyclerView();
+//            取出缓存
+            List<GankWelfare.ResultsBean> welfare = mGson.fromJson(mCache.getAsString(GANK_WELFARE_JSON),
+                    GankWelfare
+                            .class).getResults();
+            List<GankWelfare.ResultsBean> video = mGson.fromJson(mCache.getAsString(GANK_VIDEO_JSON),
+                    GankWelfare
+                            .class).getResults();
+
+            for (int i = 0; i < welfare.size(); i++) {
+                dataMap.put(welfare.get(i), video.get(i));
+            }
+            mAdapter.addDataMap(dataMap);
         } else {
             if (isNetConnect()) {
-                loadLatestData();
+                loadDataFromNet(String.valueOf(page), true);
+            } else {
+                LazyUtil.showToast(mActivity, "网络没有连接哦");
             }
         }
     }
 
     @Override
-    public void loadLatestData() {
+    public void loadDataFromNet(final String url, final boolean isSaveCache) {
+        if (!isSaveCache) {
+            mContentSwipeRefreshLayout.setRefreshing(true);
+        }
         //        Gank 福利图片
-        mOkUtil.okHttpGankGson(API.GANK_WELFARE + page, new OkUtil
+        mOkUtil.okHttpGankGson(API.GANK_WELFARE + url, new OkUtil
                 .ResultCallback<GankWelfare>() {
             @Override
             public void onError(Call call, Exception e) {
@@ -86,17 +112,19 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
                         (GANK_WELFARE_JSON)) &&
                         response != null &&
                         !response.isError()) {
+                    if (isSaveCache) {
+                        mCache.put(GANK_WELFARE_JSON, json);
+                    }
                     mWelfare = response.getResults();
-                    mCache.put(GANK_WELFARE_JSON, json);
-                    loadVideo();
+                    loadGankVideo(url, isSaveCache);
                 }
             }
         });
     }
 
-    //        Gank 休息视频
-    private void loadVideo() {
-        mOkUtil.okHttpGankGson(API.GANK_VIDEO + page, new OkUtil.ResultCallback<GankWelfare>
+    private void loadGankVideo(String url, final boolean isSaveCache) {
+        //        Gank 休息视频
+        mOkUtil.okHttpGankGson(API.GANK_VIDEO + url, new OkUtil.ResultCallback<GankWelfare>
                 () {
             @Override
             public void onError(Call call, Exception e) {
@@ -109,23 +137,29 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
                         GANK_VIDEO_JSON, json) ||
                         mCache.isCacheEmpty
                                 (GANK_VIDEO_JSON))) {
-                    mVideo = response.getResults();
-                    mCache.put(GANK_VIDEO_JSON, json);
-                    loadRecyclerView();
+                    List<GankWelfare.ResultsBean> video = response.getResults();
+
+                    dataMap.clear();
+                    for (int i = 0; i < video.size(); i++) {
+                        dataMap.put(mWelfare.get(i), video.get(i));
+                    }
+                    mAdapter.addDataMap(dataMap);
+
+                    if (isSaveCache) {
+                        mCache.put(GANK_VIDEO_JSON, json);
+                    } else {
+                        mContentSwipeRefreshLayout.setRefreshing(false);
+                        mContentRecyclerView.setIsLoading(false);
+                    }
                 }
             }
         });
     }
 
-    //    初始化 RecyclerView
     @Override
-    public void loadRecyclerView() {
-        GankRecyclerAdapter mAdapter = new GankRecyclerAdapter(mContentRecyclerView
-                .getContext(),
-                mWelfare, mVideo);
-        mAdapter.setImageListener(this);
-        mAdapter.setTextListener(this);
-        mContentRecyclerView.setAdapter(mAdapter);
+    protected void initToolbar() {
+        ((MainActivity) mActivity).hideTabLayout(true);
+        ((MainActivity) mActivity).setToolbarTitle("妹纸");
     }
 
     public void setTextListener(GankRecyclerAdapter.TextViewListener textListener) {
@@ -134,14 +168,6 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
 
     public void setImageListener(GankRecyclerAdapter.ImageViewListener imageListener) {
         mImageListener = imageListener;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mContentSwipeRefreshLayout.isRefreshing()) {
-            mContentSwipeRefreshLayout.setRefreshing(false);
-        }
     }
 
     @Override
