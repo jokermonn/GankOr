@@ -1,7 +1,6 @@
 package com.joker.gankor.ui;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,17 +8,16 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.joker.gankor.R;
-import com.joker.gankor.ui.activity.MainActivity;
 import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.OkUtil;
+import com.joker.gankor.view.PullLoadRecyclerView;
 import com.joker.gankor.view.SpacesItemDecoration;
 
 /**
@@ -36,18 +34,18 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     protected OkUtil mOkUtil;
     protected CacheUtil mCache;
     protected Gson mGson;
-    protected RecyclerView mContentRecyclerView;
+    protected PullLoadRecyclerView mContentRecyclerView;
     protected SwipeRefreshLayout mContentSwipeRefreshLayout;
     protected Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 0x123:
-                    loadLatestData();
-                    break;
                 case 0x122:
                     LazyUtil.showToast(mActivity, "网络没有连接哦");
                     break;
+                case 0x121:
+//                    下拉刷新
+                    loadDataFromNet(getUrl(), true);
                 default:
                     break;
             }
@@ -59,7 +57,16 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         // Required empty public constructor
     }
 
-    protected abstract void loadLatestData();
+    protected abstract String getUrl();
+
+    /**
+     * 1. 缓存为空时第一次加载缓存 或者刷新
+     * 2. 上拉加载更多
+     *
+     * @param url         前者使用 getUrl() 后者需自己传入
+     * @param isSaveCache 前者为 true 后者 false
+     */
+    protected abstract void loadDataFromNet(String url, boolean isSaveCache);
 
     @Nullable
     @Override
@@ -69,27 +76,26 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         mActivity = (BaseActivity) getActivity();
 
         View view = inflater.inflate(R.layout.fragment_base, container, false);
-        mContentRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
+        mContentRecyclerView = (PullLoadRecyclerView) view.findViewById(R.id.rv_content);
         mContentSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
         SpacesItemDecoration decoration = new SpacesItemDecoration((int) (Math.random() * 5 + 15));
         mContentRecyclerView.addItemDecoration(decoration);
 
-        initRecyclerView(inflater, container, savedInstanceState);
+        initRecyclerView();
+        initRecyclerView(inflater, container);
         initToolbar();
         initSwipeRefreshLayout();
-
-//          对于第一个直接呈现在用户面前的 fragment， 我们需要直接加载数据
-        if (((MainActivity) mActivity).getItemId() == 0) {
-            initData();
-        }
 
         isViewCreated = true;
 
         return view;
     }
 
-    protected abstract void initRecyclerView(LayoutInflater inflater, ViewGroup container, Bundle
-            savedInstanceState);
+    protected void initRecyclerView(LayoutInflater inflater, ViewGroup container) {
+
+    }
+
+    protected abstract void initRecyclerView();
 
     protected void initSwipeRefreshLayout() {
         mContentSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android
@@ -99,8 +105,6 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     }
 
     protected abstract void initToolbar();
-
-    protected abstract void loadRecyclerView();
 
     @CallSuper
     protected void initData() {
@@ -121,6 +125,16 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         }
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        //          对于第一个直接呈现在用户面前的 fragment， 我们需要加载数据
+        if (getUserVisibleHint()) {
+            initData();
+        }
+    }
+
     public boolean isNetConnect() {
         return mActivity.isNetConnect();
     }
@@ -128,52 +142,19 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onRefresh() {
         if (mActivity.isNetConnect()) {
-            mHandler.sendEmptyMessage(0x123);
+            mHandler.sendEmptyMessage(0x121);
         } else {
             mHandler.sendEmptyMessage(0x122);
         }
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        LazyUtil.Log(getClass().getName() + "    onAttach");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        LazyUtil.Log(getClass().getName() + "   onStart");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        LazyUtil.Log(getClass().getName() + "   onPause");
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
-        LazyUtil.Log(getClass().getName() + "    onStop");
+        LazyUtil.log(getClass().getName(), "    onStop");
         OkUtil.getInstance().cancelAll(mOkUtil);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        LazyUtil.Log(getClass().getName() + "    onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LazyUtil.Log(getClass().getName() + "    onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        LazyUtil.Log(getClass().getName() + "    onDetach");
+        if (mContentSwipeRefreshLayout.isRefreshing()) {
+            mContentSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 }
