@@ -2,6 +2,8 @@ package com.joker.gankor.ui.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -16,7 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.joker.gankor.R;
 import com.joker.gankor.adapter.DailyNewsRecyclerAdapter;
@@ -30,6 +32,8 @@ import com.joker.gankor.ui.fragment.GankFragment;
 import com.joker.gankor.ui.fragment.ZhihuDailyNewsFragment;
 import com.joker.gankor.ui.fragment.ZhihuHotNewsFragment;
 import com.joker.gankor.utils.API;
+import com.joker.gankor.utils.CacheUtil;
+import com.joker.gankor.utils.ImageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,17 +43,21 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         ZhihuDailyNewsFragment.OnBannerClickListener, HotNewsRecyclerAdapter.OnItemClickListener {
 
     public MainAdapter mAdapter;
+    public GankFragment mGankFragment;
+    public ZhihuDailyNewsFragment mDailyNewsFragment;
+    public ZhihuHotNewsFragment mHotNewsFragment;
     private Toolbar mTitleToolbar;
     private TabLayout mTitleTabLayout;
     private NavigationView mContentNavigationView;
     private ViewPager mContentViewPager;
     private List<Fragment> mFragments;
+    private List<Fragment> mZhihuFragments = new ArrayList<>();
     private List<String> mTitles;
+    private List<String> mZhihuTitles = new ArrayList<>();
     private DrawerLayout mMainDrawerLayout;
     private AppBarLayout mTitleAppBarLayout;
     private long firstTime;
     private int mLastItemId;
-    private int itemId;
 
     @Override
     protected void initView() {
@@ -61,6 +69,19 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         mContentNavigationView = (NavigationView) findViewById(R.id.nv_content);
         mMainDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
 
+
+//        mContentNavigationView.setItemTextAppearance(R.style.DefultTheme);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mContentNavigationView.setItemTextColor(getApplicationContext().getColorStateList(R.color
+                    .nav_item));
+        }
+//        设置导航栏顶部图片
+        View view = mContentNavigationView.getHeaderView(0);
+        ImageView header = (ImageView) view.findViewById(R.id.nav_head);
+        ImageUtil.getInstance().displayImage(CacheUtil.getInstance(this).getAsString(SplashActivity.IMG),
+                header);
+
+//        设置 toolBar
         setSupportActionBar(mTitleToolbar);
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
@@ -71,14 +92,13 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         mMainDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        //        导航栏内容设置
-        setupDrawerContent();
+//        设置 viewPager
+        setupViewPager();
     }
 
     @Override
     protected void initData() {
-        changeFragments(R.id.nav_beauty);
-
+        setupDrawerContent();
         mContentNavigationView.setCheckedItem(0);
     }
 
@@ -89,10 +109,15 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 mMainDrawerLayout.closeDrawers();
-                if (item.getItemId() != mLastItemId) {
-                    item.setChecked(true);
-                    changeFragments(item.getItemId());
-                    mLastItemId = item.getItemId();
+                if (item.getItemId() == R.id.menu_introduce) {
+                    startActivity(new Intent(MainActivity.this, AboutMeActivity.class));
+                    item.setChecked(false);
+                } else {
+                    if (item.getItemId() != mLastItemId) {
+                        item.setChecked(true);
+                        changeFragments(item.getItemId());
+                        mLastItemId = item.getItemId();
+                    }
                 }
                 return true;
             }
@@ -100,51 +125,65 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     }
 
     public void changeFragments(int itemId) {
-        if (mFragments == null) {
-            mFragments = new ArrayList<Fragment>();
-            mTitles = new ArrayList<String>();
-        } else {
-            mFragments.clear();
-            mTitles.clear();
-        }
-
+        mFragments.clear();
+        mTitles.clear();
         switch (itemId) {
             case R.id.nav_knowledge:
 //                      知乎界面
-                ZhihuDailyNewsFragment dailyNewsFragment = new ZhihuDailyNewsFragment();
-                dailyNewsFragment.setOnItemClickListener(this);
-                dailyNewsFragment.setOnBannerClickListener(this);
-                ZhihuHotNewsFragment hotNewsFragment = new ZhihuHotNewsFragment();
-                hotNewsFragment.setOnItemClickListener(this);
-
-                mFragments.add(dailyNewsFragment);
-                mFragments.add(hotNewsFragment);
-                mTitles.add("知乎日報");
-                mTitles.add("熱門消息");
-
+                initZhihu();
                 break;
             case R.id.nav_beauty:
 //                      妹纸界面
-                GankFragment gankFragment = new GankFragment();
-                gankFragment.setImageListener(this);
-                gankFragment.setTextListener(this);
-
-                mFragments.add(gankFragment);
-                mTitles.add("妹纸");
-
+                initMeizhi();
                 break;
             default:
                 break;
         }
-        setupViewPager(mFragments, mTitles);
     }
 
-    private void setupViewPager(List<Fragment> fragments, List<String> titles) {
-        mAdapter = new MainAdapter(getSupportFragmentManager(), fragments, titles);
+    public void init() {
+        mFragments = new ArrayList<>();
+        mTitles = new ArrayList<>();
+        mGankFragment = new GankFragment();
+        mGankFragment.setImageListener(this);
+        mGankFragment.setTextListener(this);
+
+        mFragments.add(mGankFragment);
+        mTitles.add("妹纸");
+    }
+
+    private void initMeizhi() {
+        mGankFragment = new GankFragment();
+        mGankFragment.setImageListener(this);
+        mGankFragment.setTextListener(this);
+        mFragments.add(mGankFragment);
+        mTitles.add("妹纸");
+
+        mAdapter.changeDataList(mTitles, mFragments);
+    }
+
+    public void initZhihu() {
+        mDailyNewsFragment = new ZhihuDailyNewsFragment();
+        mDailyNewsFragment.setOnItemClickListener(this);
+        mDailyNewsFragment.setOnBannerClickListener(this);
+        mHotNewsFragment = new ZhihuHotNewsFragment();
+        mHotNewsFragment.setOnItemClickListener(this);
+
+        mFragments.add(mDailyNewsFragment);
+        mTitles.add("知乎日報");
+
+        mFragments.add(mHotNewsFragment);
+        mTitles.add("熱門消息");
+
+        mAdapter.changeDataList(mTitles, mFragments);
+    }
+
+    private void setupViewPager() {
+        init();
+        mAdapter = new MainAdapter(getSupportFragmentManager(), mFragments, mTitles);
         mContentViewPager.setAdapter(mAdapter);
         mTitleTabLayout.setSelectedTabIndicatorColor(Color.WHITE);
         mTitleTabLayout.setupWithViewPager(mContentViewPager);
-        mContentViewPager.setCurrentItem(0);
     }
 
     public void hideTabLayout(boolean hide) {
@@ -155,29 +194,30 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         }
     }
 
+    /*
     public void setToolbarScroll(boolean scroll) {
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mTitleAppBarLayout.getChildAt
+        AppBarLayout.LayoutParams paramsTool = (AppBarLayout.LayoutParams) mTitleAppBarLayout.getChildAt
                 (0).getLayoutParams();
+        AppBarLayout.LayoutParams paramsTab = (AppBarLayout.LayoutParams) mTitleAppBarLayout.getChildAt
+                (1).getLayoutParams();
         if (scroll) {
-//            上滑隐藏，下滑立即可见
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
+//            toolBar上滑隐藏，下滑立即可见
+            paramsTool.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
                     .LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
         } else {
-//            上滑隐藏，下滑以 minHeight 高度可见
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
+//            toolBar上滑隐藏，下滑不可见
+            paramsTool.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL);
+            paramsTab.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
                     .LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams
-                    .SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED);
+                    .SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
         }
-        mTitleAppBarLayout.getChildAt(0).setLayoutParams(params);
+        mTitleAppBarLayout.getChildAt(0).setLayoutParams(paramsTool);
+        mTitleAppBarLayout.getChildAt(1).setLayoutParams(paramsTab);
     }
+    */
 
     public void setToolbarTitle(String title) {
         mTitleToolbar.setTitle(title);
-    }
-
-//    获取此 fragment 是 viewPager 的第几个页面
-    public int getItemId() {
-        return itemId < mFragments.size() ? itemId++ : 0;
     }
 
     @Override
@@ -189,7 +229,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         long secondTime = System.currentTimeMillis();
         if (secondTime - firstTime > 2000) {
             Snackbar sb = Snackbar.make(mContentNavigationView, "再按一次退出", Snackbar.LENGTH_SHORT);
-            sb.getView().setBackgroundColor(getResources().getColor(R.color.accent));
+            sb.getView().setBackgroundColor(getResources().getColor(R.color.red_300));
             sb.show();
             firstTime = secondTime;
         } else {
@@ -200,37 +240,27 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     //    知乎日报列表点击事件
     @Override
     public void onZhihuItemClick(ZhihuDailyNews.StoriesBean storiesBean) {
-        startActivity(ZhihhuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_FOUR + String.valueOf
+        startActivity(ZhihuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_FOUR + String.valueOf
                 (storiesBean.getId()))));
     }
 
     //    知乎日报头条点击事件
     @Override
     public void onBannerClickListener(ZhihuDailyNews.TopStoriesBean topStories) {
-        startActivity(ZhihhuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_FOUR + String.valueOf
+        startActivity(ZhihuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_FOUR + String.valueOf
                 (topStories.getId()))));
     }
 
     //    知乎日报热门列表点击事件
     @Override
     public void onZhihuItemClick(ZhihuHotNews.RecentBean recentBean) {
-        startActivity(ZhihhuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_TWO + String.valueOf
+        startActivity(ZhihuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_TWO + String.valueOf
                 (recentBean.getNewsId()))));
     }
 
     //    Gank 图片点击
     @Override
     public void onGankImageClick(View image, String url, String desc) {
-        clickWelfare(image, url, desc);
-    }
-
-    //    Gank 文字点击
-    @Override
-    public void onGankTextClick(String url) {
-        clickVideo(url);
-    }
-
-    private void clickWelfare(View image, String url, String desc) {
         Intent intent = PictureActivity.newIntent(MainActivity.this, url, desc);
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 MainActivity.this, image, PictureActivity.TRANSIT_PIC);
@@ -242,7 +272,9 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         }
     }
 
-    private void clickVideo(String url) {
-        Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
+    //    Gank 文字点击
+    @Override
+    public void onGankTextClick(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 }
