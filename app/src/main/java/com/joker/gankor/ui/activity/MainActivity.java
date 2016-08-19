@@ -3,8 +3,7 @@ package com.joker.gankor.ui.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
-import android.support.design.widget.AppBarLayout;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -51,30 +50,20 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     private NavigationView mContentNavigationView;
     private ViewPager mContentViewPager;
     private List<Fragment> mFragments;
-    private List<Fragment> mZhihuFragments = new ArrayList<>();
     private List<String> mTitles;
-    private List<String> mZhihuTitles = new ArrayList<>();
     private DrawerLayout mMainDrawerLayout;
-    private AppBarLayout mTitleAppBarLayout;
     private long firstTime;
     private int mLastItemId;
 
     @Override
-    protected void initView() {
+    protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
-        mTitleAppBarLayout = (AppBarLayout) findViewById(R.id.abl_title);
         mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
         mTitleTabLayout = (TabLayout) findViewById(R.id.tl_title);
         mContentViewPager = (ViewPager) findViewById(R.id.vp_content);
         mContentNavigationView = (NavigationView) findViewById(R.id.nv_content);
         mMainDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
 
-
-//        mContentNavigationView.setItemTextAppearance(R.style.DefultTheme);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mContentNavigationView.setItemTextColor(getApplicationContext().getColorStateList(R.color
-                    .nav_item));
-        }
 //        设置导航栏顶部图片
         View view = mContentNavigationView.getHeaderView(0);
         ImageView header = (ImageView) view.findViewById(R.id.nav_head);
@@ -239,23 +228,27 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     //    知乎日报列表点击事件
     @Override
-    public void onZhihuItemClick(ZhihuDailyNews.StoriesBean storiesBean) {
+    public void onZhihuItemClick(View view, ZhihuDailyNews.StoriesBean storiesBean) {
+        int[] clickLocation = getClickLocation(view);
         startActivity(ZhihuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_FOUR + String.valueOf
-                (storiesBean.getId()))));
+                (storiesBean.getId())), clickLocation));
+        this.overridePendingTransition(0, 0);
     }
 
     //    知乎日报头条点击事件
     @Override
     public void onBannerClickListener(ZhihuDailyNews.TopStoriesBean topStories) {
         startActivity(ZhihuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_FOUR + String.valueOf
-                (topStories.getId()))));
+                (topStories.getId())), null));
     }
 
     //    知乎日报热门列表点击事件
     @Override
-    public void onZhihuItemClick(ZhihuHotNews.RecentBean recentBean) {
+    public void onZhihuItemClick(View view, ZhihuHotNews.RecentBean recentBean) {
+        int[] clickLocation = getClickLocation(view);
         startActivity(ZhihuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_TWO + String.valueOf
-                (recentBean.getNewsId()))));
+                (recentBean.getNewsId())), clickLocation));
+        this.overridePendingTransition(0, 0);
     }
 
     //    Gank 图片点击
@@ -276,5 +269,13 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     @Override
     public void onGankTextClick(String url) {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+    }
+
+    private int[] getClickLocation(View v) {
+        int[] clickLocation = new int[2];
+        v.getLocationOnScreen(clickLocation);
+        clickLocation[0] += v.getWidth() / 2;
+
+        return clickLocation;
     }
 }

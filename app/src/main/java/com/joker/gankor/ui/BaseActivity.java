@@ -13,7 +13,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setActivityState(this);
 
-        initView();
+        initView(savedInstanceState);
         initData();
     }
 
@@ -24,7 +24,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void initData() {}
 
-    protected abstract void initView();
+    protected abstract void initView(Bundle savedInstanceState);
 
     public boolean isNetConnect() {
         return NetUtil.isNetConnect(this);

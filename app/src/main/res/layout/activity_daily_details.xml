@@ -7,19 +7,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.ZhihuDetailsActivity">
 
+    <com.joker.gankor.view.RevealBackgroundView
+        android:id="@+id/rbv_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/abl_title"
+        android:id="@+id/abl_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/detail_backdrop_height"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:visibility="invisible">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/ctl_title"
-            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Display1"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Body1"
-            app:contentScrim="@color/red_300"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:contentScrim="@color/red_300"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Display1"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <ImageView
@@ -40,16 +46,18 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="invisible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <WebView
-            android:fitsSystemWindows="true"
-            android:layout_margin="10dp"
-            android:layout_marginTop="20dp"
             android:id="@+id/wb_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            android:fitsSystemWindows="true"/>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

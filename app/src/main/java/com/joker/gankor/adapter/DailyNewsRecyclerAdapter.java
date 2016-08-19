@@ -51,7 +51,7 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onZhihuItemClick(mBean.get(newPosition));
+                    mListener.onZhihuItemClick(v, mBean.get(newPosition));
                 }
             }
         });
@@ -88,7 +88,7 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
     }
 
     public interface OnItemClickListener {
-        void onZhihuItemClick(ZhihuDailyNews.StoriesBean bean);
+        void onZhihuItemClick(View view, ZhihuDailyNews.StoriesBean bean);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

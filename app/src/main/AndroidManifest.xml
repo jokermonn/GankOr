@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.joker.gankor"
           xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools">
+    >
 
     <!-- 网络权限 -->
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -32,7 +32,9 @@
             android:name=".ui.activity.PictureActivity"
             android:theme="@style/DefultTheme">
         </activity>
-        <activity android:name=".ui.activity.ZhihuDetailsActivity">
+        <activity
+            android:name=".ui.activity.ZhihuDetailsActivity"
+            android:theme="@style/Transparent">
         </activity>
     </application>
 

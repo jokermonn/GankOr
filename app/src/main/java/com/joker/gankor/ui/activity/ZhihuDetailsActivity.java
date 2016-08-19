@@ -4,9 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -18,22 +22,30 @@ import com.joker.gankor.ui.BaseActivity;
 import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.ImageUtil;
 import com.joker.gankor.utils.OkUtil;
+import com.joker.gankor.view.RevealBackgroundView;
 
 import okhttp3.Call;
 
-public class ZhihuDetailsActivity extends BaseActivity {
+public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgroundView
+        .OnStateChangeListener {
     public static final String URL = "url";
+    public static final String LOCATION = "location";
     public ZhihuDetails mTopDetails;
+    public int[] mLocation;
     private String url;
     private CacheUtil mCache;
     private ImageView mTitleImageView;
     private CollapsingToolbarLayout mTitleCollapsingToolbarLayout;
     private WebView mContentWebView;
+    public RevealBackgroundView mContentRevealBackgroundView;
+    private NestedScrollView mContentNestedScrollView;
     private Toolbar mTitleToolbar;
+    private AppBarLayout mContentAppBarLayout;
 
-    public static Intent newTopStoriesIntent(Activity activity, String url) {
+    public static Intent newTopStoriesIntent(Activity activity, String url, int[] locationArr) {
         Bundle bundle = new Bundle();
         bundle.putString(URL, url);
+        bundle.putIntArray(LOCATION, locationArr);
         Intent intent = new Intent(activity, ZhihuDetailsActivity.class);
         intent.putExtras(bundle);
 
@@ -42,11 +54,14 @@ public class ZhihuDetailsActivity extends BaseActivity {
 
     @Override
     @SuppressLint("SetJavaScriptEnabled")
-    protected void initView() {
+    protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_daily_details);
+        mContentRevealBackgroundView = (RevealBackgroundView) findViewById(R.id.rbv_content);
         mTitleImageView = (ImageView) findViewById(R.id.iv_title);
         mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
         mTitleCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.ctl_title);
+        mContentAppBarLayout = (AppBarLayout) findViewById(R.id.abl_content);
+        mContentNestedScrollView = (NestedScrollView) findViewById(R.id.nsv_content);
         mContentWebView = (WebView) findViewById(R.id.wb_content);
         setSupportActionBar(mTitleToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -62,12 +77,29 @@ public class ZhihuDetailsActivity extends BaseActivity {
         settings.setDatabaseEnabled(true);
         settings.setLoadWithOverviewMode(true);
         settings.setSupportZoom(true);
+
+        parseIntent();
+
+        mContentRevealBackgroundView.setOnStateChangeListener(this);
+        if (mLocation == null || savedInstanceState != null) {
+            mContentRevealBackgroundView.setToFinishedFrame();
+        } else {
+            final int[] startingLocation = getIntent().getIntArrayExtra(LOCATION);
+            mContentRevealBackgroundView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
+                    .OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    mContentRevealBackgroundView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    mContentRevealBackgroundView.startFromLocation(startingLocation);
+                    return true;
+                }
+            });
+        }
     }
 
     @Override
     protected void initData() {
         mCache = CacheUtil.getInstance(this);
-        parseIntent();
         loadContent();
     }
 
@@ -75,6 +107,7 @@ public class ZhihuDetailsActivity extends BaseActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         url = bundle.getString(URL);
+        mLocation = bundle.getIntArray(LOCATION);
     }
 
     private void loadContent() {
@@ -159,6 +192,14 @@ public class ZhihuDetailsActivity extends BaseActivity {
         super.onResume();
         if (mContentWebView != null) {
             mContentWebView.onResume();
+        }
+    }
+
+    @Override
+    public void onStateChange(int state) {
+        if (RevealBackgroundView.STATE_FINISHED == state) {
+            mContentNestedScrollView.setVisibility(View.VISIBLE);
+            mContentAppBarLayout.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -41,7 +41,7 @@ public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecycler
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onZhihuItemClick(mBean.get(position));
+                    mListener.onZhihuItemClick(v, mBean.get(position));
                 }
             }
         });
@@ -62,7 +62,7 @@ public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecycler
     }
 
     public interface OnItemClickListener {
-        void onZhihuItemClick(ZhihuHotNews.RecentBean bean);
+        void onZhihuItemClick(View view, ZhihuHotNews.RecentBean bean);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

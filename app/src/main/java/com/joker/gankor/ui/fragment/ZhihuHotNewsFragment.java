@@ -4,6 +4,7 @@ package com.joker.gankor.ui.fragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
 
 import com.joker.gankor.adapter.HotNewsRecyclerAdapter;
 import com.joker.gankor.model.ZhihuHotNews;
@@ -88,9 +89,9 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
     }
 
     @Override
-    public void onZhihuItemClick(ZhihuHotNews.RecentBean bean) {
+    public void onZhihuItemClick(View view, ZhihuHotNews.RecentBean bean) {
         if (mItemListener != null) {
-            mItemListener.onZhihuItemClick(bean);
+            mItemListener.onZhihuItemClick(view, bean);
         }
     }
 

@@ -196,9 +196,9 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
     }
 
     @Override
-    public void onZhihuItemClick(ZhihuDailyNews.StoriesBean bean) {
+    public void onZhihuItemClick(View view, ZhihuDailyNews.StoriesBean bean) {
         if (mItemListener != null) {
-            mItemListener.onZhihuItemClick(bean);
+            mItemListener.onZhihuItemClick(view, bean);
         }
     }
 

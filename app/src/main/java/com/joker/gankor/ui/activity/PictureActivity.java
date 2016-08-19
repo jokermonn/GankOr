@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
@@ -41,7 +42,7 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    protected void initView() {
+    protected void initView(Bundle savedInstanceState) {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_picture);
         mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
