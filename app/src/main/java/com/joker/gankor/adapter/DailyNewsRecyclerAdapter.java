@@ -74,6 +74,11 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
         return mHeaderView == null ? position : position - 1;
     }
 
+    public void addListData(List<ZhihuDailyNews.StoriesBean> bean) {
+        mBean.addAll(bean);
+        notifyDataSetChanged();
+    }
+
     public void setHeaderView(View headerView) {
         mHeaderView = headerView;
     }

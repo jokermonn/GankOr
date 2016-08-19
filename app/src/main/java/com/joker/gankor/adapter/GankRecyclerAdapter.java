@@ -12,7 +12,10 @@ import com.joker.gankor.model.GankWelfare;
 import com.joker.gankor.utils.ImageUtil;
 import com.joker.gankor.view.RatioImageView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by joker on 2016/8/5.
@@ -24,10 +27,11 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
     private TextViewListener mTextListener;
     private ImageViewListener mImageListener;
 
-    public GankRecyclerAdapter(Context context, List<GankWelfare.ResultsBean> welfare,
-                               List<GankWelfare.ResultsBean> video) {
-        mWelfare = welfare;
-        mVideo = video;
+    public GankRecyclerAdapter(Context context, HashMap<GankWelfare
+                .ResultsBean, GankWelfare.ResultsBean> map) {
+        mWelfare = new ArrayList<GankWelfare.ResultsBean>();
+        mVideo = new ArrayList<GankWelfare.ResultsBean>();
+        getMapKV(map);
         mInflater = LayoutInflater.from(context);
     }
 
@@ -39,9 +43,9 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        ImageUtil.getInstance().displayImageOnLoading(mWelfare.get(position).getUrl(), holder.imageView);
+        ImageUtil.getInstance().displayImageOnLoading(mWelfare.get(position).getUrl(), holder
+                .imageView);
         holder.textView.setText(mVideo.get(position).getDesc());
-//        mRecyclerView.findViewWithTag(mWelfare.get(position).getUrl());
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +68,7 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        return mWelfare.size();
+        return mVideo.size();
     }
 
     public void setTextListener(TextViewListener listener) {
@@ -73,6 +77,18 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
 
     public void setImageListener(ImageViewListener listener) {
         this.mImageListener = listener;
+    }
+
+    public void addDataMap(HashMap<GankWelfare.ResultsBean, GankWelfare.ResultsBean> dataMap) {
+        getMapKV(dataMap);
+        notifyDataSetChanged();
+    }
+
+    private void getMapKV(HashMap<GankWelfare.ResultsBean, GankWelfare.ResultsBean> map) {
+        for (Map.Entry entry : map.entrySet()) {
+            mWelfare.add((GankWelfare.ResultsBean) entry.getKey());
+            mVideo.add((GankWelfare.ResultsBean) entry.getValue());
+        }
     }
 
     public interface TextViewListener {

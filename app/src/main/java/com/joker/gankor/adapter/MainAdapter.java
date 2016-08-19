@@ -33,4 +33,16 @@ public class MainAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         return mTitles.get(position);
     }
+
+    public void changeDataList(List<String> titles, List<Fragment> fragments) {
+        mTitles = titles;
+        mFragments = fragments;
+        this.notifyDataSetChanged();
+    }
+
+    //??? 配合 notifyDataSetChanged 使用 可以更新 adapter
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
 }

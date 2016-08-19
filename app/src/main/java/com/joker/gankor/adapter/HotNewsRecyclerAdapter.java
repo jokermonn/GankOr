@@ -52,6 +52,11 @@ public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecycler
         return mBean.size();
     }
 
+    public void addListData(List<ZhihuHotNews.RecentBean> bean) {
+        mBean.addAll(bean);
+        notifyDataSetChanged();
+    }
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
     }
@@ -59,6 +64,7 @@ public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecycler
     public interface OnItemClickListener {
         void onZhihuItemClick(ZhihuHotNews.RecentBean bean);
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
         ImageView mImageView;
