@@ -92,7 +92,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
                 .setPageIndicator(new int[]{R.drawable.indicator_gray, R.drawable.indicator_red})
                 .setOnItemClickListener(this);
 //        设置 banner 滑动速度
-        mShowConvenientBanner.setScrollDuration(1200);
+        mShowConvenientBanner.setScrollDuration(1500);
     }
 
     @Override
