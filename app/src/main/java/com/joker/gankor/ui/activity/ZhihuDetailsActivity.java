@@ -3,13 +3,10 @@ package com.joker.gankor.ui.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -24,42 +21,52 @@ import com.joker.gankor.utils.OkUtil;
 
 import okhttp3.Call;
 
-public class ZhihhuDetailsActivity extends BaseActivity implements View.OnClickListener {
+public class ZhihuDetailsActivity extends BaseActivity {
     public static final String URL = "url";
     public ZhihuDetails mTopDetails;
     private String url;
     private CacheUtil mCache;
     private ImageView mTitleImageView;
-    private AppBarLayout mTitleAppBarLayout;
-    private NestedScrollView mContentNestedScrollView;
     private CollapsingToolbarLayout mTitleCollapsingToolbarLayout;
     private WebView mContentWebView;
     private Toolbar mTitleToolbar;
-    private String zhihuUrl;
 
     public static Intent newTopStoriesIntent(Activity activity, String url) {
         Bundle bundle = new Bundle();
         bundle.putString(URL, url);
-        Intent intent = new Intent(activity, ZhihhuDetailsActivity.class);
+        Intent intent = new Intent(activity, ZhihuDetailsActivity.class);
         intent.putExtras(bundle);
 
         return intent;
     }
 
     @Override
+    @SuppressLint("SetJavaScriptEnabled")
     protected void initView() {
         setContentView(R.layout.activity_daily_details);
         mTitleImageView = (ImageView) findViewById(R.id.iv_title);
         mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
         mTitleCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.ctl_title);
-        mTitleAppBarLayout = (AppBarLayout) findViewById(R.id.abl_title);
         mContentWebView = (WebView) findViewById(R.id.wb_content);
-        mContentNestedScrollView = (NestedScrollView) findViewById(R.id.nsc_content);
-        mTitleToolbar.setNavigationOnClickListener(this);
+        setSupportActionBar(mTitleToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        WebSettings settings = mContentWebView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        //        加载缓存，如果不存在就加载网络数据
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        //        app cache
+        settings.setAppCacheEnabled(true);
+        //        dom storage
+        settings.setDomStorageEnabled(true);
+//        database cache
+        settings.setDatabaseEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setSupportZoom(true);
     }
 
     @Override
     protected void initData() {
+        mCache = CacheUtil.getInstance(this);
         parseIntent();
         loadContent();
     }
@@ -71,10 +78,9 @@ public class ZhihhuDetailsActivity extends BaseActivity implements View.OnClickL
     }
 
     private void loadContent() {
-        mCache = CacheUtil.getInstance(this);
         Gson mGson = new Gson();
-        if (!mCache.isCacheEmpty(URL)) {
-            mTopDetails = mGson.fromJson(mCache.getAsString(URL), ZhihuDetails.class);
+        if (!mCache.isCacheEmpty(url)) {
+            mTopDetails = mGson.fromJson(mCache.getAsString(url), ZhihuDetails.class);
             initAppBarLayout();
             loadWebView();
         } else {
@@ -94,8 +100,10 @@ public class ZhihhuDetailsActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onResponse(ZhihuDetails response, String json) {
-                if (response != null && (mCache.isCacheEmpty(URL) || mCache.isNewResponse(URL, json))) {
+                if (response != null && (mCache.isCacheEmpty(url) || mCache.isNewResponse
+                        (url, json))) {
                     mTopDetails = response;
+                    mCache.put(url, json);
                     initAppBarLayout();
                     loadWebView();
                 }
@@ -108,39 +116,49 @@ public class ZhihhuDetailsActivity extends BaseActivity implements View.OnClickL
         mTitleCollapsingToolbarLayout.setTitle(mTopDetails.getTitle());
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     private void loadWebView() {
-        WebSettings settings = mContentWebView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        //        加载缓存，如果不存在就加载网络数据
-        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        //        app cache
-        settings.setAppCacheEnabled(true);
-        //        dom storage
-        settings.setDomStorageEnabled(true);
-        settings.setLoadWithOverviewMode(true);
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        settings.setSupportZoom(true);
         String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/css/news\" " +
                 "type=\"text/css\">";
         String html = "<html><head>" + css + "</head><body>" + mTopDetails.getBody() + "</body></html>";
         html = html.replace("<div class=\"img-place-holder\">", "");
-        //        获取到原文超链接
-        zhihuUrl = mTopDetails.getBody().substring(mTopDetails.getBody().indexOf("<a href=") + 9, mTopDetails.getBody().indexOf("\">查看知乎讨论"));
         mContentWebView.loadDataWithBaseURL("x-data://base", html, "text/html", "UTF-8", null);
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
-                break;
-            case R.id.fab_show:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(zhihuUrl)));
-                break;
+                finish();
+                return true;
             default:
                 break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mContentWebView != null) {
+            mContentWebView.destroy();
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        if (mContentWebView != null) {
+            mContentWebView.onPause();
+        }
+        super.onPause();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mContentWebView != null) {
+            mContentWebView.onResume();
         }
     }
 }
