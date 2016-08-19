@@ -16,6 +16,7 @@
     <color name="darker_gray">#aaa</color>
     <color name="pink">#F06292</color>
 
+    <color name="black">#000</color>
     <color name="primary">#F44336</color>
     <color name="primary_dark">#D32F2F</color>
     <color name="primary_light">#FFCDD2</color>

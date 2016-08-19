@@ -32,7 +32,7 @@
             android:name=".ui.activity.PictureActivity"
             android:theme="@style/DefultTheme">
         </activity>
-        <activity android:name=".ui.activity.ZhihhuDetailsActivity">
+        <activity android:name=".ui.activity.ZhihuDetailsActivity">
         </activity>
     </application>
 

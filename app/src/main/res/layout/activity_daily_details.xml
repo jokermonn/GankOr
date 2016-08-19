@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.ZhihhuDetailsActivity">
+    tools:context=".ui.activity.ZhihuDetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/abl_title"
@@ -17,9 +17,10 @@
             android:id="@+id/ctl_title"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Display1"
             app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:contentScrim="@color/red_300"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <ImageView
                 android:id="@+id/iv_title"

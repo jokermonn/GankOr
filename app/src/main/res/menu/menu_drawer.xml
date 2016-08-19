@@ -16,12 +16,10 @@
 
     <item android:title="@string/secret">
         <menu>
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/menu_introduce"
-                    android:icon="@drawable/about_me"
-                    android:title="@string/about_me"/>
-            </group>
+            <item
+                android:id="@+id/menu_introduce"
+                android:icon="@drawable/about_me"
+                android:title="@string/about_me"/>
         </menu>
     </item>
 </menu>
