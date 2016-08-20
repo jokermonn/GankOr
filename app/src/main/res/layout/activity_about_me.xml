@@ -7,11 +7,97 @@
     android:orientation="vertical"
     tools:context="com.joker.gankor.ui.activity.AboutMeActivity">
 
-    <TextView
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_title"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/ib_show"
-        android:text="joker"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/bdbdbd"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fragment_background"
+        android:gravity="center_vertical">
+
+        <include
+            android:id="@+id/tvr_name"
+            layout="@layout/talk_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tb_title"
+            android:layout_gravity="center_horizontal"/>
+
+        <include
+            android:id="@+id/tvl_name"
+            layout="@layout/talk_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tvr_name"
+            android:layout_marginTop="10dp"/>
+
+        <include
+            android:id="@+id/tvr_intr"
+            layout="@layout/talk_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tvl_name"
+            android:layout_marginTop="10dp"/>
+
+        <include
+            android:id="@+id/tvl_intr"
+            layout="@layout/talk_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tvr_intr"
+            android:layout_marginTop="10dp"/>
+
+
+        <include
+            android:id="@+id/tvr_github"
+            layout="@layout/talk_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tvl_intr"
+            android:layout_marginTop="10dp"/>
+
+        <include
+            android:id="@+id/tvl_github"
+            layout="@layout/talk_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tvr_github"
+            android:layout_marginTop="10dp"/>
+
+        <include
+            android:id="@+id/tvr_qq"
+            layout="@layout/talk_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tvl_github"
+            android:layout_marginTop="10dp"/>
+
+        <include
+            android:id="@+id/tvl_qq"
+            layout="@layout/talk_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tvr_qq"
+            android:layout_marginTop="10dp"/>
+    </RelativeLayout>
 </LinearLayout>
