@@ -159,10 +159,10 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         mHotNewsFragment.setOnItemClickListener(this);
 
         mFragments.add(mDailyNewsFragment);
-        mTitles.add("知乎日報");
+        mTitles.add("知乎日报");
 
         mFragments.add(mHotNewsFragment);
-        mTitles.add("熱門消息");
+        mTitles.add("热门消息");
 
         mAdapter.changeDataList(mTitles, mFragments);
     }
