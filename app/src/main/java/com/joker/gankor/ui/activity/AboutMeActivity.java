@@ -134,7 +134,7 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                break;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
