@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
  */
 public class NetUtil {
     public static boolean isNetConnect(@NonNull Context context) {
-        ConnectivityManager service = (ConnectivityManager) context.getSystemService(Context
+        ConnectivityManager service = (ConnectivityManager) context.getApplicationContext().getSystemService(Context
                 .CONNECTIVITY_SERVICE);
         NetworkInfo info = service.getActiveNetworkInfo();
 
