@@ -79,6 +79,10 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
         notifyDataSetChanged();
     }
 
+    public void clearList() {
+        mBean.clear();
+    }
+
     public void setHeaderView(View headerView) {
         mHeaderView = headerView;
     }

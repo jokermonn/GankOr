@@ -56,8 +56,9 @@ public class CacheUtil {
     }
 
     public boolean isNewResponse(String key, String newJson) {
-        return !TextUtils.isEmpty(mCache.getAsString(key)) &&
-                !mCache.getAsString(key).equals(json2String(newJson));
+        return (!TextUtils.isEmpty(mCache.getAsString(key)) &&
+                !mCache.getAsString(key).equals(json2String(newJson))) || TextUtils.isEmpty(mCache
+                .getAsString(key));
     }
 
     public String getAsString(String key) {

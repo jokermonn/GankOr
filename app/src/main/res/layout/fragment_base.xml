@@ -6,10 +6,10 @@
     android:layout_height="wrap_content"
     tools:context="com.joker.gankor.ui.BaseFragment">
 
-        <com.joker.gankor.view.PullLoadRecyclerView
-            android:id="@+id/rv_content"
-            android:background="@color/fragment_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <com.joker.gankor.view.PullLoadRecyclerView
+        android:id="@+id/rv_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fragment_background"/>
 
 </android.support.v4.widget.SwipeRefreshLayout>

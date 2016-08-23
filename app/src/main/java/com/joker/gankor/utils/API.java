@@ -9,6 +9,7 @@ public class API {
     public static final String GANK_BASIC_URL = "http://gank.io/api/data/";
     public static final String GANK_WELFARE = "福利/15/";
     public static final String GANK_VIDEO = "休息视频/15/";
+    public static final int GANK_FIRST_PAGE = 1;
 
     //    知乎 API
     public static final String ZHIHU_BASIC_URL = "http://news-at.zhihu.com/api/";

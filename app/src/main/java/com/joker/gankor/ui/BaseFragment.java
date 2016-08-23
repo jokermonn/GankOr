@@ -45,11 +45,10 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
                     break;
                 case 0x121:
 //                    下拉刷新
-                    loadDataFromNet(getUrl(), true);
+                    loadDataFromNet(getUrl());
                 default:
                     break;
             }
-            mContentSwipeRefreshLayout.setRefreshing(false);
         }
     };
 
@@ -59,14 +58,17 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
 
     protected abstract String getUrl();
 
+    protected boolean isFirstPage(String url) {
+        return getUrl().equals(url);
+    }
+
     /**
      * 1. 缓存为空时第一次加载缓存 或者刷新
      * 2. 上拉加载更多
      *
-     * @param url         前者使用 getUrl() 后者需自己传入
-     * @param isSaveCache 前者为 true 后者 false
+     * @param url 前者使用 getUrl() 后者需自己传入 是固定值
      */
-    protected abstract void loadDataFromNet(String url, boolean isSaveCache);
+    protected abstract void loadDataFromNet(String url);
 
     @Nullable
     @Override
@@ -83,7 +85,6 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
 
         initRecyclerView();
         initRecyclerView(inflater, container);
-        initToolbar();
         initSwipeRefreshLayout();
 
         isViewCreated = true;
@@ -92,7 +93,6 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
     }
 
     protected void initRecyclerView(LayoutInflater inflater, ViewGroup container) {
-
     }
 
     protected abstract void initRecyclerView();
@@ -156,5 +156,13 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
         if (mContentSwipeRefreshLayout.isRefreshing()) {
             mContentSwipeRefreshLayout.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LazyUtil.log(getClass().getName() + "    onDestroy");
+//        RefWatcher refWatcher = GankOrApplication.getRefWatcher(mActivity);
+//        refWatcher.watch(this);
     }
 }

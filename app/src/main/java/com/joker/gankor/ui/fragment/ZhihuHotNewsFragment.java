@@ -25,7 +25,6 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
         HotNewsRecyclerAdapter.OnItemClickListener {
     public final static String HOT_NEWS_JSON = "hot_news_json";
     public HotNewsRecyclerAdapter mAdapter;
-    private List<ZhihuHotNews.RecentBean> mRecent;
     private HotNewsRecyclerAdapter.OnItemClickListener mItemListener;
 
     public ZhihuHotNewsFragment() {
@@ -39,7 +38,7 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
 
     @Override
     protected void initRecyclerView() {
-        mRecent = new ArrayList<ZhihuHotNews.RecentBean>();
+        List<ZhihuHotNews.RecentBean> mRecent = new ArrayList<ZhihuHotNews.RecentBean>();
         mContentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         mAdapter = new HotNewsRecyclerAdapter(mActivity, mRecent);
         mAdapter.setOnItemClickListener(this);
@@ -59,7 +58,7 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
                     .class).getRecent());
         } else {
             if (isNetConnect()) {
-                loadDataFromNet("", true);
+                loadDataFromNet("");
             } else {
                 LazyUtil.showToast(mActivity, "网络没有连接哦");
             }
@@ -67,7 +66,7 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
     }
 
     @Override
-    public void loadDataFromNet(String url, boolean isSaveCache) {
+    public void loadDataFromNet(String url) {
         //        获取知乎热门消息
         mOkUtil.okHttpZhihuGson(API.ZHIHU_HOT_NEWS, new OkUtil.ResultCallback<ZhihuHotNews>() {
                     @Override
@@ -77,12 +76,11 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
 
                     @Override
                     public void onResponse(ZhihuHotNews response, String json) {
-                        if (response != null && (mCache.isNewResponse(HOT_NEWS_JSON, json) || mCache
-                                .isCacheEmpty
-                                        (HOT_NEWS_JSON))) {
+                        if (response != null) {
                             mCache.put(HOT_NEWS_JSON, json);
                             mAdapter.addListData(response.getRecent());
                         }
+                        mContentSwipeRefreshLayout.setRefreshing(false);
                     }
                 }
         );

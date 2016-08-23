@@ -34,7 +34,7 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
     private HashMap<GankWelfare.ResultsBean, GankWelfare.ResultsBean> dataMap;
     private GankRecyclerAdapter.TextViewListener mTextListener;
     private GankRecyclerAdapter.ImageViewListener mImageListener;
-    private int page = 1;
+    private int page = API.GANK_FIRST_PAGE;
 
     public GankFragment() {
         // Required empty public constructor
@@ -42,7 +42,11 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
 
     @Override
     protected String getUrl() {
-        return String.valueOf(page);
+        return String.valueOf(API.GANK_FIRST_PAGE);
+    }
+
+    public void initUrl() {
+        page = API.GANK_FIRST_PAGE;
     }
 
     @Override
@@ -60,7 +64,8 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
         mContentRecyclerView.setPullLoadListener(new PullLoadRecyclerView.onPullLoadListener() {
             @Override
             public void onPullLoad() {
-                loadDataFromNet(String.valueOf(++page), false);
+//                上拉加载
+                loadDataFromNet(String.valueOf(++page));
             }
         });
     }
@@ -86,7 +91,8 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
             mAdapter.addDataMap(dataMap);
         } else {
             if (isNetConnect()) {
-                loadDataFromNet(String.valueOf(page), true);
+//                缓存为空联网加载
+                loadDataFromNet(getUrl());
             } else {
                 LazyUtil.showToast(mActivity, "网络没有连接哦");
             }
@@ -94,10 +100,8 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
     }
 
     @Override
-    public void loadDataFromNet(final String url, final boolean isSaveCache) {
-        if (!isSaveCache) {
-            mContentSwipeRefreshLayout.setRefreshing(true);
-        }
+    public void loadDataFromNet(final String url) {
+        mContentSwipeRefreshLayout.setRefreshing(true);
         //        Gank 福利图片
         mOkUtil.okHttpGankGson(API.GANK_WELFARE + url, new OkUtil
                 .ResultCallback<GankWelfare>() {
@@ -108,21 +112,18 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
 
             @Override
             public void onResponse(GankWelfare response, String json) {
-                if ((mCache.isNewResponse(GANK_WELFARE_JSON, json) || mCache.isCacheEmpty
-                        (GANK_WELFARE_JSON)) &&
-                        response != null &&
-                        !response.isError()) {
-                    if (isSaveCache) {
+                if (response != null && !response.isError()) {
+                    if (isFirstPage(url)) {
                         mCache.put(GANK_WELFARE_JSON, json);
                     }
                     mWelfare = response.getResults();
-                    loadGankVideo(url, isSaveCache);
+                    loadGankVideo(url);
                 }
             }
         });
     }
 
-    private void loadGankVideo(String url, final boolean isSaveCache) {
+    private void loadGankVideo(final String url) {
         //        Gank 休息视频
         mOkUtil.okHttpGankGson(API.GANK_VIDEO + url, new OkUtil.ResultCallback<GankWelfare>
                 () {
@@ -133,10 +134,13 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
 
             @Override
             public void onResponse(GankWelfare response, String json) {
-                if (response != null && !response.isError() && (mCache.isNewResponse(
-                        GANK_VIDEO_JSON, json) ||
-                        mCache.isCacheEmpty
-                                (GANK_VIDEO_JSON))) {
+                if (response != null && !response.isError()) {
+                    if (isFirstPage(url)) {
+                        mAdapter.clearList();
+                        mCache.put(GANK_VIDEO_JSON, json);
+                        initUrl();
+                    }
+
                     List<GankWelfare.ResultsBean> video = response.getResults();
 
                     dataMap.clear();
@@ -144,14 +148,9 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
                         dataMap.put(mWelfare.get(i), video.get(i));
                     }
                     mAdapter.addDataMap(dataMap);
-
-                    if (isSaveCache) {
-                        mCache.put(GANK_VIDEO_JSON, json);
-                    } else {
-                        mContentSwipeRefreshLayout.setRefreshing(false);
-                        mContentRecyclerView.setIsLoading(false);
-                    }
                 }
+                mContentSwipeRefreshLayout.setRefreshing(false);
+                mContentRecyclerView.setIsLoading(false);
             }
         });
     }

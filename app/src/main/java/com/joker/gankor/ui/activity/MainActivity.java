@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -145,6 +146,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         mGankFragment = new GankFragment();
         mGankFragment.setImageListener(this);
         mGankFragment.setTextListener(this);
+
         mFragments.add(mGankFragment);
         mTitles.add("妹纸");
 
@@ -159,9 +161,8 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         mHotNewsFragment.setOnItemClickListener(this);
 
         mFragments.add(mDailyNewsFragment);
-        mTitles.add("知乎日报");
-
         mFragments.add(mHotNewsFragment);
+        mTitles.add("知乎日报");
         mTitles.add("热门消息");
 
         mAdapter.changeDataList(mTitles, mFragments);

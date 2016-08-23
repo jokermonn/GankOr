@@ -21,6 +21,7 @@ import com.joker.gankor.model.ZhihuDetails;
 import com.joker.gankor.ui.BaseActivity;
 import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.ImageUtil;
+import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.OkUtil;
 import com.joker.gankor.view.RevealBackgroundView;
 
@@ -32,14 +33,13 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
     public static final String LOCATION = "location";
     public ZhihuDetails mTopDetails;
     public int[] mLocation;
+    public RevealBackgroundView mContentRevealBackgroundView;
     private String url;
     private CacheUtil mCache;
     private ImageView mTitleImageView;
     private CollapsingToolbarLayout mTitleCollapsingToolbarLayout;
     private WebView mContentWebView;
-    public RevealBackgroundView mContentRevealBackgroundView;
     private NestedScrollView mContentNestedScrollView;
-    private Toolbar mTitleToolbar;
     private AppBarLayout mContentAppBarLayout;
 
     public static Intent newTopStoriesIntent(Activity activity, String url, int[] locationArr) {
@@ -58,7 +58,7 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
         setContentView(R.layout.activity_daily_details);
         mContentRevealBackgroundView = (RevealBackgroundView) findViewById(R.id.rbv_content);
         mTitleImageView = (ImageView) findViewById(R.id.iv_title);
-        mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
+        Toolbar mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
         mTitleCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.ctl_title);
         mContentAppBarLayout = (AppBarLayout) findViewById(R.id.abl_content);
         mContentNestedScrollView = (NestedScrollView) findViewById(R.id.nsv_content);
@@ -73,7 +73,7 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
         settings.setAppCacheEnabled(true);
         //        dom storage
         settings.setDomStorageEnabled(true);
-//        database cache
+        //        database cache
         settings.setDatabaseEnabled(true);
         settings.setLoadWithOverviewMode(true);
         settings.setSupportZoom(true);
@@ -119,6 +119,8 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
         } else {
             if (isNetConnect()) {
                 loadLatestData();
+            } else {
+                LazyUtil.showToast(this, "网络没有连接哦");
             }
         }
     }
@@ -133,8 +135,7 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
 
             @Override
             public void onResponse(ZhihuDetails response, String json) {
-                if (response != null && (mCache.isCacheEmpty(url) || mCache.isNewResponse
-                        (url, json))) {
+                if (response != null && mCache.isNewResponse(url, json)) {
                     mTopDetails = response;
                     mCache.put(url, json);
                     initAppBarLayout();
@@ -180,10 +181,10 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
 
     @Override
     protected void onPause() {
+        super.onPause();
         if (mContentWebView != null) {
             mContentWebView.onPause();
         }
-        super.onPause();
     }
 
 

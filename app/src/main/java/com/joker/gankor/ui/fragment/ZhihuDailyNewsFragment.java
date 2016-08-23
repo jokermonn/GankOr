@@ -64,10 +64,10 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
         mContentRecyclerView.setPullLoadListener(new PullLoadRecyclerView.onPullLoadListener() {
             @Override
             public void onPullLoad() {
-                loadDataFromNet(API.ZHIHU_BEFORE + mDate, false);
+                loadDataFromNet(API.ZHIHU_BEFORE + mDate);
             }
         });
-        initBanner();
+//        initBanner();
     }
 
     @Override
@@ -111,8 +111,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
             initBanner();
         } else {
             if (isNetConnect()) {
-                mContentSwipeRefreshLayout.setRefreshing(true);
-                loadDataFromNet(API.ZHIHU_LATEST, true);
+                loadDataFromNet(API.ZHIHU_LATEST);
             } else {
                 LazyUtil.showToast(mActivity, "网络没有连接哦");
             }
@@ -120,33 +119,34 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
     }
 
     @Override
-    public void loadDataFromNet(String url, final boolean isSaveCache) {
-        if (!isSaveCache) {
-            mContentSwipeRefreshLayout.setRefreshing(true);
-        }
+    public void loadDataFromNet(final String url) {
+        mContentSwipeRefreshLayout.setRefreshing(true);
         //        获取知乎最新消息
         mOkUtil.okHttpZhihuGson(API.ZHIHU_NEWS_FOUR + url, new OkUtil
                 .ResultCallback<ZhihuDailyNews>() {
             @Override
             public void onError(Call call, Exception e) {
                 e.printStackTrace();
+//                LazyUtil.log("");
             }
 
             @Override
             public void onResponse(ZhihuDailyNews response, String json) {
-                if (response != null && (mCache.isNewResponse(DAILY_NEWS_JSON, json) ||
-                        mCache.isCacheEmpty(DAILY_NEWS_JSON))) {
-                    if (isSaveCache) {
-                        mCache.put(DAILY_NEWS_JSON, json);
-//                知乎头条消息
-                        mTopStories = response.getTopStories();
-//                最新消息
-                        mNewsStories = response.getStories();
+                if (response != null) {
+                    if (isFirstPage(url)) {
+                        if (mCache.isNewResponse(DAILY_NEWS_JSON, json)) {
+                            //  知乎头条消息
+                            mTopStories = response.getTopStories();
+                            //                    mShowConvenientBanner.notifyDataSetChanged();
+                            initBanner();
+                            mCache.put(DAILY_NEWS_JSON, json);
+                        }
+                        mAdapter.clearList();
                     }
                     mDate = response.getDate();
-                    mAdapter.addListData(response.getStories());
-                    //mShowConvenientBanner.notifyDataSetChanged();
-                    initBanner();
+                    //  最新消息
+                    mNewsStories = response.getStories();
+                    mAdapter.addListData(mNewsStories);
                     mContentSwipeRefreshLayout.setRefreshing(false);
                     mContentRecyclerView.setIsLoading(false);
                 }
@@ -158,7 +158,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
     @Override
     public void onResume() {
         super.onResume();
-        mShowConvenientBanner.startTurning(5000);
+        mShowConvenientBanner.startTurning(4500);
     }
 
     // 暂停自动翻页

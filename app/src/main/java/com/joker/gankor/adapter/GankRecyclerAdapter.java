@@ -84,6 +84,11 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
         notifyDataSetChanged();
     }
 
+    public void clearList() {
+        mVideo.clear();
+        mWelfare.clear();
+    }
+
     private void getMapKV(HashMap<GankWelfare.ResultsBean, GankWelfare.ResultsBean> map) {
         for (Map.Entry entry : map.entrySet()) {
             mWelfare.add((GankWelfare.ResultsBean) entry.getKey());
