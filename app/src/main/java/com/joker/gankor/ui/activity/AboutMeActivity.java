@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.joker.gankor.R;
@@ -23,11 +24,15 @@ import java.util.List;
 
 public class AboutMeActivity extends BaseActivity implements View.OnClickListener {
     private final String githubUrl = "https://github.com/jokerZLemon";
+    public TranslateAnimation mAnimation;
     private List<TextView> mTextViews;
+    private boolean isStop = false;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_about_me);
+
+        LinearLayout contentLinearLayout = (LinearLayout) findViewById(R.id.ll_content);
         Toolbar toolBar = (Toolbar) findViewById(R.id.tb_title);
         TextView tvrNameTextView = (TextView) findViewById(R.id.tvr_name);
         TextView tvlNameTextView = (TextView) findViewById(R.id.tvl_name);
@@ -40,6 +45,7 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
 
         //        设置 toolBar
         toolBar.setNavigationOnClickListener(this);
+        contentLinearLayout.setOnClickListener(this);
         toolBar.setTitle(getString(R.string.about_me));
         setSupportActionBar(toolBar);
         final ActionBar ab = getSupportActionBar();
@@ -76,19 +82,19 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void initData() {
-        stAnim(0);
+        startAnimation(0);
     }
 
-    private void stAnim(final int i) {
+    private void startAnimation(final int i) {
         int t = i % 2 == 0 ? -1 : 1;
         mTextViews.get(i).setVisibility(View.VISIBLE);
-        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.5f,
+        mAnimation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.5f,
                 Animation.RELATIVE_TO_PARENT, 0f, Animation.RELATIVE_TO_PARENT, t * 0.5f, Animation
                 .RELATIVE_TO_PARENT, 0f);
-        animation.setInterpolator(new OvershootInterpolator());
-        animation.setDuration(1000);
-        animation.setFillAfter(true);
-        animation.setAnimationListener(new Animation.AnimationListener() {
+        mAnimation.setInterpolator(new OvershootInterpolator());
+        mAnimation.setDuration(1000);
+        mAnimation.setFillAfter(true);
+        mAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
             }
@@ -96,8 +102,8 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onAnimationEnd(Animation animation) {
                 int t = i + 1;
-                if (t < mTextViews.size()) {
-                    stAnim(t);
+                if (t < mTextViews.size() && !isStop) {
+                    startAnimation(t);
                 } else {
                     LazyUtil.showToast(AboutMeActivity.this, "GitHub 和 qq 可以直接点击");
                 }
@@ -107,7 +113,7 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
             public void onAnimationRepeat(Animation animation) {
             }
         });
-        mTextViews.get(i).startAnimation(animation);
+        mTextViews.get(i).startAnimation(mAnimation);
     }
 
     @Override
@@ -124,8 +130,19 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
                 copy.setText("429094465");
                 LazyUtil.showToast(this, "qq 已复制到粘贴板");
                 break;
+            case R.id.ll_content:
+                isStop = true;
+                setAllVisible();
             default:
                 break;
+        }
+    }
+
+    private void setAllVisible() {
+        for (int i = 0; i < mTextViews.size(); i++) {
+            if (mTextViews.get(i).getVisibility() != View.VISIBLE) {
+                mTextViews.get(i).setVisibility(View.VISIBLE);
+            }
         }
     }
 
