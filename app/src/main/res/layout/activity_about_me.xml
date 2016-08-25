@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:clickable="true"
+<RelativeLayout
     android:id="@+id/ll_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:clickable="true"
     tools:context="com.joker.gankor.ui.activity.AboutMeActivity">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tb_title"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/bdbdbd"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -101,4 +94,10 @@
             android:layout_below="@id/tvr_qq"
             android:layout_marginTop="10dp"/>
     </RelativeLayout>
-</LinearLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tb_title"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/bdbdbd"/>
+</RelativeLayout>

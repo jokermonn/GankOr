@@ -13,8 +13,6 @@ import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.joker.gankor.R;
 import com.joker.gankor.adapter.DailyNewsRecyclerAdapter;
 import com.joker.gankor.model.ZhihuDailyNews;
-import com.joker.gankor.ui.BaseFragment;
-import com.joker.gankor.ui.activity.MainActivity;
 import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.OkUtil;
@@ -29,14 +27,14 @@ import okhttp3.Call;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.convenientbanner.listener
+public class ZhihuDailyNewsFragment extends ContentFragment implements com.bigkoo.convenientbanner.listener
         .OnItemClickListener,
-        DailyNewsRecyclerAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+        DailyNewsRecyclerAdapter.OnDailyItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     public final static String DAILY_NEWS_JSON = "daily_news_json";
     public DailyNewsRecyclerAdapter mAdapter;
     public String mDate;
     private ConvenientBanner mShowConvenientBanner;
-    private DailyNewsRecyclerAdapter.OnItemClickListener mItemListener;
+    private DailyNewsRecyclerAdapter.OnDailyItemClickListener mItemListener;
     private List<ZhihuDailyNews.TopStoriesBean> mTopStories;
     private List<ZhihuDailyNews.StoriesBean> mNewsStories;
     private OnBannerClickListener mBannerListener;
@@ -46,12 +44,12 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
     }
 
     @Override
-    protected String getUrl() {
+    protected String getFirstPageUrl() {
         return API.ZHIHU_LATEST;
     }
 
     @Override
-    protected void initRecyclerView(LayoutInflater inflater, ViewGroup container) {
+    protected void initView(LayoutInflater inflater, ViewGroup container) {
         mNewsStories = new ArrayList<ZhihuDailyNews.StoriesBean>();
         mTopStories = new ArrayList<ZhihuDailyNews.TopStoriesBean>();
         mContentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
@@ -59,7 +57,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
         mShowConvenientBanner = (ConvenientBanner) header.findViewById(R.id.cb_show);
         mAdapter = new DailyNewsRecyclerAdapter(mActivity, mNewsStories);
         mAdapter.setHeaderView(mShowConvenientBanner);
-        mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnDailyItemClickListener(this);
         mContentRecyclerView.setAdapter(mAdapter);
         mContentRecyclerView.setPullLoadListener(new PullLoadRecyclerView.onPullLoadListener() {
             @Override
@@ -68,17 +66,6 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
             }
         });
 //        initBanner();
-    }
-
-    @Override
-    protected void initRecyclerView() {
-
-    }
-
-    @Override
-    protected void initToolbar() {
-        ((MainActivity) mActivity).hideTabLayout(false);
-        ((MainActivity) mActivity).setToolbarTitle("知乎");
     }
 
     public void initBanner() {
@@ -113,7 +100,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
             if (isNetConnect()) {
                 loadDataFromNet(API.ZHIHU_LATEST);
             } else {
-                LazyUtil.showToast(mActivity, "网络没有连接哦");
+                LazyUtil.showToast("网络没有连接哦");
             }
         }
     }
@@ -187,7 +174,7 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
         }
     }
 
-    public void setOnItemClickListener(DailyNewsRecyclerAdapter.OnItemClickListener itemClickListener) {
+    public void setOnItemClickListener(DailyNewsRecyclerAdapter.OnDailyItemClickListener itemClickListener) {
         mItemListener = itemClickListener;
     }
 
@@ -196,9 +183,9 @@ public class ZhihuDailyNewsFragment extends BaseFragment implements com.bigkoo.c
     }
 
     @Override
-    public void onZhihuItemClick(View view, ZhihuDailyNews.StoriesBean bean) {
+    public void onZhihuDailyItemClick(View view, ZhihuDailyNews.StoriesBean bean) {
         if (mItemListener != null) {
-            mItemListener.onZhihuItemClick(view, bean);
+            mItemListener.onZhihuDailyItemClick(view, bean);
         }
     }
 

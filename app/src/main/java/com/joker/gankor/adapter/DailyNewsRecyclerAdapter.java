@@ -22,7 +22,7 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
     private static final int TYPE_HEADER = 1;
     private List<ZhihuDailyNews.StoriesBean> mBean;
     private LayoutInflater mInflater;
-    private OnItemClickListener mListener;
+    private OnDailyItemClickListener mListener;
     private View mHeaderView;
 
     public DailyNewsRecyclerAdapter(Context context, List<ZhihuDailyNews.StoriesBean> storiesBeen) {
@@ -51,7 +51,7 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onZhihuItemClick(v, mBean.get(newPosition));
+                    mListener.onZhihuDailyItemClick(v, mBean.get(newPosition));
                 }
             }
         });
@@ -87,12 +87,12 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
         mHeaderView = headerView;
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnDailyItemClickListener(OnDailyItemClickListener listener) {
         mListener = listener;
     }
 
-    public interface OnItemClickListener {
-        void onZhihuItemClick(View view, ZhihuDailyNews.StoriesBean bean);
+    public interface OnDailyItemClickListener {
+        void onZhihuDailyItemClick(View view, ZhihuDailyNews.StoriesBean bean);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

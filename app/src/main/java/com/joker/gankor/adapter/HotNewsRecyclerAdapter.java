@@ -18,9 +18,9 @@ import java.util.List;
  * Created by joker on 2016/8/14.
  */
 public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecyclerAdapter.ViewHolder> {
-    private final List<ZhihuHotNews.RecentBean> mBean;
+    private List<ZhihuHotNews.RecentBean> mBean;
     private LayoutInflater mInflater;
-    private OnItemClickListener mListener;
+    private OnHotItemClickListener mListener;
 
     public HotNewsRecyclerAdapter(Context context, List<ZhihuHotNews.RecentBean> bean) {
         mBean = bean;
@@ -41,7 +41,7 @@ public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecycler
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onZhihuItemClick(v, mBean.get(position));
+                    mListener.onZhihuHotItemClick(v, mBean.get(position));
                 }
             }
         });
@@ -52,17 +52,17 @@ public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecycler
         return mBean.size();
     }
 
-    public void addListData(List<ZhihuHotNews.RecentBean> bean) {
-        mBean.addAll(bean);
+    public void changeListData(List<ZhihuHotNews.RecentBean> bean) {
+        mBean = bean;
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnHotItemClickListener(OnHotItemClickListener listener) {
         mListener = listener;
     }
 
-    public interface OnItemClickListener {
-        void onZhihuItemClick(View view, ZhihuHotNews.RecentBean bean);
+    public interface OnHotItemClickListener {
+        void onZhihuHotItemClick(View view, ZhihuHotNews.RecentBean bean);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

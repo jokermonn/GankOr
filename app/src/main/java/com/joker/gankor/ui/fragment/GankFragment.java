@@ -3,12 +3,12 @@ package com.joker.gankor.ui.fragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.joker.gankor.adapter.GankRecyclerAdapter;
 import com.joker.gankor.model.GankWelfare;
-import com.joker.gankor.ui.BaseFragment;
-import com.joker.gankor.ui.activity.MainActivity;
 import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.OkUtil;
@@ -24,7 +24,7 @@ import okhttp3.Call;
  * A simple {@link Fragment} subclass.
  * Created by joker on 2016/8/8.
  */
-public class GankFragment extends BaseFragment implements GankRecyclerAdapter.TextViewListener,
+public class GankFragment extends ContentFragment implements GankRecyclerAdapter.TextViewListener,
         GankRecyclerAdapter.ImageViewListener {
     public final static String GANK_WELFARE_JSON = "gank_welfare_json";
     public final static String GANK_VIDEO_JSON = "gank_video_json";
@@ -41,7 +41,7 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
     }
 
     @Override
-    protected String getUrl() {
+    protected String getFirstPageUrl() {
         return String.valueOf(API.GANK_FIRST_PAGE);
     }
 
@@ -50,7 +50,7 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
     }
 
     @Override
-    protected void initRecyclerView() {
+    protected void initView(LayoutInflater inflater, ViewGroup container) {
         dataMap = new LinkedHashMap<GankWelfare.ResultsBean, GankWelfare.ResultsBean>();
         manager = new StaggeredGridLayoutManager(2,
                 StaggeredGridLayoutManager
@@ -92,9 +92,9 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
         } else {
             if (isNetConnect()) {
 //                缓存为空联网加载
-                loadDataFromNet(getUrl());
+                loadDataFromNet(getFirstPageUrl());
             } else {
-                LazyUtil.showToast(mActivity, "网络没有连接哦");
+                LazyUtil.showToast("网络没有连接哦");
             }
         }
     }
@@ -153,12 +153,6 @@ public class GankFragment extends BaseFragment implements GankRecyclerAdapter.Te
                 mContentRecyclerView.setIsLoading(false);
             }
         });
-    }
-
-    @Override
-    protected void initToolbar() {
-        ((MainActivity) mActivity).hideTabLayout(true);
-        ((MainActivity) mActivity).setToolbarTitle("妹纸");
     }
 
     public void setTextListener(GankRecyclerAdapter.TextViewListener textListener) {

@@ -12,18 +12,14 @@ import com.squareup.leakcanary.RefWatcher;
  * Created by joker on 2016/8/4.
  */
 public class GankOrApplication extends Application {
-    private RefWatcher refWatcher;
-
-    public static RefWatcher getRefWatcher(Context context) {
-        GankOrApplication application = (GankOrApplication) context.getApplicationContext();
-        return application.refWatcher;
-    }
+    public static Context mContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
         initImageLoader(getApplicationContext());
         LeakCanary.install(this);
+        mContext = getApplicationContext();
     }
 
     private void initImageLoader(Context context) {

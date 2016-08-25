@@ -49,7 +49,7 @@ public class PullLoadRecyclerView extends RecyclerView {
         if (onPullLoadListener != null && mLastVisiblePosition + 1 == getAdapter().getItemCount() &&
                 !isLoading && dy > 0) {
             if (!NetUtil.isNetConnect(getContext())) {
-                LazyUtil.showToast(getContext(), "网络没有连接，不能加载噢");
+                LazyUtil.showToast( "网络没有连接，不能加载噢");
                 return;
             }
             isLoading = true;

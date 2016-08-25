@@ -9,10 +9,9 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -24,34 +23,31 @@ import com.joker.gankor.R;
 import com.joker.gankor.adapter.DailyNewsRecyclerAdapter;
 import com.joker.gankor.adapter.GankRecyclerAdapter;
 import com.joker.gankor.adapter.HotNewsRecyclerAdapter;
-import com.joker.gankor.adapter.MainAdapter;
 import com.joker.gankor.model.ZhihuDailyNews;
 import com.joker.gankor.model.ZhihuHotNews;
 import com.joker.gankor.ui.BaseActivity;
-import com.joker.gankor.ui.fragment.GankFragment;
+import com.joker.gankor.ui.fragment.MainFragment;
 import com.joker.gankor.ui.fragment.ZhihuDailyNewsFragment;
-import com.joker.gankor.ui.fragment.ZhihuHotNewsFragment;
 import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.ImageUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends BaseActivity implements GankRecyclerAdapter.TextViewListener,
-        GankRecyclerAdapter.ImageViewListener, DailyNewsRecyclerAdapter.OnItemClickListener,
-        ZhihuDailyNewsFragment.OnBannerClickListener, HotNewsRecyclerAdapter.OnItemClickListener {
+        GankRecyclerAdapter.ImageViewListener, DailyNewsRecyclerAdapter.OnDailyItemClickListener,
+        ZhihuDailyNewsFragment.OnBannerClickListener, HotNewsRecyclerAdapter.OnHotItemClickListener {
 
-    public MainAdapter mAdapter;
-    public GankFragment mGankFragment;
-    public ZhihuDailyNewsFragment mDailyNewsFragment;
-    public ZhihuHotNewsFragment mHotNewsFragment;
+    //    public MainAdapter mAdapter;
+    public MainFragment mContentGank;
+    public MainFragment mContentZhihu;
+    //    public GankFragment mGankFragment;
+//    public ZhihuDailyNewsFragment mDailyNewsFragment;
+//    public ZhihuHotNewsFragment mHotNewsFragment;
     private Toolbar mTitleToolbar;
     private TabLayout mTitleTabLayout;
     private NavigationView mContentNavigationView;
-    private ViewPager mContentViewPager;
-    private List<Fragment> mFragments;
-    private List<String> mTitles;
+    //    private ViewPager mContentViewPager;
+//    private List<Fragment> mFragments = new ArrayList<>();
+//    private List<String> mTitles = new ArrayList<>();
     private DrawerLayout mMainDrawerLayout;
     private long firstTime;
     private int mLastItemId;
@@ -61,7 +57,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         setContentView(R.layout.activity_main);
         mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
         mTitleTabLayout = (TabLayout) findViewById(R.id.tl_title);
-        mContentViewPager = (ViewPager) findViewById(R.id.vp_content);
+//        mContentViewPager = (ViewPager) findViewById(R.id.vp_content);
         mContentNavigationView = (NavigationView) findViewById(R.id.nv_content);
         mMainDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
 
@@ -82,8 +78,9 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         mMainDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+
 //        设置 viewPager
-        setupViewPager();
+//        setupViewPager();
     }
 
     @Override
@@ -94,6 +91,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     private void setupDrawerContent() {
         mLastItemId = mContentNavigationView.getMenu().getItem(0).getItemId();
+        changeFragments(mLastItemId);
         mContentNavigationView.setNavigationItemSelectedListener(new NavigationView
                 .OnNavigationItemSelectedListener() {
             @Override
@@ -115,65 +113,60 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     }
 
     public void changeFragments(int itemId) {
-        mFragments.clear();
-        mTitles.clear();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        hideAll(transaction);
         switch (itemId) {
             case R.id.nav_knowledge:
 //                      知乎界面
-                initZhihu();
+//                initZhihu();
+                if (mContentZhihu != null) {
+                    transaction.show(mContentZhihu);
+                } else {
+                    mContentZhihu = MainFragment.newInstance(MainFragment
+                            .MENU_ZHIHU);
+                    mContentZhihu.setOnBannerClickListener(this);
+                    mContentZhihu.setOnDailyItemClickListener(this);
+                    mContentZhihu.setOnBannerClickListener(this);
+                    mContentZhihu.setOnHotItemClickListener(this);
+                    transaction.add(R.id.fl_content, mContentZhihu);
+                }
+                initToolbar(MainFragment
+                        .MENU_ZHIHU);
                 break;
             case R.id.nav_beauty:
 //                      妹纸界面
-                initMeizhi();
+//                initMeizhi();
+                if (mContentGank != null) {
+                    transaction.show(mContentGank);
+                } else {
+                    mContentGank = MainFragment.newInstance(MainFragment
+                            .MENU_GANK);
+                    mContentGank.setTextListener(this);
+                    mContentGank.setImageListener(this);
+                    transaction.add(R.id.fl_content, mContentGank);
+                }
+                initToolbar(MainFragment
+                        .MENU_GANK);
                 break;
             default:
                 break;
         }
+        transaction.commit();
     }
 
-    public void init() {
-        mFragments = new ArrayList<>();
-        mTitles = new ArrayList<>();
-        mGankFragment = new GankFragment();
-        mGankFragment.setImageListener(this);
-        mGankFragment.setTextListener(this);
-
-        mFragments.add(mGankFragment);
-        mTitles.add("妹纸");
+    private void hideAll(FragmentTransaction transaction) {
+        if (mContentZhihu != null) {
+            transaction.hide(mContentZhihu);
+        }
+        if (mContentGank != null) {
+            transaction.hide(mContentGank);
+        }
     }
 
-    private void initMeizhi() {
-        mGankFragment = new GankFragment();
-        mGankFragment.setImageListener(this);
-        mGankFragment.setTextListener(this);
-
-        mFragments.add(mGankFragment);
-        mTitles.add("妹纸");
-
-        mAdapter.changeDataList(mTitles, mFragments);
-    }
-
-    public void initZhihu() {
-        mDailyNewsFragment = new ZhihuDailyNewsFragment();
-        mDailyNewsFragment.setOnItemClickListener(this);
-        mDailyNewsFragment.setOnBannerClickListener(this);
-        mHotNewsFragment = new ZhihuHotNewsFragment();
-        mHotNewsFragment.setOnItemClickListener(this);
-
-        mFragments.add(mDailyNewsFragment);
-        mFragments.add(mHotNewsFragment);
-        mTitles.add("知乎日报");
-        mTitles.add("热门消息");
-
-        mAdapter.changeDataList(mTitles, mFragments);
-    }
-
-    private void setupViewPager() {
-        init();
-        mAdapter = new MainAdapter(getSupportFragmentManager(), mFragments, mTitles);
-        mContentViewPager.setAdapter(mAdapter);
+    //    暴露给 fragment 连接 tabLayout
+    public void setupViewPager(ViewPager viewPager) {
         mTitleTabLayout.setSelectedTabIndicatorColor(Color.WHITE);
-        mTitleTabLayout.setupWithViewPager(mContentViewPager);
+        mTitleTabLayout.setupWithViewPager(viewPager);
     }
 
     public void hideTabLayout(boolean hide) {
@@ -181,6 +174,16 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
             mTitleTabLayout.setVisibility(View.GONE);
         } else {
             mTitleTabLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void initToolbar(String args) {
+        if (args.equals(MainFragment.MENU_GANK)) {
+            hideTabLayout(true);
+            setToolbarTitle("妹纸");
+        } else {
+            hideTabLayout(false);
+            setToolbarTitle("知乎");
         }
     }
 
@@ -207,7 +210,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
     */
 
     public void setToolbarTitle(String title) {
-        mTitleToolbar.setTitle(title);
+        getSupportActionBar().setTitle(title);
     }
 
     @Override
@@ -229,7 +232,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     //    知乎日报列表点击事件
     @Override
-    public void onZhihuItemClick(View view, ZhihuDailyNews.StoriesBean storiesBean) {
+    public void onZhihuDailyItemClick(View view, ZhihuDailyNews.StoriesBean storiesBean) {
         int[] clickLocation = getClickLocation(view);
         startActivity(ZhihuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_FOUR + String.valueOf
                 (storiesBean.getId())), clickLocation));
@@ -245,7 +248,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     //    知乎日报热门列表点击事件
     @Override
-    public void onZhihuItemClick(View view, ZhihuHotNews.RecentBean recentBean) {
+    public void onZhihuHotItemClick(View view, ZhihuHotNews.RecentBean recentBean) {
         int[] clickLocation = getClickLocation(view);
         startActivity(ZhihuDetailsActivity.newTopStoriesIntent(this, (API.ZHIHU_NEWS_TWO + String.valueOf
                 (recentBean.getNewsId())), clickLocation));

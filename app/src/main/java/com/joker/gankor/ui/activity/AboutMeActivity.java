@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.joker.gankor.R;
@@ -25,6 +25,7 @@ import java.util.List;
 public class AboutMeActivity extends BaseActivity implements View.OnClickListener {
     private final String githubUrl = "https://github.com/jokerZLemon";
     public TranslateAnimation mAnimation;
+    public Toolbar mToolBar;
     private List<TextView> mTextViews;
     private boolean isStop = false;
 
@@ -32,8 +33,8 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_about_me);
 
-        LinearLayout contentLinearLayout = (LinearLayout) findViewById(R.id.ll_content);
-        Toolbar toolBar = (Toolbar) findViewById(R.id.tb_title);
+        RelativeLayout contentLinearLayout = (RelativeLayout) findViewById(R.id.ll_content);
+        mToolBar = (Toolbar) findViewById(R.id.tb_title);
         TextView tvrNameTextView = (TextView) findViewById(R.id.tvr_name);
         TextView tvlNameTextView = (TextView) findViewById(R.id.tvl_name);
         TextView tvrIntrTextView = (TextView) findViewById(R.id.tvr_intr);
@@ -44,10 +45,10 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
         TextView tvlQqTextView = (TextView) findViewById(R.id.tvl_qq);
 
         //        设置 toolBar
-        toolBar.setNavigationOnClickListener(this);
+        mToolBar.setNavigationOnClickListener(this);
         contentLinearLayout.setOnClickListener(this);
-        toolBar.setTitle(getString(R.string.about_me));
-        setSupportActionBar(toolBar);
+        mToolBar.setTitle(getString(R.string.about_me));
+        setSupportActionBar(mToolBar);
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
@@ -105,7 +106,7 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
                 if (t < mTextViews.size() && !isStop) {
                     startAnimation(t);
                 } else {
-                    LazyUtil.showToast(AboutMeActivity.this, "GitHub 和 qq 可以直接点击");
+                    LazyUtil.showToast("GitHub 和 qq 可以直接点击");
                 }
             }
 
@@ -128,11 +129,18 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
                 ClipboardManager copy = (ClipboardManager) this
                         .getSystemService(Context.CLIPBOARD_SERVICE);
                 copy.setText("429094465");
-                LazyUtil.showToast(this, "qq 已复制到粘贴板");
+                LazyUtil.showToast("qq 已复制到粘贴板");
                 break;
             case R.id.ll_content:
-                isStop = true;
-                setAllVisible();
+                if (!isStop) {
+                    isStop = true;
+                    setAllVisible();
+                } else if (mToolBar.getVisibility() != View.GONE) {
+                    mToolBar.setVisibility(View.GONE);
+                } else {
+                    mToolBar.setVisibility(View.VISIBLE);
+                }
+                break;
             default:
                 break;
         }

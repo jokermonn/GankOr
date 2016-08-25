@@ -110,7 +110,7 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
                 saveImage();
                 return true;
             case R.id.menu_share:
-                LazyUtil.showToast(this, "暂时不支持分享功能哦");
+                LazyUtil.showToast("暂时不支持分享功能哦");
                 return true;
             default:
                 break;
@@ -134,10 +134,10 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
             saveFile.mkdirs();
         }
         if (copyImage(saveFile.getAbsolutePath() + "//" + mName + ".jpg")) {
-            LazyUtil.showToast(this, String.format(getString(R.string.picture_save_on), saveFile
+            LazyUtil.showToast(String.format(getString(R.string.picture_save_on), saveFile
                     .getAbsolutePath()));
         } else {
-            LazyUtil.showToast(this, "保存失败");
+            LazyUtil.showToast("保存失败");
         }
     }
 

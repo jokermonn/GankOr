@@ -4,11 +4,12 @@ package com.joker.gankor.ui.fragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.joker.gankor.adapter.HotNewsRecyclerAdapter;
 import com.joker.gankor.model.ZhihuHotNews;
-import com.joker.gankor.ui.BaseFragment;
 import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.OkUtil;
@@ -21,32 +22,28 @@ import okhttp3.Call;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,
-        HotNewsRecyclerAdapter.OnItemClickListener {
+public class ZhihuHotNewsFragment extends ContentFragment implements SwipeRefreshLayout.OnRefreshListener,
+        HotNewsRecyclerAdapter.OnHotItemClickListener {
     public final static String HOT_NEWS_JSON = "hot_news_json";
     public HotNewsRecyclerAdapter mAdapter;
-    private HotNewsRecyclerAdapter.OnItemClickListener mItemListener;
+    private HotNewsRecyclerAdapter.OnHotItemClickListener mItemListener;
 
     public ZhihuHotNewsFragment() {
         // Required empty public constructor
     }
 
     @Override
-    protected String getUrl() {
+    protected String getFirstPageUrl() {
         return "";
     }
 
     @Override
-    protected void initRecyclerView() {
+    protected void initView(LayoutInflater inflater, ViewGroup container) {
         List<ZhihuHotNews.RecentBean> mRecent = new ArrayList<ZhihuHotNews.RecentBean>();
         mContentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         mAdapter = new HotNewsRecyclerAdapter(mActivity, mRecent);
-        mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnHotItemClickListener(this);
         mContentRecyclerView.setAdapter(mAdapter);
-    }
-
-    @Override
-    protected void initToolbar() {
     }
 
     @Override
@@ -54,13 +51,13 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
         super.initData();
 
         if (!mCache.isCacheEmpty(HOT_NEWS_JSON)) {
-            mAdapter.addListData(mGson.fromJson(mCache.getAsString(HOT_NEWS_JSON), ZhihuHotNews
+            mAdapter.changeListData(mGson.fromJson(mCache.getAsString(HOT_NEWS_JSON), ZhihuHotNews
                     .class).getRecent());
         } else {
             if (isNetConnect()) {
                 loadDataFromNet("");
             } else {
-                LazyUtil.showToast(mActivity, "网络没有连接哦");
+                LazyUtil.showToast("网络没有连接哦");
             }
         }
     }
@@ -77,8 +74,10 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
                     @Override
                     public void onResponse(ZhihuHotNews response, String json) {
                         if (response != null) {
-                            mCache.put(HOT_NEWS_JSON, json);
-                            mAdapter.addListData(response.getRecent());
+                            if (mCache.isNewResponse(HOT_NEWS_JSON, json)) {
+                                mCache.put(HOT_NEWS_JSON, json);
+                                mAdapter.changeListData(response.getRecent());
+                            }
                         }
                         mContentSwipeRefreshLayout.setRefreshing(false);
                     }
@@ -87,13 +86,13 @@ public class ZhihuHotNewsFragment extends BaseFragment implements SwipeRefreshLa
     }
 
     @Override
-    public void onZhihuItemClick(View view, ZhihuHotNews.RecentBean bean) {
+    public void onZhihuHotItemClick(View view, ZhihuHotNews.RecentBean bean) {
         if (mItemListener != null) {
-            mItemListener.onZhihuItemClick(view, bean);
+            mItemListener.onZhihuHotItemClick(view, bean);
         }
     }
 
-    public void setOnItemClickListener(HotNewsRecyclerAdapter.OnItemClickListener itemClickListener) {
+    public void setOnItemClickListener(HotNewsRecyclerAdapter.OnHotItemClickListener itemClickListener) {
         mItemListener = itemClickListener;
     }
 }

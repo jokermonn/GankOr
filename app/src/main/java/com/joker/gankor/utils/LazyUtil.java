@@ -1,8 +1,9 @@
 package com.joker.gankor.utils;
 
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.joker.gankor.GankOrApplication;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -14,9 +15,9 @@ public class LazyUtil {
     private static Toast toast;
 
     //    toast 优化显示
-    public static void showToast(Context context, String content) {
+    public static void showToast(String content) {
         if (toast == null) {
-            toast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
+            toast = Toast.makeText(GankOrApplication.mContext, content, Toast.LENGTH_SHORT);
         } else {
             toast.setText(content);
         }

@@ -120,7 +120,7 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
             if (isNetConnect()) {
                 loadLatestData();
             } else {
-                LazyUtil.showToast(this, "网络没有连接哦");
+                LazyUtil.showToast("网络没有连接哦");
             }
         }
     }
@@ -174,6 +174,7 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
     protected void onDestroy() {
         super.onDestroy();
         if (mContentWebView != null) {
+            mContentWebView.removeAllViews();
             mContentWebView.destroy();
         }
     }
