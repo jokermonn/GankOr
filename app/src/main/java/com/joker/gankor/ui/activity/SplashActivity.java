@@ -1,6 +1,8 @@
 package com.joker.gankor.ui.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -24,11 +26,11 @@ public class SplashActivity extends BaseActivity {
     private ImageView mSplashImageView;
     private CacheUtil mCache;
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void initView(Bundle savedInstanceState) {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_splash);
         mSplashImageView = (ImageView) findViewById(R.id.iv_splash);
     }
@@ -69,7 +71,7 @@ public class SplashActivity extends BaseActivity {
             if (mCache.isCacheEmpty(IMG)) {
                 startToMainActivity();
             }
-            LazyUtil.showToast(this, "网络连接错误");
+            LazyUtil.showToast("网络连接错误");
         }
 
         ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.2f, 1.0f, 1.2f, Animation
