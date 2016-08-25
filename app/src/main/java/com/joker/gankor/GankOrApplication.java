@@ -6,7 +6,7 @@ import android.content.Context;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by joker on 2016/8/4.
@@ -20,6 +20,7 @@ public class GankOrApplication extends Application {
         initImageLoader(getApplicationContext());
         LeakCanary.install(this);
         mContext = getApplicationContext();
+        MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
     }
 
     private void initImageLoader(Context context) {

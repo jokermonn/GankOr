@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.NetUtil;
+import com.umeng.analytics.MobclickAgent;
 
 public abstract class BaseActivity extends AppCompatActivity {
     @Override
@@ -54,6 +55,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+//        友盟
+        MobclickAgent.onResume(this);
         LazyUtil.log(getClass().getName(), "     onResume");
     }
 
@@ -66,6 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
         LazyUtil.log(getClass().getName(), "     onPause");
     }
 }

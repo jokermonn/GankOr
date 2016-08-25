@@ -1,6 +1,7 @@
 package com.joker.gankor.ui.activity;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -41,6 +42,7 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
         return intent;
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void initView(Bundle savedInstanceState) {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);

@@ -36,18 +36,11 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         GankRecyclerAdapter.ImageViewListener, DailyNewsRecyclerAdapter.OnDailyItemClickListener,
         ZhihuDailyNewsFragment.OnBannerClickListener, HotNewsRecyclerAdapter.OnHotItemClickListener {
 
-    //    public MainAdapter mAdapter;
     public MainFragment mContentGank;
     public MainFragment mContentZhihu;
-    //    public GankFragment mGankFragment;
-//    public ZhihuDailyNewsFragment mDailyNewsFragment;
-//    public ZhihuHotNewsFragment mHotNewsFragment;
     private Toolbar mTitleToolbar;
     private TabLayout mTitleTabLayout;
     private NavigationView mContentNavigationView;
-    //    private ViewPager mContentViewPager;
-//    private List<Fragment> mFragments = new ArrayList<>();
-//    private List<String> mTitles = new ArrayList<>();
     private DrawerLayout mMainDrawerLayout;
     private long firstTime;
     private int mLastItemId;
@@ -57,7 +50,6 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         setContentView(R.layout.activity_main);
         mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
         mTitleTabLayout = (TabLayout) findViewById(R.id.tl_title);
-//        mContentViewPager = (ViewPager) findViewById(R.id.vp_content);
         mContentNavigationView = (NavigationView) findViewById(R.id.nv_content);
         mMainDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
 
@@ -118,7 +110,6 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         switch (itemId) {
             case R.id.nav_knowledge:
 //                      知乎界面
-//                initZhihu();
                 if (mContentZhihu != null) {
                     transaction.show(mContentZhihu);
                 } else {
@@ -135,7 +126,6 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
                 break;
             case R.id.nav_beauty:
 //                      妹纸界面
-//                initMeizhi();
                 if (mContentGank != null) {
                     transaction.show(mContentGank);
                 } else {
