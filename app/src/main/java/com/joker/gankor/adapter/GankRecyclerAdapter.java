@@ -28,7 +28,7 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
     private ImageViewListener mImageListener;
 
     public GankRecyclerAdapter(Context context, HashMap<GankWelfare
-                .ResultsBean, GankWelfare.ResultsBean> map) {
+            .ResultsBean, GankWelfare.ResultsBean> map) {
         mWelfare = new ArrayList<GankWelfare.ResultsBean>();
         mVideo = new ArrayList<GankWelfare.ResultsBean>();
         getMapKV(map);

@@ -114,7 +114,6 @@ public class ZhihuDailyNewsFragment extends ContentFragment implements com.bigko
             @Override
             public void onError(Call call, Exception e) {
                 e.printStackTrace();
-//                LazyUtil.log("");
             }
 
             @Override
