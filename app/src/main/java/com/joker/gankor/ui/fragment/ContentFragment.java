@@ -41,6 +41,7 @@ public abstract class ContentFragment extends BaseFragment implements SwipeRefre
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0x122:
+                    mContentSwipeRefreshLayout.setRefreshing(false);
                     LazyUtil.showToast("网络没有连接哦");
                     break;
                 case 0x121:
@@ -134,7 +135,7 @@ public abstract class ContentFragment extends BaseFragment implements SwipeRefre
 
     @Override
     public void onRefresh() {
-        if (mActivity.isNetConnect()) {
+        if (isNetConnect()) {
             mHandler.sendEmptyMessage(0x121);
         } else {
             mHandler.sendEmptyMessage(0x122);
