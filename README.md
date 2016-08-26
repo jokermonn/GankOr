@@ -7,25 +7,21 @@
 
 [应用宝干乎链接](http://a.app.qq.com/o/simple.jsp?pkgname=com.joker.gankor)
 
-[百度手机助手干乎链接](http://shouji.baidu.com/software/9850652.html) 或 二维码下载
+[百度手机助手/91助手干乎链接](http://shouji.baidu.com/software/9850652.html) 或 二维码下载<a href="./screenshots/baidu_two-dimensional_code.png"><img src="./screenshots/baidu_two-dimensional_code.png" width="18%"/></a>
 
-![](http://i4.buimg.com/567571/96ef1fb4192dbd5d.png)
+[安智市场干乎链接](http://apk.hiapk.com/appinfo/com.joker.gankor) 或 二维码下载<a href="./screenshots/android_two-dimensional_code.png"><img src="./screenshots/android_two-dimensional_code.png" width="18%"/></a>
 
 ## 教程 (撰写中... ##
 
-[干乎第一天教程](https://github.com/jokerZLemon/GankOr/blob/master/documents/%E5%B9%B2%E4%B9%8E%E7%AC%AC%E4%B8%80%E5%A4%A9.md) （撰写中
+[干乎第一天教程](./documents/干乎第一天.md) （撰写中
 
 ## 截图 ##
 
-![](http://i4.buimg.com/567571/e1793b5f8473c9f2.png)
-
-![](http://i4.buimg.com/567571/93ddb71fd94f96b9.png)
-
-![](http://i4.buimg.com/567571/a8738033dcb4f00d.png)
-
-![](http://i4.buimg.com/567571/6702acc0a902505b.png)
-
-![](http://i4.buimg.com/567571/39f2195680ecedd1.png)
+<a href="./screenshots/Screenshot_1st.png"><img src="./screenshots/Screenshot_1st.png" width="40%"/></a>
+<a href="./screenshots/Screenshot_2nd.png"><img src="./screenshots/Screenshot_2nd.png" width="40%"/></a>
+<a href="./screenshots/Screenshot_3th.png"><img src="./screenshots/Screenshot_3th.png" width="40%"/></a>
+<a href="./screenshots/Screenshot_4th.png"><img src="./screenshots/Screenshot_4th.png" width="40%"/></a>
+<a href="./screenshots/Screenshot_5th.png"><img src="./screenshots/Screenshot_5th.png" width="40%"/></a>
 
 ## 第三方库 dependencies ##
 
