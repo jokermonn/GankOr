@@ -5,23 +5,27 @@
 
 [百度网盘](http://pan.baidu.com/s/1cmk2oI)
 
-[应用宝链接下载](http://a.app.qq.com/o/simple.jsp?pkgname=com.joker.gankor)
+[应用宝干乎链接](http://a.app.qq.com/o/simple.jsp?pkgname=com.joker.gankor)
+
+[百度手机助手干乎链接](http://shouji.baidu.com/software/9850652.html) 或 二维码下载
+
+![](http://i4.buimg.com/567571/96ef1fb4192dbd5d.png)
 
 ## 教程 (撰写中... ##
 
-撰写中...
+[干乎第一天教程](https://github.com/jokerZLemon/GankOr/blob/master/documents/%E5%B9%B2%E4%B9%8E%E7%AC%AC%E4%B8%80%E5%A4%A9.md) （撰写中
 
 ## 截图 ##
 
-![](http://i.imgur.com/wj54Lw0.png)
+![](http://i4.buimg.com/567571/e1793b5f8473c9f2.png)
 
-![](http://i.imgur.com/ewW7jx1.png)
+![](http://i4.buimg.com/567571/93ddb71fd94f96b9.png)
 
-![](http://i.imgur.com/fzx2PmA.png)
+![](http://i4.buimg.com/567571/a8738033dcb4f00d.png)
 
-![](http://i.imgur.com/eaKa512.png)
+![](http://i4.buimg.com/567571/6702acc0a902505b.png)
 
-![](http://i.imgur.com/tpXg242.png)
+![](http://i4.buimg.com/567571/39f2195680ecedd1.png)
 
 ## 第三方库 dependencies ##
 
