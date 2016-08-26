@@ -1,6 +1,11 @@
 # 干乎 (GankOr#
----
+
 一款基于 [Gank](http://gank.io/) 和[知乎](https://github.com/izzyleung/ZhihuDailyPurify/wiki/%E7%9F%A5%E4%B9%8E%E6%97%A5%E6%8A%A5-API-%E5%88%86%E6%9E%90)接口的娱乐休闲软件，有宅男福利妹纸图，配上幽默风趣小视频，也有知识扩展知乎热门，丰富你的碎片时间，娱乐休闲两不误
+## APK 下载 ##
+
+[百度网盘](http://pan.baidu.com/s/1cmk2oI)
+
+[应用宝链接下载](http://a.app.qq.com/o/simple.jsp?pkgname=com.joker.gankor)
 
 ## 教程 (撰写中... ##
 
@@ -18,11 +23,7 @@
 
 ![](http://i.imgur.com/tpXg242.png)
 
-## APK 下载 ##
-
-[百度网盘](http://pan.baidu.com/s/1pKQfpmr)
-
-## 依赖 ##
+## 第三方库 dependencies ##
 
 		//    内存泄漏检测工具
 	    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta1'
@@ -39,9 +40,11 @@
 
 ## 学到什么 ##
 
-- [ASimpleCache](https://github.com/yangfuhai/ASimpleCache)的使用 (一款极其简单的缓存库
+- [leakcanary](https://github.com/square/leakcanary) 强大而简单的内存泄漏检测工具的使用
 
-- [Android-ConvenientBanner](https://github.com/saiwu-bigkoo/Android-ConvenientBanner)的使用 (一款强大的轮播器
+- [ASimpleCache](https://github.com/yangfuhai/ASimpleCache) 的使用 (一款极其简单的缓存库
+
+- [Android-ConvenientBanner](https://github.com/saiwu-bigkoo/Android-ConvenientBanner) 的使用 (一款强大的轮播器
 
 - 官方 material design 控件的使用
 
