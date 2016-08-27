@@ -10,7 +10,7 @@ import android.util.AttributeSet;
 import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.NetUtil;
 
-/**
+/** 上拉加载更多 RecyclerView
  * Created by joker on 2016/8/15.
  */
 public class PullLoadRecyclerView extends RecyclerView {
