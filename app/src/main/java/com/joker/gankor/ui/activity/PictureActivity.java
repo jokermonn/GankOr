@@ -1,13 +1,10 @@
 package com.joker.gankor.ui.activity;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -20,11 +17,6 @@ import com.joker.gankor.R;
 import com.joker.gankor.ui.BaseActivity;
 import com.joker.gankor.utils.ImageUtil;
 import com.joker.gankor.utils.LazyUtil;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 
 public class PictureActivity extends BaseActivity implements View.OnClickListener {
     public static final String EXTRA_IMAGE_URL = "image_url";
@@ -109,7 +101,7 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
                 finish();
                 return true;
             case R.id.menu_save:
-                saveImage();
+                ImageUtil.getInstance().saveImage(this, mName, mImageUrl);
                 return true;
             case R.id.menu_share:
                 LazyUtil.showToast("暂时不支持分享功能哦");
@@ -118,56 +110,5 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void saveImage() {
-        //        6.0 检查权限
-        if (Build.VERSION.SDK_INT >= 23) {
-            int write = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            int read = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-            if (write != PackageManager.PERMISSION_GRANTED || read != PackageManager
-                    .PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest
-                        .permission.READ_EXTERNAL_STORAGE}, 300);
-            }
-        }
-        File saveFile = new File(Environment.getExternalStorageDirectory(), "GankOr");
-        if (!saveFile.exists()) {
-            saveFile.mkdirs();
-        }
-        if (copyImage(saveFile.getAbsolutePath() + "//" + mName + ".jpg")) {
-            LazyUtil.showToast(String.format(getString(R.string.picture_save_on), saveFile
-                    .getAbsolutePath()));
-        } else {
-            LazyUtil.showToast("保存失败");
-        }
-    }
-
-    public boolean copyImage(String newPath) {
-        String oldPath = ImageUtil.getInstance().getAbsolutePath(mImageUrl);
-        InputStream inStream = null;
-        FileOutputStream fs = null;
-        try {
-            int bytesum = 0;
-            int byteread = 0;
-            File oldfile = new File(oldPath);
-            if (oldfile.exists()) { //文件存在时
-                inStream = new FileInputStream(oldPath); //读入原文件
-                fs = new FileOutputStream(newPath);
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((byteread = inStream.read(buffer)) != -1) {
-                    bytesum += byteread; //字节数 文件大小
-                    fs.write(buffer, 0, byteread);
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            LazyUtil.close(inStream);
-            LazyUtil.close(fs);
-        }
-        return false;
     }
 }
