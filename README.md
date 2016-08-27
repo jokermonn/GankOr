@@ -13,9 +13,9 @@
 
 ## 教程 (撰写中... ##
 
-[干乎第一天教程](./documents/干乎第一天.md) 
+[第一天教程](./documents/gankor_1st.md) 
 
-[干乎第二天教程](./documents/干乎第二天.md)（撰写中
+[第二天教程](./documents/gankor_2nd.md)（撰写中
 
 ## 截图 ##
 
