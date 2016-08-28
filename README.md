@@ -15,7 +15,9 @@
 
 [第一天教程](./documents/gankor_1st.md) 
 
-[第二天教程](./documents/gankor_2nd.md)（撰写中
+[第二天教程](./documents/gankor_2nd.md)
+
+[第三天教程](./documents/gankor_3th.md)（撰写中
 
 ## 截图 ##
 
