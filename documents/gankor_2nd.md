@@ -369,8 +369,8 @@ SplashActivity 执行完动画后，进入 MainActivity，MainActivity 代码如
 	
 	        if (MENU_GANK.equals(args)) {
 	            mGankFragment = new GankFragment();
-	            mGankFragment.setImageListener(this);
-	            mGankFragment.setTextListener(this);
+	            //	mGankFragment.setImageListener(this);
+	            //	mGankFragment.setTextListener(this);
 	
 	            mFragments.add(mGankFragment);
 	            mTitles.add("妹纸");
@@ -378,10 +378,10 @@ SplashActivity 执行完动画后，进入 MainActivity，MainActivity 代码如
 	            adapter.changeDataList(mTitles, mFragments);
 	        } else {
 	            mDailyNewsFragment = new ZhihuDailyNewsFragment();
-	            mDailyNewsFragment.setOnItemClickListener(this);
-	            mDailyNewsFragment.setOnBannerClickListener(this);
+	            //	mDailyNewsFragment.setOnItemClickListener(this);
+	            //	mDailyNewsFragment.setOnBannerClickListener(this);
 	            mHotNewsFragment = new ZhihuHotNewsFragment();
-	            mHotNewsFragment.setOnItemClickListener(this);
+	            //	mHotNewsFragment.setOnItemClickListener(this);
 	
 	            mFragments.add(mDailyNewsFragment);
 	            mFragments.add(mHotNewsFragment);
