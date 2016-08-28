@@ -58,6 +58,24 @@
 
 - [InstaMaterial](https://github.com/frogermcs/InstaMaterial) 模仿知乎点击效果
 
+## 关于我 ##
+
+初学 Android 半年，热爱开源，拥抱开源，愿与志同道合者详论
+
+qq：429094465（加好友时候请附带验证消息：android）
+
+## 鸣谢 ##
+
+- 段子手/业界知名 Android 开发者：[stormzhang](https://github.com/stormzhang)
+
+- 业界大牛/郭霖公共号多篇文章投稿者：[李济洲](http://blog.csdn.net/leejizhou)
+
+- 985高校牛x学长：[秦伟](https://www.zhihu.com/people/qin-wei-94-13)
+
+- 大牛师傅：[陈业](https://www.zhihu.com/people/chen-ye-76-94)
+
+- 暂时还没有 github 的奕超哥
+
 ## License ##
 
 	Copyright 2016 joker
