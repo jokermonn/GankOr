@@ -391,7 +391,7 @@ SplashActivity 执行完动画后，进入 MainActivity，MainActivity 代码如
 	            adapter.changeDataList(mTitles, mFragments);
 	        }
 	        mContentViewPager.setAdapter(adapter);
-			// 调用 MainActivity 的 setViewPager() 方法
+			// 调用 MainActivity 的 setupViewPager() 方法
 	        ((MainActivity) mActivity).setupViewPager(mContentViewPager);
 	    }
 	}
@@ -409,6 +409,44 @@ SplashActivity 执行完动画后，进入 MainActivity，MainActivity 代码如
 	    tools:context=".ui.fragment.MainFragment"/>
 
 这里其实可以看得出来， MainFragment 其实是 GankFragment 和 DailyNewsFragment， HotNewsFragment 的父 fragment，我们在 MainFragment 里面其实就是放了一个 ViewPager，然后在 ViewPager 里面在放置相应的 fragment。所以我们这里使用的是 fragment 嵌套 fragment 思路。
+
+适配器 MainAdapter 代码如下：
+
+	/**
+	 * Created by joker on 2016/8/4.
+	 */
+	public class MainAdapter extends FragmentStatePagerAdapter {
+	    private List<Fragment> mFragments;
+	    private List<String> mTitles;
+	
+	    public MainAdapter(FragmentManager fm, List<Fragment> fragments, List<String> titles) {
+	        super(fm);
+	        mFragments = fragments;
+	        mTitles = titles;
+	    }
+	
+	    @Override
+	    public Fragment getItem(int position) {
+	        return mFragments.get(position);
+	    }
+	
+	    @Override
+	    public int getCount() {
+	        return mFragments.size();
+	    }
+	
+	    @Override
+	    public CharSequence getPageTitle(int position) {
+	        return mTitles.get(position);
+	    }
+	
+	    public void changeDataList(List<String> titles, List<Fragment> fragments) {
+	        mTitles = titles;
+	        mFragments = fragments;
+	    }
+	}
+
+在使用 ViewPager 嵌套 fragment 的时候，官方更建议我们使用 FragmentStatePagerAdapter 或者 FragmentPageAdapter，这两者的主要区别在于 FragmentPageAdapter 类内的每一个生成的 Fragment 都将保存在内存之中，所以适用于那些相对静态的页，数量也比较少的那种；如果需要处理有很多页，并且数据动态性较大、占用内存较多的情况，应该使用FragmentStatePagerAdapter。详情可见这篇[FragmentPagerAdapter与FragmentStatePagerAdapter区别](http://www.cnblogs.com/lianghui66/p/3607091.html)
 
 接下来，我们就是构建 GankFragment， ZhihuDailyNewsFragment， ZhihuHotNewsFragment 了，实际上，这三者的逻辑业务是差不多的，所以我们不妨构建一个它们共同的基类 fragment 继承自 BaseFragment，我们命名为 ContentFragment，代码如下：
 
@@ -447,7 +485,8 @@ SplashActivity 执行完动画后，进入 MainActivity，MainActivity 代码如
 	    public ContentFragment() {
 	        // Required empty public constructor
 	    }
-	
+		
+		// 获取最初的 url （刷新或者第一次加载时的 url）
 	    protected abstract String getFirstPageUrl();
 	
 	    protected boolean isFirstPage(String url) {
@@ -643,6 +682,6 @@ SplashActivity 执行完动画后，进入 MainActivity，MainActivity 代码如
 	    }
 	}
 
-关于上拉加载更多的 RecyclerView 可以参考这篇[文章](http://www.cnblogs.com/xiaoyaoxia/p/4977125.html)，简单来说，就是在它的滑动事件中首先判断当前的 layoutManager，其次就是针对当前最后一个可见的 item 的 position 进行监听，如果当前传入的 listener 不为空，且当前最后一个可见的 item 是 adpater 里面最后的一个 item， 且当前不是在加载，且当前是屏幕向上滑动的状态，那么我们就可以调用上拉加载更多接口的 ``onPullLoad()`` 方法啦。
+关于上拉加载更多的 RecyclerView 可以参考这篇[RecyclerView实例-实现可下拉刷新上拉加载更多并可切换线性流和瀑布流模式（1）](http://www.cnblogs.com/xiaoyaoxia/p/4977125.html)，简单来说，就是在它的滑动事件中首先判断当前的 layoutManager，其次就是针对当前最后一个可见的 item 的 position 进行监听，如果当前传入的 listener 不为空，且当前最后一个可见的 item 是 adpater 里面最后的一个 item， 且当前不是在加载状态中，且当前是屏幕向上滑动的状态，那么我们就可以调用上拉加载更多接口的 ``onPullLoad()`` 方法啦。
 
-对于日常需求中，我们在很多情况下对于 ViewPager 的预加载功能感到很烦恼，而这个懒加载的 fragment 就很好的解决了这个问题，所谓懒加载，即 fragment 的 UI 对用户可见时才加载数据，具体可参考这篇[文章](http://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&mid=2650820834&idx=1&sn=694a94615494bfcaed07188e2601724a&scene=23&srcid=0808vHgojfq1vTzIpSDNBhwq#rd)。在 MainFragment 中我们除了对需要用的 Okhttp， Gson 对象初始化，需要用到的布局文件初始化之外
+对于日常需求中，我们在很多情况下对于 ViewPager 的预加载功能感到很烦恼，而这个懒加载的 fragment 就很好的解决了这个问题，所谓懒加载，即 fragment 的 UI 对用户可见时才加载数据，具体可参考这篇[Fragment 懒加载实战](http://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&mid=2650820834&idx=1&sn=694a94615494bfcaed07188e2601724a&scene=23&srcid=0808vHgojfq1vTzIpSDNBhwq#rd)。在 MainFragment 中我们除了对需要用的 Okhttp， Gson， Cache 对象初始化，需要用到的布局文件初始化之外，最重要的就是在 fragment 销毁的时候将资源都销毁，例如网络请求的取消（防止影响当前页面网络请求阻塞），``SwipeRefreshLayout.setRefreshing(false);``（防止网络过慢导致一直不能获取到网络请求）
