@@ -313,3 +313,270 @@ GankRecyclerAdapter 代码如下：
 	</LinearLayout>
 
 这里解释几个地方，其一：在 ``onBindViewHolder()`` 方法中注册点击事件，其二每次刷新数据源调用的 ``addDataMap(HashMap<> dataMap)`` 方法，然后分别取出 map 的键值对放入相应的 List 中刷新数据，其三就是这个 RatioImageView，其实它只是一个对 ImageView 稍稍做了一些改动的 ImageView，将 ImageView 的宽高固定且相等。可以阅读一下这篇文章[你所不知道的Activity转场动画——ActivityOptions](http://www.lxway.com/895445426.htm)，通俗来说，如果在 API>21 中需要使用这种点击动画的效果（点击 ImageView 然后扩充到整个屏幕），那么就要限制 ImageView 的宽高固定且相等。
+
+接下来就是 ZhihuDailyNewsFragment 了，其代码如下：
+
+	public class ZhihuDailyNewsFragment extends ContentFragment implements com.bigkoo.convenientbanner.listener
+	        .OnItemClickListener,
+	        DailyNewsRecyclerAdapter.OnDailyItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+	    public final static String DAILY_NEWS_JSON = "daily_news_json";
+	    public DailyNewsRecyclerAdapter mAdapter;
+	    public String mDate;
+	    private ConvenientBanner mShowConvenientBanner;
+	    private DailyNewsRecyclerAdapter.OnDailyItemClickListener mItemListener;
+	    private List<ZhihuDailyNews.TopStoriesBean> mTopStories;
+	    private List<ZhihuDailyNews.StoriesBean> mNewsStories;
+	    private OnBannerClickListener mBannerListener;
+	
+	    public ZhihuDailyNewsFragment() {
+	        // Required empty public constructor
+	    }
+	
+	    @Override
+	    protected String getFirstPageUrl() {
+	        return API.ZHIHU_LATEST;
+	    }
+	
+	    @Override
+	    protected void initView(LayoutInflater inflater, ViewGroup container) {
+	        mNewsStories = new ArrayList<ZhihuDailyNews.StoriesBean>();
+	        mTopStories = new ArrayList<ZhihuDailyNews.TopStoriesBean>();
+	        mContentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+	        View header = inflater.inflate(R.layout.daily_news_header_view, mContentRecyclerView, false);
+	        mShowConvenientBanner = (ConvenientBanner) header.findViewById(R.id.cb_show);
+	        mAdapter = new DailyNewsRecyclerAdapter(mActivity, mNewsStories);
+	        mAdapter.setHeaderView(mShowConvenientBanner);
+	        mAdapter.setOnDailyItemClickListener(this);
+	        mContentRecyclerView.setAdapter(mAdapter);
+	        mContentRecyclerView.setPullLoadListener(new PullLoadRecyclerView.onPullLoadListener() {
+	            @Override
+	            public void onPullLoad() {
+	                loadDataFromNet(API.ZHIHU_BEFORE + mDate);
+	            }
+	        });
+	//        initBanner();
+	    }
+	
+	    public void initBanner() {
+	        mShowConvenientBanner.setPages(new CBViewHolderCreator() {
+	            @Override
+	            public Object createHolder() {
+	                return new ZhihuTopNewsHolderView();
+	            }
+	        }, mTopStories)
+	                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT)
+	                .setPageIndicator(new int[]{R.drawable.indicator_gray, R.drawable.indicator_red})
+	                .setOnItemClickListener(this);
+	//        设置 banner 滑动速度
+	        mShowConvenientBanner.setScrollDuration(1500);
+	    }
+	
+	    @Override
+	    protected void initData() {
+	        super.initData();
+	
+	        if (!mCache.isCacheEmpty(DAILY_NEWS_JSON)) {
+	            ZhihuDailyNews dailyNews = mGson.fromJson(mCache.getAsString(DAILY_NEWS_JSON), ZhihuDailyNews
+	                    .class);
+	            mTopStories = dailyNews.getTopStories();
+	            mDate = dailyNews.getDate();
+	//            RecyclerView item 更新
+	            mAdapter.addListData(dailyNews.getStories());
+	//            RecyclerView 头布局更新
+	//            mShowConvenientBanner.notifyDataSetChanged();
+	            initBanner();
+	        } else {
+	            if (isNetConnect()) {
+	                loadDataFromNet(API.ZHIHU_LATEST);
+	            } else {
+	                LazyUtil.showToast("网络没有连接哦");
+	            }
+	        }
+	    }
+	
+	    @Override
+	    public void loadDataFromNet(final String url) {
+	        mContentSwipeRefreshLayout.setRefreshing(true);
+	        //        获取知乎最新消息
+	        mOkUtil.okHttpZhihuGson(API.ZHIHU_NEWS_FOUR + url, new OkUtil
+	                .ResultCallback<ZhihuDailyNews>() {
+	            @Override
+	            public void onError(Call call, Exception e) {
+	                e.printStackTrace();
+	            }
+	
+	            @Override
+	            public void onResponse(ZhihuDailyNews response, String json) {
+	                if (response != null) {
+	                    if (isFirstPage(url)) {
+	                        if (mCache.isNewResponse(DAILY_NEWS_JSON, json)) {
+	                            //  知乎头条消息
+	                            mTopStories = response.getTopStories();
+	                            //                    mShowConvenientBanner.notifyDataSetChanged();
+	                            initBanner();
+	                            mCache.put(DAILY_NEWS_JSON, json);
+	                        }
+	                        mAdapter.clearList();
+	                    }
+	                    mDate = response.getDate();
+	                    //  最新消息
+	                    mNewsStories = response.getStories();
+	                    mAdapter.addListData(mNewsStories);
+	                    mContentSwipeRefreshLayout.setRefreshing(false);
+	                    mContentRecyclerView.setIsLoading(false);
+	                }
+	            }
+	        });
+	    }
+	
+	    // 开始自动翻页
+	    @Override
+	    public void onResume() {
+	        super.onResume();
+	        mShowConvenientBanner.startTurning(4500);
+	    }
+	
+	    // 暂停自动翻页
+	    @Override
+	    public void onPause() {
+	        super.onPause();
+	        mShowConvenientBanner.stopTurning();
+	    }
+	
+	    @Override
+	    public void setUserVisibleHint(boolean isVisibleToUser) {
+	        super.setUserVisibleHint(isVisibleToUser);
+	        if (isVisibleToUser && isDataLoaded && isViewCreated) {
+	            mShowConvenientBanner.startTurning(4000);
+	        }
+	        if (!isVisibleToUser && isViewCreated) {
+	            mShowConvenientBanner.stopTurning();
+	        }
+	    }
+	
+	    //    Banner 点击事件
+	    @Override
+	    public void onItemClick(int position) {
+	        if (mBannerListener != null) {
+	            mBannerListener.onBannerClickListener(mTopStories.get(position));
+	        }
+	    }
+	
+	    public void setOnItemClickListener(DailyNewsRecyclerAdapter.OnDailyItemClickListener itemClickListener) {
+	        mItemListener = itemClickListener;
+	    }
+	
+	    public void setOnBannerClickListener(OnBannerClickListener bannerClickListener) {
+	        mBannerListener = bannerClickListener;
+	    }
+	
+	    @Override
+	    public void onZhihuDailyItemClick(View view, ZhihuDailyNews.StoriesBean bean) {
+	        if (mItemListener != null) {
+	            mItemListener.onZhihuDailyItemClick(view, bean);
+	        }
+	    }
+	
+	    public interface OnBannerClickListener {
+	        void onBannerClickListener(ZhihuDailyNews.TopStoriesBean topStories);
+	    }
+	}
+
+这里用到了一个轮播器的第三方库 [Android-ConvenientBanner](https://github.com/saiwu-bigkoo/Android-ConvenientBanner)，使用起来也是相当的简单，直接看一下作者的 demo 就可以啦。RecyclerView 不像 ListView 那般可以直接添加 HeaderView，所以我们需要从它的 adapter 下手，其 adapter 代码如下：
+
+	public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecyclerAdapter.ViewHolder> {
+	    private static final int TYPE_ITEM = 0;
+	    private static final int TYPE_HEADER = 1;
+	    private List<ZhihuDailyNews.StoriesBean> mBean;
+	    private LayoutInflater mInflater;
+	    private OnDailyItemClickListener mListener;
+	    private View mHeaderView;
+	
+	    public DailyNewsRecyclerAdapter(Context context, List<ZhihuDailyNews.StoriesBean> storiesBeen) {
+	        mBean = storiesBeen;
+	        mInflater = LayoutInflater.from(context);
+	    }
+	
+	    @Override
+	    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+	        if (viewType == TYPE_HEADER) {
+	            return new ViewHolder(mHeaderView);
+	        }
+	        return new ViewHolder(mInflater.inflate(R.layout.zhihu_news_item, parent, false));
+	    }
+	
+	    @Override
+	    public void onBindViewHolder(ViewHolder holder, int position) {
+	        if (getItemViewType(position) == TYPE_HEADER) {
+	            return;
+	        }
+	        final int newPosition = getNewPosition(holder);
+	        ImageUtil.getInstance().displayImageOnLoading(mBean.get(newPosition).getImages().get(0), holder
+	                .mImageView);
+	        holder.mTextView.setText(mBean.get(newPosition).getTitle());
+	        holder.item.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	                if (mListener != null) {
+	                    mListener.onZhihuDailyItemClick(v, mBean.get(newPosition));
+	                }
+	            }
+	        });
+	    }
+	
+	    @Override
+	    public int getItemViewType(int position) {
+	        return mHeaderView != null && position == 0 ? TYPE_HEADER : TYPE_ITEM;
+	    }
+	
+	    //    添加头布局后，count 应该 +1
+	    @Override
+	    public int getItemCount() {
+	        return mHeaderView == null ? mBean.size() : mBean.size() + 1;
+	    }
+	
+	    //    添加头布局后的新 position
+	    public int getNewPosition(RecyclerView.ViewHolder viewHolder) {
+	        int position = viewHolder.getAdapterPosition();
+	        return mHeaderView == null ? position : position - 1;
+	    }
+	
+	    public void addListData(List<ZhihuDailyNews.StoriesBean> bean) {
+	        mBean.addAll(bean);
+	        notifyDataSetChanged();
+	    }
+	
+	    public void clearList() {
+	        mBean.clear();
+	    }
+	
+	    public void setHeaderView(View headerView) {
+	        mHeaderView = headerView;
+	    }
+	
+	    public void setOnDailyItemClickListener(OnDailyItemClickListener listener) {
+	        mListener = listener;
+	    }
+	
+	    public interface OnDailyItemClickListener {
+	        void onZhihuDailyItemClick(View view, ZhihuDailyNews.StoriesBean bean);
+	    }
+	
+	    public class ViewHolder extends RecyclerView.ViewHolder {
+	        TextView mTextView;
+	        ImageView mImageView;
+	        View item;
+	
+	        public ViewHolder(View itemView) {
+	            super(itemView);
+	            if (itemView == mHeaderView) {
+	                return;
+	            }
+	            mTextView = (TextView) itemView.findViewById(R.id.tv_item);
+	            mImageView = (ImageView) itemView.findViewById(R.id.iv_item);
+	            item = itemView;
+	        }
+	    }
+	}
+
+adapter 的代码也是相当的简单，当然，如果你有任何问题提出 [issure](https://github.com/jokerZLemon/GankOr/issues) 即可，我一定耐心解答。
