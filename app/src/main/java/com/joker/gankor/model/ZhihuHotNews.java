@@ -1,17 +1,13 @@
 package com.joker.gankor.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by joker on 2016/8/8.
  */
-public class ZhihuHotNews implements Parcelable {
+public class ZhihuHotNews {
 
     /**
      * news_id : 8649660
@@ -69,34 +65,4 @@ public class ZhihuHotNews implements Parcelable {
             this.title = title;
         }
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.recent);
-    }
-
-    public ZhihuHotNews() {
-    }
-
-    protected ZhihuHotNews(Parcel in) {
-        this.recent = new ArrayList<RecentBean>();
-        in.readList(this.recent, RecentBean.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<ZhihuHotNews> CREATOR = new Parcelable.Creator<ZhihuHotNews>() {
-        @Override
-        public ZhihuHotNews createFromParcel(Parcel source) {
-            return new ZhihuHotNews(source);
-        }
-
-        @Override
-        public ZhihuHotNews[] newArray(int size) {
-            return new ZhihuHotNews[size];
-        }
-    };
 }

@@ -1,8 +1,5 @@
 package com.joker.gankor.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -83,7 +80,7 @@ public class ZhihuDailyNews {
         this.topStories = topStories;
     }
 
-    public static class StoriesBean implements Parcelable {
+    public static class StoriesBean {
         private int type;
         private int id;
         private String title;
@@ -120,44 +117,9 @@ public class ZhihuDailyNews {
         public void setImages(List<String> images) {
             this.images = images;
         }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.type);
-            dest.writeInt(this.id);
-            dest.writeString(this.title);
-            dest.writeStringList(this.images);
-        }
-
-        public StoriesBean() {
-        }
-
-        protected StoriesBean(Parcel in) {
-            this.type = in.readInt();
-            this.id = in.readInt();
-            this.title = in.readString();
-            this.images = in.createStringArrayList();
-        }
-
-        public static final Creator<StoriesBean> CREATOR = new Creator<StoriesBean>() {
-            @Override
-            public StoriesBean createFromParcel(Parcel source) {
-                return new StoriesBean(source);
-            }
-
-            @Override
-            public StoriesBean[] newArray(int size) {
-                return new StoriesBean[size];
-            }
-        };
     }
 
-    public static class TopStoriesBean implements Parcelable {
+    public static class TopStoriesBean {
         private String image;
         private int type;
         private int id;
@@ -194,40 +156,5 @@ public class ZhihuDailyNews {
         public void setTitle(String title) {
             this.title = title;
         }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.image);
-            dest.writeInt(this.type);
-            dest.writeInt(this.id);
-            dest.writeString(this.title);
-        }
-
-        public TopStoriesBean() {
-        }
-
-        protected TopStoriesBean(Parcel in) {
-            this.image = in.readString();
-            this.type = in.readInt();
-            this.id = in.readInt();
-            this.title = in.readString();
-        }
-
-        public static final Creator<TopStoriesBean> CREATOR = new Creator<TopStoriesBean>() {
-            @Override
-            public TopStoriesBean createFromParcel(Parcel source) {
-                return new TopStoriesBean(source);
-            }
-
-            @Override
-            public TopStoriesBean[] newArray(int size) {
-                return new TopStoriesBean[size];
-            }
-        };
     }
 }
