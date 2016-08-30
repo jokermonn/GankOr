@@ -1,6 +1,7 @@
 # 干乎 (GankOr#
 
 一款基于 [Gank](http://gank.io/) 和[知乎](https://github.com/izzyleung/ZhihuDailyPurify/wiki/%E7%9F%A5%E4%B9%8E%E6%97%A5%E6%8A%A5-API-%E5%88%86%E6%9E%90)接口的娱乐休闲软件，有宅男福利妹纸图，配上幽默风趣小视频，也有知识扩展知乎热门，丰富你的碎片时间，娱乐休闲两不误
+
 ## APK 下载 ##
 
 [百度网盘](http://pan.baidu.com/s/1cmk2oI)
@@ -12,6 +13,10 @@
 [安智市场干乎链接](http://apk.hiapk.com/appinfo/com.joker.gankor) 或 二维码下载<a href="./screenshots/android_two-dimensional_code.png"><img src="./screenshots/android_two-dimensional_code.png" width="18%"/></a>
 
 ## 教程 (撰写中... ##
+
+此项目会迭代下一个版本，迭代教程依旧会写出来
+
+v1.0
 
 [第一天教程](./documents/gankor_1st.md) 
 
@@ -62,9 +67,7 @@
 
 ## 关于我 ##
 
-初学 Android 半年，热爱开源，拥抱开源，愿与志同道合者详论
-
-qq：429094465（加好友时候请附带验证消息：android）
+一只普二即将步入大三的大二狗，初学 Android 半年，热爱开源，拥抱开源，愿与志同道合者详论
 
 ## 鸣谢 ##
 
