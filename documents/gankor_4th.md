@@ -1,6 +1,6 @@
 # 第四天教程 #
 
-至此，我们已经完成了关于主内容显示的所有任务，我们再回到 MainActivity，细细一算，大概有四个点击事件要做：
+至此，我们已经完成了关于主内容显示的所有任务，我们再回到 MainActivity，细细一算，大概有五个点击事件要做：
 
 - GankFragment 的图片点击，等比例放大显示成一个大的图片
 
@@ -223,7 +223,7 @@
 	        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 	    }
 
-		// 获取点击位置
+		// 	获取点击位置
 	    private int[] getClickLocation(View v) {
 	        int[] clickLocation = new int[2];
 	        v.getLocationOnScreen(clickLocation);
@@ -232,7 +232,7 @@
 	        return clickLocation;
 	    }
 
-所以还是挺简单的，我们将获取到的位置通过 intent 传给相应的下一个 Activity 即可。
+如最后一个方法所示，所以还是挺简单的，我们将获取到的位置通过 intent 传给相应的下一个 Activity 即可。
 
 ZhihuDetailsActivity 代码如下：
 
@@ -415,3 +415,108 @@ ZhihuDetailsActivity 代码如下：
 	        }
 	    }
 	}
+
+知乎接口返回的 json 数据中，包含了页面的 css 样式，而且这个样式是固定的，所以我们完全可以将它写入到本地文件中，css 样式代码如下我就不给了，可以在 json 数据中查看，或者在项目的 app->src->main->assets->css->news 中查看。然后在 webview 加载中将它引入即可。
+
+解决掉后三个点击事件，我们就剩下前面 GankFragment 两个点击事件了，其中，视频跳转我直接启用了系统的页面，具体代码可以直接看上面了，我就不做过多的解释，在后期的迭代中，将会考虑使用 webview 来加载。
+
+最后就是我们的 PictureActivity 了，代码如下：
+
+	public class PictureActivity extends BaseActivity implements View.OnClickListener {
+	    public static final String EXTRA_IMAGE_URL = "image_url";
+	    public static final String EXTRA_IMAGE_TITLE = "image_title";
+	    public static final String TRANSIT_PIC = "picture";
+	    private String mImageUrl;
+	    private String mName;
+	    private ImageView mPicImageView;
+	    private Toolbar mTitleToolbar;
+	
+	    public static Intent newIntent(Context context, String url, String desc) {
+	        Intent intent = new Intent(context, PictureActivity.class);
+	        intent.putExtra(PictureActivity.EXTRA_IMAGE_URL, url);
+	        intent.putExtra(PictureActivity.EXTRA_IMAGE_TITLE, desc);
+	        return intent;
+	    }
+	
+	    @TargetApi(Build.VERSION_CODES.KITKAT)
+	    @Override
+	    protected void initView(Bundle savedInstanceState) {
+	        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+	        setContentView(R.layout.activity_picture);
+	        mTitleToolbar = (Toolbar) findViewById(R.id.tb_title);
+	        mPicImageView = (ImageView) findViewById(R.id.iv_pic);
+	
+	        mTitleToolbar.setNavigationOnClickListener(this);
+	        setSupportActionBar(mTitleToolbar);
+	        final ActionBar ab = getSupportActionBar();
+	        ab.setDisplayHomeAsUpEnabled(true);
+	        mPicImageView.setOnClickListener(this);
+	
+	        ViewCompat.setTransitionName(mPicImageView, TRANSIT_PIC);
+	    }
+	
+	    @Override
+	    protected void initData() {
+	        super.initData();
+	        parseIntent();
+	        getSupportActionBar().setTitle(mName);
+	
+	        loadPic(mImageUrl, mPicImageView);
+	    }
+	
+	    private void parseIntent() {
+	        mImageUrl = getIntent().getStringExtra(EXTRA_IMAGE_URL);
+	        mName = getIntent().getStringExtra(EXTRA_IMAGE_TITLE);
+	    }
+	
+	    private void loadPic(String imageUrl, ImageView imageView) {
+	        ImageUtil.getInstance().displayImage(imageUrl, imageView);
+	    }
+	
+	    @Override
+	    public void onClick(View v) {
+	        switch (v.getId()) {
+	            case R.id.iv_pic:
+	                changeToolbar();
+	                break;
+	            default:
+	                break;
+	        }
+	    }
+	
+	    private void changeToolbar() {
+	        if (mTitleToolbar.isShown()) {
+	            mTitleToolbar.setVisibility(View.INVISIBLE);
+	        } else {
+	            mTitleToolbar.setVisibility(View.VISIBLE);
+	        }
+	    }
+	
+	    @Override
+	    public boolean onCreateOptionsMenu(Menu menu) {
+	        getMenuInflater().inflate(R.menu.menu_picture, menu);
+	        return true;
+	    }
+	
+	    @Override
+	    public boolean onOptionsItemSelected(MenuItem item) {
+	        switch (item.getItemId()) {
+	            case android.R.id.home:
+	                finish();
+	                return true;
+	            case R.id.menu_save:
+	                ImageUtil.getInstance().saveImage(this, mName, mImageUrl);
+	                return true;
+	            case R.id.menu_share:
+	                LazyUtil.showToast("暂时不支持分享功能哦");
+	                return true;
+	            default:
+	                break;
+	        }
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
+
+简单地解释一下：从 MainActivity 中传入图片的 url，然后在 PictureActivity 中解析 intent，获取到传过来的图片的 url 直接使用 U-I-L 来显示该图片即可。至此，v1.0 版本的干乎教程就到此结束了，大致内容我都已经讲解了，如果还有任何问题，欢迎提出 [issure](https://github.com/jokerZLemon/GankOr/issues)，我一定会热心解答。
+
+至此，感谢所有支持干乎的朋友们，接下来我讲进行干乎 v1.1 版本的升级。
