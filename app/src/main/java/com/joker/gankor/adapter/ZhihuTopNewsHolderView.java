@@ -1,4 +1,4 @@
-package com.joker.gankor.view;
+package com.joker.gankor.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

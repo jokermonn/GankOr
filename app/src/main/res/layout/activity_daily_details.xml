@@ -16,8 +16,7 @@
         android:id="@+id/abl_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/detail_backdrop_height"
-        android:fitsSystemWindows="true"
-        android:visibility="invisible">
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/ctl_title"
@@ -49,7 +48,6 @@
         android:id="@+id/nsv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <WebView

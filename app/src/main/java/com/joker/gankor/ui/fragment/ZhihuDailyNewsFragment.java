@@ -17,7 +17,7 @@ import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.OkUtil;
 import com.joker.gankor.view.PullLoadRecyclerView;
-import com.joker.gankor.view.ZhihuTopNewsHolderView;
+import com.joker.gankor.adapter.ZhihuTopNewsHolderView;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -236,7 +236,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
                 (topStories.getId())), null));
     }
 
-    //    知乎日报热门列表点击事件
+    //    知乎热门列表点击事件
     @Override
     public void onZhihuHotItemClick(View view, ZhihuHotNews.RecentBean recentBean) {
         int[] clickLocation = getClickLocation(view);

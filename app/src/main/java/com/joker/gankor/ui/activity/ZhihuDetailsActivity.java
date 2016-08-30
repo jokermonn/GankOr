@@ -52,8 +52,8 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
         return intent;
     }
 
-    @Override
     @SuppressLint("SetJavaScriptEnabled")
+    @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_daily_details);
         mContentRevealBackgroundView = (RevealBackgroundView) findViewById(R.id.rbv_content);
@@ -84,13 +84,12 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
         if (mLocation == null || savedInstanceState != null) {
             mContentRevealBackgroundView.setToFinishedFrame();
         } else {
-            final int[] startingLocation = getIntent().getIntArrayExtra(LOCATION);
             mContentRevealBackgroundView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
                     .OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
                     mContentRevealBackgroundView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    mContentRevealBackgroundView.startFromLocation(startingLocation);
+                    mContentRevealBackgroundView.startFromLocation(mLocation);
                     return true;
                 }
             });
@@ -179,7 +178,6 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
         }
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -187,7 +185,6 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
             mContentWebView.onPause();
         }
     }
-
 
     @Override
     protected void onResume() {
@@ -199,7 +196,11 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
 
     @Override
     public void onStateChange(int state) {
-        if (RevealBackgroundView.STATE_FINISHED == state) {
+        if (state == RevealBackgroundView.STATE_NOT_STARTED) {
+            mContentNestedScrollView.setVisibility(View.GONE);
+            mContentAppBarLayout.setVisibility(View.GONE);
+        }
+        if (state == RevealBackgroundView.STATE_FINISHED) {
             mContentNestedScrollView.setVisibility(View.VISIBLE);
             mContentAppBarLayout.setVisibility(View.VISIBLE);
         }
