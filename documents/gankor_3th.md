@@ -312,7 +312,164 @@ GankRecyclerAdapter 代码如下：
 	
 	</LinearLayout>
 
-这里解释几个地方，其一：在 ``onBindViewHolder()`` 方法中注册点击事件，其二每次刷新数据源调用的 ``addDataMap(HashMap<> dataMap)`` 方法，然后分别取出 map 的键值对放入相应的 List 中刷新数据，其三就是这个 RatioImageView，其实它只是一个对 ImageView 稍稍做了一些改动的 ImageView，将 ImageView 的宽高固定且相等。可以阅读一下这篇文章[你所不知道的Activity转场动画——ActivityOptions](http://www.lxway.com/895445426.htm)，通俗来说，如果在 API>21 中需要使用这种点击动画的效果（点击 ImageView 然后扩充到整个屏幕），那么就要限制 ImageView 的宽高固定且相等。
+这里解释几个地方，其一：在 ``onBindViewHolder()`` 方法中注册点击事件，其二每次刷新数据源调用的 ``addDataMap(HashMap<> dataMap)`` 方法，然后分别取出 map 的键值对放入相应的 List 中刷新数据，其三就是这个 RatioImageView，其实它只是一个对 ImageView 稍稍做了一些改动的 ImageView，将 ImageView 的宽高固定且相等。可以阅读一下这篇文章[你所不知道的Activity转场动画—— ActivityOptions](http://www.lxway.com/895445426.htm)，通俗来说，如果在 API>21 中需要使用这种点击动画的效果（点击 ImageView 然后扩充到整个屏幕），那么就要限制 ImageView 的宽高固定且相等。
+
+然后就是 GankWelfare，代码如下：
+
+	public class GankWelfare {
+	    /**
+	     * error : false
+	     * results : [{"_id":"57a159ee421aa91e2606476b","createdAt":"2016-08-03T10:41:50.299Z","desc":"8-3",
+	     * "publishedAt":"2016-08-03T11:12:47.159Z","source":"chrome","type":"福利","url":"http://ww3.sinaimg
+	     * .cn/large/610dc034jw1f6gcxc1t7vj20hs0hsgo1.jpg","used":true,"who":"代码家"},
+	     * {"_id":"579ff9d0421aa90d39e709be","createdAt":"2016-08-02T09:39:28.23Z","desc":"8.2",
+	     * "publishedAt":"2016-08-02T11:40:01.363Z","source":"chrome","type":"福利","url":"http://ww4.sinaimg
+	     * .cn/large/610dc034jw1f6f5ktcyk0j20u011hacg.jpg","used":true,"who":"代码家"},
+	     * {"_id":"579eb4b4421aa90d2fc94ba0","createdAt":"2016-08-01T10:32:20.10Z","desc":"8.1",
+	     * "publishedAt":"2016-08-01T12:00:57.45Z","source":"chrome","type":"福利","url":"http://ww1.sinaimg
+	     * .cn/large/610dc034jw1f6e1f1qmg3j20u00u0djp.jpg","used":true,"who":"代码家"},
+	     * {"_id":"579ab0a8421aa90d36e960b4","createdAt":"2016-07-29T09:26:00.838Z","desc":"7.29",
+	     * "publishedAt":"2016-07-29T09:37:39.219Z","source":"chrome","type":"福利","url":"http://ww3.sinaimg
+	     * .cn/large/610dc034jw1f6aipo68yvj20qo0qoaee.jpg","used":true,"who":"代码家"},
+	     * {"_id":"57995869421aa90d43bbf042","createdAt":"2016-07-28T08:57:13.293Z","desc":"葛优躺",
+	     * "publishedAt":"2016-07-28T18:17:20.567Z","source":"chrome","type":"福利","url":"http://ww3.sinaimg
+	     * .cn/large/610dc034jw1f69c9e22xjj20u011hjuu.jpg","used":true,"who":"代码家"},
+	     * {"_id":"57981ee6421aa90d36e96090","createdAt":"2016-07-27T10:39:34.818Z","desc":"王子文",
+	     * "publishedAt":"2016-07-27T11:27:16.610Z","source":"chrome","type":"福利","url":"http://ww3.sinaimg
+	     * .cn/large/610dc034jw1f689lmaf7qj20u00u00v7.jpg","used":true,"who":"代码家"},
+	     * {"_id":"5796b970421aa90d2fc94b4e","createdAt":"2016-07-26T09:14:24.76Z","desc":"今天两个妹子",
+	     * "publishedAt":"2016-07-26T10:30:11.357Z","source":"chrome","type":"福利","url":"http://ww3.sinaimg
+	     * .cn/large/c85e4a5cjw1f671i8gt1rj20vy0vydsz.jpg","used":true,"who":"代码家"},
+	     * {"_id":"5794df0e421aa90d39e70939","createdAt":"2016-07-24T23:30:22.399Z","desc":"7.25",
+	     * "publishedAt":"2016-07-25T11:43:57.769Z","source":"chrome","type":"福利","url":"http://ww2.sinaimg
+	     * .cn/large/610dc034jw1f65f0oqodoj20qo0hntc9.jpg","used":true,"who":"代码家"},
+	     * {"_id":"57918b5c421aa90d2fc94b35","createdAt":"2016-07-22T10:56:28.274Z","desc":"恐龙爪子萌妹子",
+	     * "publishedAt":"2016-07-22T11:04:44.305Z","source":"web","type":"福利","url":"http://ww2.sinaimg
+	     * .cn/large/c85e4a5cgw1f62hzfvzwwj20hs0qogpo.jpg","used":true,"who":"代码家"},
+	     * {"_id":"578f93c4421aa90de83c1bf4","createdAt":"2016-07-20T23:07:48.480Z","desc":"7.21",
+	     * "publishedAt":"2016-07-20T16:09:07.721Z","source":"chrome","type":"福利","url":"http://ww4.sinaimg
+	     * .cn/large/610dc034jw1f60rw11f5mj20iy0sg0u2.jpg","used":true,"who":"daimajia"}]
+	     */
+	
+	    private boolean error;
+	    /**
+	     * _id : 57a159ee421aa91e2606476b
+	     * createdAt : 2016-08-03T10:41:50.299Z
+	     * desc : 8-3
+	     * publishedAt : 2016-08-03T11:12:47.159Z
+	     * source : chrome
+	     * type : 福利
+	     * url : http://ww3.sinaimg.cn/large/610dc034jw1f6gcxc1t7vj20hs0hsgo1.jpg
+	     * used : true
+	     * who : 代码家
+	     */
+	
+	    private List<ResultsBean> results;
+	
+	    public boolean isError() {
+	        return error;
+	    }
+	
+	    public void setError(boolean error) {
+	        this.error = error;
+	    }
+	
+	    public List<ResultsBean> getResults() {
+	        return results;
+	    }
+	
+	    public void setResults(List<ResultsBean> results) {
+	        this.results = results;
+	    }
+	
+	    public static class ResultsBean {
+	        @SerializedName("_id")
+	        private String id;
+	
+	        private String createdAt;
+	        private String desc;
+	        private String publishedAt;
+	        private String source;
+	        private String type;
+	        private String url;
+	        private boolean used;
+	        private String who;
+	
+	        public String getId() {
+	            return id;
+	        }
+	
+	        public void setId(String id) {
+	            this.id = id;
+	        }
+	
+	        public String getCreatedAt() {
+	            return createdAt;
+	        }
+	
+	        public void setCreatedAt(String createdAt) {
+	            this.createdAt = createdAt;
+	        }
+	
+	        public String getDesc() {
+	            return desc;
+	        }
+	
+	        public void setDesc(String desc) {
+	            this.desc = desc;
+	        }
+	
+	        public String getPublishedAt() {
+	            return publishedAt;
+	        }
+	
+	        public void setPublishedAt(String publishedAt) {
+	            this.publishedAt = publishedAt;
+	        }
+	
+	        public String getSource() {
+	            return source;
+	        }
+	
+	        public void setSource(String source) {
+	            this.source = source;
+	        }
+	
+	        public String getType() {
+	            return type;
+	        }
+	
+	        public void setType(String type) {
+	            this.type = type;
+	        }
+	
+	        public String getUrl() {
+	            return url;
+	        }
+	
+	        public void setUrl(String url) {
+	            this.url = url;
+	        }
+	
+	        public boolean isUsed() {
+	            return used;
+	        }
+	
+	        public void setUsed(boolean used) {
+	            this.used = used;
+	        }
+	
+	        public String getWho() {
+	            return who;
+	        }
+	
+	        public void setWho(String who) {
+	            this.who = who;
+	        }
+	    }
+	}
+
+实际上就是 gank 接口返回数据的对象，在 Android Studio 中，我们可以使用 [GsonFormat](https://github.com/zzz40500/GsonFormat) 来帮助我们进行解析返回的 json 转换成 javabean，使用起来还是相当的方便，这里另注：Gson 提供 ``@SerializedName`` 注解，可以让我们对字段重命名。
 
 接下来就是 ZhihuDailyNewsFragment 了，其代码如下：
 
@@ -579,4 +736,433 @@ GankRecyclerAdapter 代码如下：
 	    }
 	}
 
+其布局文件代码如下：
+
+	<RelativeLayout
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@color/white"
+	    android:orientation="horizontal"
+	    android:padding="10dp">
+	
+	    <ImageView
+	        android:id="@+id/iv_item"
+	        android:layout_width="80dp"
+	        android:layout_height="80dp"
+	        android:layout_centerVertical="true"
+	        android:scaleType="centerCrop"/>
+	
+	    <TextView
+	        android:id="@+id/tv_item"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentEnd="true"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_toRightOf="@id/iv_item"
+	        android:paddingLeft="8dp"
+	        android:textSize="18sp"/>
+	
+	</RelativeLayout>
+
 adapter 的代码也是相当的简单，当然，如果你有任何问题提出 [issure](https://github.com/jokerZLemon/GankOr/issues) 即可，我一定耐心解答。
+
+ZhihuDailyNews 代码如下：
+
+	/**
+	 * Created by joker on 2016/8/8.
+	 */
+	public class ZhihuDailyNews {
+	
+	    /**
+	     * date : 20160808
+	     * stories : [{"images":["http://pic1.zhimg.com/c27847ba9ac7c11ce195bc5155357bf4.jpg"],"type":0,
+	     * "id":8656865,"ga_prefix":"080809","title":"从经济学角度来看，「走一步看一步」是不是能达到最优？"},{"images":["http://pic1
+	     * .zhimg.com/e75c9b74b748ada732ef5301b2c6b518.jpg"],"type":0,"id":8660318,"ga_prefix":"080808",
+	     * "title":"如果身体里有一个细胞癌变了，就一定会发展成癌症吗？"},{"images":["http://pic2.zhimg
+	     * .com/497ecbb84920b655151a1142b63b9675.jpg"],"type":0,"id":8660020,"ga_prefix":"080807",
+	     * "title":"理想中的商业模式，应该是什么样的？"},{"title":"英文阅读中，有哪些值得注意的文化背景知识？","ga_prefix":"080807",
+	     * "images":["http://pic3.zhimg.com/c551af07c0ecfec4c8137fa1660bd206.jpg"],"multipic":true,"type":0,
+	     * "id":8660423},{"images":["http://pic3.zhimg.com/41e17842513870249afa6747d192fa26.jpg"],"type":0,
+	     * "id":8658498,"ga_prefix":"080807","title":"印度人口多，经济增长快，为什么奥运会上表现不太好？"},{"images":["http://pic4
+	     * .zhimg.com/f84dc12935112fe36dc8d0a2db71a91f.jpg"],"type":0,"id":8660448,"ga_prefix":"080807",
+	     * "title":"读读日报 24 小时热门 TOP 5 · 地铁公交上班族如何读书？"},{"images":["http://pic3.zhimg
+	     * .com/29aa1a049b2408bbf4211be4e49c1a7a.jpg"],"type":0,"id":8658968,"ga_prefix":"080806","title":"瞎扯
+	     * · 如何正确地吐槽"}]
+	     * top_stories : [{"image":"http://pic1.zhimg.com/988f127baf4dd0885e54994e5c2d8a08.jpg","type":0,
+	     * "id":8660448,"ga_prefix":"080807","title":"读读日报 24 小时热门 TOP 5 · 地铁公交上班族如何读书？"},
+	     * {"image":"http://pic2.zhimg.com/782daacef0bc8fb35c00afc45f6d8145.jpg","type":0,"id":8660318,
+	     * "ga_prefix":"080808","title":"如果身体里有一个细胞癌变了，就一定会发展成癌症吗？"},{"image":"http://pic4.zhimg
+	     * .com/cc0f6aa9ff5b1dd1f76c9d6abb9d2b63.jpg","type":0,"id":8658538,"ga_prefix":"080718",
+	     * "title":"整点儿奥运 · 自打看了奥运会，心脏一下就强健了"},{"image":"http://pic4.zhimg
+	     * .com/b2aa14b50213da6d6d2e5c6a96a07d03.jpg","type":0,"id":8659110,"ga_prefix":"080717",
+	     * "title":"知乎好问题 · 独处的时候，如何保持自律？"},{"image":"http://pic2.zhimg.com/e15f4d8396a1573928fa510e711046e5
+	     * .jpg","type":0,"id":8652741,"ga_prefix":"080715","title":"《玩具总动员 3》里还有龙猫彩蛋？这可是迪士尼自己说的"}]
+	     */
+	
+	    private String date;
+	    /**
+	     * images : ["http://pic1.zhimg.com/c27847ba9ac7c11ce195bc5155357bf4.jpg"]
+	     * type : 0
+	     * id : 8656865
+	     * ga_prefix : 080809
+	     * title : 从经济学角度来看，「走一步看一步」是不是能达到最优？
+	     */
+	
+	    private List<StoriesBean> stories;
+	    /**
+	     * image : http://pic1.zhimg.com/988f127baf4dd0885e54994e5c2d8a08.jpg
+	     * type : 0
+	     * id : 8660448
+	     * ga_prefix : 080807
+	     * title : 读读日报 24 小时热门 TOP 5 · 地铁公交上班族如何读书？
+	     */
+	
+	    @SerializedName("top_stories")
+	    private List<TopStoriesBean> topStories;
+	
+	    public String getDate() {
+	        return date;
+	    }
+	
+	    public void setDate(String date) {
+	        this.date = date;
+	    }
+	
+	    public List<StoriesBean> getStories() {
+	        return stories;
+	    }
+	
+	    public void setStories(List<StoriesBean> stories) {
+	        this.stories = stories;
+	    }
+	
+	    public List<TopStoriesBean> getTopStories() {
+	        return topStories;
+	    }
+	
+	    public void setTopStories(List<TopStoriesBean> topStories) {
+	        this.topStories = topStories;
+	    }
+	
+	    public static class StoriesBean {
+	        private int type;
+	        private int id;
+	        private String title;
+	        private List<String> images;
+	
+	        public int getType() {
+	            return type;
+	        }
+	
+	        public void setType(int type) {
+	            this.type = type;
+	        }
+	
+	        public int getId() {
+	            return id;
+	        }
+	
+	        public void setId(int id) {
+	            this.id = id;
+	        }
+	
+	        public String getTitle() {
+	            return title;
+	        }
+	
+	        public void setTitle(String title) {
+	            this.title = title;
+	        }
+	
+	        public List<String> getImages() {
+	            return images;
+	        }
+	
+	        public void setImages(List<String> images) {
+	            this.images = images;
+	        }
+	    }
+	
+	    public static class TopStoriesBean {
+	        private String image;
+	        private int type;
+	        private int id;
+	        private String title;
+	
+	        public String getImage() {
+	            return image;
+	        }
+	
+	        public void setImage(String image) {
+	            this.image = image;
+	        }
+	
+	        public int getType() {
+	            return type;
+	        }
+	
+	        public void setType(int type) {
+	            this.type = type;
+	        }
+	
+	        public int getId() {
+	            return id;
+	        }
+	
+	        public void setId(int id) {
+	            this.id = id;
+	        }
+	
+	        public String getTitle() {
+	            return title;
+	        }
+	
+	        public void setTitle(String title) {
+	            this.title = title;
+	        }
+	    }
+	}
+
+那么 HotNewsFragment 的代码更是简单了：
+
+	/**
+	 * A simple {@link Fragment} subclass.
+	 */
+	public class ZhihuHotNewsFragment extends ContentFragment implements SwipeRefreshLayout.OnRefreshListener,
+	        HotNewsRecyclerAdapter.OnHotItemClickListener {
+	    public final static String HOT_NEWS_JSON = "hot_news_json";
+	    public HotNewsRecyclerAdapter mAdapter;
+	    private HotNewsRecyclerAdapter.OnHotItemClickListener mItemListener;
+	
+	    public ZhihuHotNewsFragment() {
+	        // Required empty public constructor
+	    }
+	
+	    @Override
+	    protected String getFirstPageUrl() {
+	        return "";
+	    }
+	
+	    @Override
+	    protected void initView(LayoutInflater inflater, ViewGroup container) {
+	        List<ZhihuHotNews.RecentBean> mRecent = new ArrayList<ZhihuHotNews.RecentBean>();
+	        mContentRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+	        mAdapter = new HotNewsRecyclerAdapter(mActivity, mRecent);
+	        mAdapter.setOnHotItemClickListener(this);
+	        mContentRecyclerView.setAdapter(mAdapter);
+	    }
+	
+	    @Override
+	    protected void initData() {
+	        super.initData();
+	
+	        if (!mCache.isCacheEmpty(HOT_NEWS_JSON)) {
+	            mAdapter.changeListData(mGson.fromJson(mCache.getAsString(HOT_NEWS_JSON), ZhihuHotNews
+	                    .class).getRecent());
+	        } else {
+	            if (isNetConnect()) {
+	                loadDataFromNet("");
+	            } else {
+	                LazyUtil.showToast("网络没有连接哦");
+	            }
+	        }
+	    }
+	
+	    @Override
+	    public void loadDataFromNet(String url) {
+	        //        获取知乎热门消息
+	        mOkUtil.okHttpZhihuGson(API.ZHIHU_HOT_NEWS, new OkUtil.ResultCallback<ZhihuHotNews>() {
+	                    @Override
+	                    public void onError(Call call, Exception e) {
+	                        e.printStackTrace();
+	                    }
+	
+	                    @Override
+	                    public void onResponse(ZhihuHotNews response, String json) {
+	                        if (response != null) {
+	                            if (mCache.isNewResponse(HOT_NEWS_JSON, json)) {
+	                                mCache.put(HOT_NEWS_JSON, json);
+	                                mAdapter.changeListData(response.getRecent());
+	                            }
+	                        }
+	                        mContentSwipeRefreshLayout.setRefreshing(false);
+	                    }
+	                }
+	        );
+	    }
+	
+	    @Override
+	    public void onZhihuHotItemClick(View view, ZhihuHotNews.RecentBean bean) {
+	        if (mItemListener != null) {
+	            mItemListener.onZhihuHotItemClick(view, bean);
+	        }
+	    }
+	
+	    public void setOnItemClickListener(HotNewsRecyclerAdapter.OnHotItemClickListener itemClickListener) {
+	        mItemListener = itemClickListener;
+	    }
+	}
+
+adapter 代码如下：
+
+	/**
+	 * Created by joker on 2016/8/14.
+	 */
+	public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecyclerAdapter.ViewHolder> {
+	    private List<ZhihuHotNews.RecentBean> mBean;
+	    private LayoutInflater mInflater;
+	    private OnHotItemClickListener mListener;
+	
+	    public HotNewsRecyclerAdapter(Context context, List<ZhihuHotNews.RecentBean> bean) {
+	        mBean = bean;
+	        mInflater = LayoutInflater.from(context);
+	    }
+	
+	    @Override
+	    public HotNewsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+	        return new ViewHolder(mInflater.inflate(R.layout.zhihu_news_item, parent, false));
+	    }
+	
+	    @Override
+	    public void onBindViewHolder(HotNewsRecyclerAdapter.ViewHolder holder, final int position) {
+	        ImageUtil.getInstance().displayImageOnLoading(mBean.get(position).getThumbnail(), holder
+	                .mImageView);
+	        holder.mTextView.setText(mBean.get(position).getTitle());
+	        holder.item.setOnClickListener(new View.OnClickListener() {
+	            @Override
+	            public void onClick(View v) {
+	                if (mListener != null) {
+	                    mListener.onZhihuHotItemClick(v, mBean.get(position));
+	                }
+	            }
+	        });
+	    }
+	
+	    @Override
+	    public int getItemCount() {
+	        return mBean.size();
+	    }
+	
+	    public void changeListData(List<ZhihuHotNews.RecentBean> bean) {
+	        mBean = bean;
+	        notifyDataSetChanged();
+	    }
+	
+	    public void setOnHotItemClickListener(OnHotItemClickListener listener) {
+	        mListener = listener;
+	    }
+	
+	    public interface OnHotItemClickListener {
+	        void onZhihuHotItemClick(View view, ZhihuHotNews.RecentBean bean);
+	    }
+	
+	    public class ViewHolder extends RecyclerView.ViewHolder {
+	        TextView mTextView;
+	        ImageView mImageView;
+	        View item;
+	
+	        public ViewHolder(View itemView) {
+	            super(itemView);
+	            mTextView = (TextView) itemView.findViewById(R.id.tv_item);
+	            mImageView = (ImageView) itemView.findViewById(R.id.iv_item);
+	            item = itemView;
+	        }
+	    }
+	}
+
+布局文件如下：
+
+	<RelativeLayout
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@color/white"
+	    android:orientation="horizontal"
+	    android:padding="10dp">
+	
+	    <ImageView
+	        android:id="@+id/iv_item"
+	        android:layout_width="80dp"
+	        android:layout_height="80dp"
+	        android:layout_centerVertical="true"
+	        android:scaleType="centerCrop"/>
+	
+	    <TextView
+	        android:id="@+id/tv_item"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentEnd="true"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_toRightOf="@id/iv_item"
+	        android:paddingLeft="8dp"
+	        android:textSize="18sp"/>
+	
+	</RelativeLayout>
+
+ZhihuHotNews 代码如下：
+
+	/**
+	 * Created by joker on 2016/8/8.
+	 */
+	public class ZhihuHotNews {
+	
+	    /**
+	     * news_id : 8649660
+	     * url : http://news-at.zhihu.com/api/2/news/8649660
+	     * thumbnail : http://pic4.zhimg.com/67a1d21a65421fe2ab5fcb1ad4ea7087.jpg
+	     * title : 名字里有「莲」，长得也很像莲，但睡莲真的不是莲
+	     */
+	
+	    private List<RecentBean> recent;
+	
+	    public List<RecentBean> getRecent() {
+	        return recent;
+	    }
+	
+	    public void setRecent(List<RecentBean> recent) {
+	        this.recent = recent;
+	    }
+	
+	    public static class RecentBean {
+	        @SerializedName("news_id")
+	        private int newsId;
+	        private String url;
+	        private String thumbnail;
+	        private String title;
+	
+	        public int getNewsId() {
+	            return newsId;
+	        }
+	
+	        public void setNewsId(int newsId) {
+	            this.newsId = newsId;
+	        }
+	
+	        public String getUrl() {
+	            return url;
+	        }
+	
+	        public void setUrl(String url) {
+	            this.url = url;
+	        }
+	
+	        public String getThumbnail() {
+	            return thumbnail;
+	        }
+	
+	        public void setThumbnail(String thumbnail) {
+	            this.thumbnail = thumbnail;
+	        }
+	
+	        public String getTitle() {
+	            return title;
+	        }
+	
+	        public void setTitle(String title) {
+	            this.title = title;
+	        }
+	    }
+	}
