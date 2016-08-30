@@ -12,19 +12,23 @@
 
 [安智市场干乎链接](http://apk.hiapk.com/appinfo/com.joker.gankor) 或 二维码下载<a href="./screenshots/android_two-dimensional_code.png"><img src="./screenshots/android_two-dimensional_code.png" width="18%"/></a>
 
-## 教程 (撰写中... ##
+## 教程 ##
 
 此项目会迭代下一个版本，迭代教程依旧会写出来
 
-v1.0
+## v1.0 ##
 
-[第一天教程](./documents/gankor_1st.md) 
+- [第一天教程](./documents/gankor_1st.md) 
 
-[第二天教程](./documents/gankor_2nd.md)
+- [第二天教程](./documents/gankor_2nd.md)
 
-[第三天教程](./documents/gankor_3th.md)
+- [第三天教程](./documents/gankor_3th.md)
 
-[第四天教程](./documents/gankor_4th.md)（撰写中
+- [第四天教程](./documents/gankor_4th.md)
+
+## v1.1 ##
+
+迭代中...
 
 ## 截图 ##
 
@@ -75,7 +79,7 @@ v1.0
 
 - 业界大牛/郭霖公共号多篇文章投稿者：[李济洲](http://blog.csdn.net/leejizhou)
 
-- 985高校牛x学长：[秦伟](https://www.zhihu.com/people/qin-wei-94-13)
+- 985高校大牛学长：[秦伟](https://www.zhihu.com/people/qin-wei-94-13)
 
 - 大牛师傅：[陈业](https://www.zhihu.com/people/chen-ye-76-94)
 
