@@ -639,7 +639,31 @@ GankRecyclerAdapter 代码如下：
 	    }
 	}
 
-这里用到了一个轮播器的第三方库 [Android-ConvenientBanner](https://github.com/saiwu-bigkoo/Android-ConvenientBanner)，使用起来也是相当的简单，直接看一下作者的 demo 就可以啦。RecyclerView 不像 ListView 那般可以直接添加 HeaderView，所以我们需要从它的 adapter 下手，其 adapter 代码如下：
+这里用到了一个轮播器的第三方库 [Android-ConvenientBanner](https://github.com/saiwu-bigkoo/Android-ConvenientBanner)，使用起来也是相当的简单，直接看一下作者的 demo 就可以啦。放上轮播器的 adapter 代码：
+
+	public class ZhihuTopNewsHolderView implements Holder<ZhihuDailyNews.TopStoriesBean> {
+	    private ImageView mHeaderImageView;
+	    private TextView mHeaderTextView;
+	
+	    @Override
+	    public View createView(Context context) {
+	        View view = LayoutInflater.from(context).inflate(R.layout.daily_news_header_item,
+	                null);
+	        mHeaderImageView = (ImageView) view.findViewById(R.id.iv_header);
+	        mHeaderTextView = (TextView) view.findViewById(R.id.tv_header);
+	        mHeaderImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+	
+	        return view;
+	    }
+	
+	    @Override
+	    public void UpdateUI(Context context, int position, ZhihuDailyNews.TopStoriesBean bean) {
+	        ImageUtil.getInstance().displayImage(bean.getImage(), mHeaderImageView);
+	        mHeaderTextView.setText(bean.getTitle());
+	    }
+	}
+
+另外RecyclerView 不像 ListView 那般可以直接添加 HeaderView，所以我们需要从它的 adapter 下手，其 adapter 代码如下：
 
 	public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecyclerAdapter.ViewHolder> {
 	    private static final int TYPE_ITEM = 0;
