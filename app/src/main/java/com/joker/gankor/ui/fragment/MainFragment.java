@@ -14,6 +14,7 @@ import com.joker.gankor.adapter.DailyNewsRecyclerAdapter;
 import com.joker.gankor.adapter.GankRecyclerAdapter;
 import com.joker.gankor.adapter.HotNewsRecyclerAdapter;
 import com.joker.gankor.adapter.MainAdapter;
+import com.joker.gankor.model.GankWelfare;
 import com.joker.gankor.model.ZhihuDailyNews;
 import com.joker.gankor.model.ZhihuHotNews;
 import com.joker.gankor.ui.BaseFragment;
@@ -108,9 +109,9 @@ public class MainFragment extends BaseFragment implements GankRecyclerAdapter.Im
     }
 
     @Override
-    public void onGankImageClick(View image, String url, String desc) {
+    public void onGankImageClick(View image, List<GankWelfare.ResultsBean> bean, int position) {
         if (mImageListener != null) {
-            mImageListener.onGankImageClick(image, url, desc);
+            mImageListener.onGankImageClick(image, bean, position);
         }
     }
 

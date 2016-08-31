@@ -51,8 +51,7 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
             @Override
             public void onClick(View v) {
                 if (mImageListener != null) {
-                    mImageListener.onGankImageClick(holder.imageView, mWelfare.get(position).getUrl(),
-                            mWelfare.get(position).getDesc());
+                    mImageListener.onGankImageClick(holder.imageView, mWelfare, position);
                 }
             }
         });
@@ -101,7 +100,7 @@ public class GankRecyclerAdapter extends RecyclerView.Adapter<GankRecyclerAdapte
     }
 
     public interface ImageViewListener {
-        void onGankImageClick(View image, String url, String desc);
+        void onGankImageClick(View image, List<GankWelfare.ResultsBean> bean, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

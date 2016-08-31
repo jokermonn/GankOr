@@ -8,8 +8,8 @@
     android:orientation="vertical"
     tools:context="com.joker.gankor.ui.activity.PictureActivity">
 
-    <ImageView
-        android:id="@+id/iv_pic"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"/>

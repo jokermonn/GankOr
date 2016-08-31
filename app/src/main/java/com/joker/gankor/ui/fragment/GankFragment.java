@@ -164,9 +164,9 @@ public class GankFragment extends ContentFragment implements GankRecyclerAdapter
     }
 
     @Override
-    public void onGankImageClick(View image, String url, String desc) {
+    public void onGankImageClick(View image, List<GankWelfare.ResultsBean> bean, int position) {
         if (mImageListener != null) {
-            mImageListener.onGankImageClick(image, url, desc);
+            mImageListener.onGankImageClick(image, bean, position);
         }
     }
 

@@ -23,6 +23,7 @@ import com.joker.gankor.R;
 import com.joker.gankor.adapter.DailyNewsRecyclerAdapter;
 import com.joker.gankor.adapter.GankRecyclerAdapter;
 import com.joker.gankor.adapter.HotNewsRecyclerAdapter;
+import com.joker.gankor.model.GankWelfare;
 import com.joker.gankor.model.ZhihuDailyNews;
 import com.joker.gankor.model.ZhihuHotNews;
 import com.joker.gankor.ui.BaseActivity;
@@ -31,6 +32,9 @@ import com.joker.gankor.ui.fragment.ZhihuDailyNewsFragment;
 import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.ImageUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity implements GankRecyclerAdapter.TextViewListener,
         GankRecyclerAdapter.ImageViewListener, DailyNewsRecyclerAdapter.OnDailyItemClickListener,
@@ -247,8 +251,8 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
 
     //    Gank 图片点击
     @Override
-    public void onGankImageClick(View image, String url, String desc) {
-        Intent intent = PictureActivity.newIntent(MainActivity.this, url, desc);
+    public void onGankImageClick(View image, List<GankWelfare.ResultsBean> bean, int position) {
+        Intent intent = PictureActivity.newIntent(MainActivity.this, (ArrayList<GankWelfare.ResultsBean>) bean, position);
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 MainActivity.this, image, PictureActivity.TRANSIT_PIC);
         try {
