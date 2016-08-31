@@ -1,4 +1,4 @@
-原文地址：https://guides.codepath.com/android/Handling-Scrolls-with-CoordinatorLayout#troubleshooting-coordinated-layouts
+原文地址：[https://guides.codepath.com/android/Handling-Scrolls-with-CoordinatorLayout#troubleshooting-coordinated-layouts](https://guides.codepath.com/android/Handling-Scrolls-with-CoordinatorLayout#troubleshooting-coordinated-layouts)
 ## 预览 ##
 CoordinatorLayout 扩展了许多能实现 Google Material Design [scrolling effects](https://material.google.com/patterns/scrolling-techniques.html)（滚动技巧） 的效果，目前，这个框架内提供了几种方法使它并不需要自定义动画就可以运行，有以下几种效果：
 
@@ -78,7 +78,7 @@ CoordinatorLayout 扩展了许多能实现 Google Material Design [scrolling eff
 	
 	 </android.support.design.widget.AppBarLayout>
 
-。。。。。。这个 flag 必须与 ``enterAlways``，``enterAlwaysCollapsed``，``exitUntiCollapsed``或者 ``snap`` 一起使用：
+The ``scroll`` flag used within the attribute ``app:layout_scrollFlags`` must be enabled for any scroll effects to take into effect.（抱歉翻译不到），这个 flag 必须与 ``enterAlways``，``enterAlwaysCollapsed``，``exitUntiCollapsed``或者 ``snap`` 一起使用：
 
 - ``enterAlways``：界面向上滑动的时候，这个 view 就变得可见。当当前 list 滑动到底部然后想让 ``Toolbar`` 在界面上划的时候就能出来的时候，这个 flag 是非常有用的。通常情况下，我们希望 ``Toolbar`` 只会在 list 滑动到顶部的时候出现。
 - ``enterAlwaysCollapsed``：通常情况下，如果仅仅使用 ``enterAlways``，只要你向上滑动界面，``Toolbar`` 就会不停扩展。假设当前我们已经声明了 ``enterAlways`` 属性，并且我们定义了一个 ``minHeight``，那么你也可以指定 ``enterAlwaysCollapsed``，当这个设置被使用的时候，那么在向上滑动界面的过程中，你的 view 会一直以 ``minHeight`` 的高度显示在屏幕上，并且在到达顶端的时候继续滑动的话，它将扩展到它的最大高度。
@@ -304,5 +304,5 @@ CollapsingToolbarLayout 也可以让我们使用更多的高级动画，构建 I
 ### CoordinatedLayout 的故障排除 ###
 
 ``CoordinatedLayout`` 是非常有用但是最开始使用的时候也是很容易出错的。如果你在运行中遇到了协调行为的问题，可以参考一下以下提示：
+
 - 关于如何最有效地使用 CoordinatedLayout 的例子就是认真地参考 [cheesesquare 的源码 ](https://github.com/chrisbanes/cheesesquare) 。这个仓库的例子被 Google 一直在维护的，它展现了协调行为的最好使用。特别地，可以看一下[选项卡式 ViewPager 列表的布局](https://github.com/chrisbanes/cheesesquare/blob/master/app/src/main/res/layout/include_list_viewpager.xml) 和  [this for a layout for a detail view](https://github.com/chrisbanes/cheesesquare/blob/master/app/src/main/res/layout/activity_detail.xml) 。小心翼翼地比较你的代码和 cheesesquare 源码的区别。
-- 当协调一个 ``ViewPager`` 和一个父 activity 中含一个带有 list 的fragment 时，
