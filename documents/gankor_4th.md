@@ -164,13 +164,12 @@
 
 	@Override
     public void onStateChange(int state) {
-        if (state == RevealBackgroundView.STATE_NOT_STARTED) {
-            mContentNestedScrollView.setVisibility(View.GONE);
-            mContentAppBarLayout.setVisibility(View.GONE);
-        }
         if (state == RevealBackgroundView.STATE_FINISHED) {
             mContentNestedScrollView.setVisibility(View.VISIBLE);
             mContentAppBarLayout.setVisibility(View.VISIBLE);
+        } else {
+            mContentNestedScrollView.setVisibility(View.GONE);
+            mContentAppBarLayout.setVisibility(View.GONE);
         }
     }
 
