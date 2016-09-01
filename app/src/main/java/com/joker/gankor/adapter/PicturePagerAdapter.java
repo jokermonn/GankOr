@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.joker.gankor.R;
 import com.joker.gankor.model.GankWelfare;
+import com.joker.gankor.ui.activity.PictureActivity;
 import com.joker.gankor.utils.ImageUtil;
 
 import java.util.List;
@@ -19,10 +20,12 @@ import java.util.List;
 public class PicturePagerAdapter extends PagerAdapter {
     private List<GankWelfare.ResultsBean> bean;
     private LayoutInflater mInflater;
+    private Context mContext;
 
     public PicturePagerAdapter(Context context, List<GankWelfare.ResultsBean> bean) {
         this.bean = bean;
         mInflater = LayoutInflater.from(context);
+        mContext = context;
     }
 
     @Override
@@ -38,6 +41,14 @@ public class PicturePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView view = (ImageView) mInflater.inflate(R.layout.activity_picture_item, container, false);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mContext instanceof PictureActivity) {
+                    ((PictureActivity) mContext).changeToolbar();
+                }
+            }
+        });
         ImageUtil.getInstance().displayImage(bean.get(position).getUrl(), view);
         container.addView(view);
 

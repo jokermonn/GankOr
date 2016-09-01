@@ -36,7 +36,6 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
     public static Intent newIntent(Context context, ArrayList<GankWelfare.ResultsBean> bean, int position) {
         Intent intent = new Intent(context, PictureActivity.class);
         Bundle bundle = new Bundle();
-//        intent.putExtra(RESULTS_BEAN, (Serializable) bean);
         bundle.putParcelableArrayList(RESULTS_BEAN, bean);
         bundle.putInt(IMG_POSITION, position);
         intent.putExtras(bundle);
@@ -81,16 +80,10 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_pic:
-                changeToolbar();
-                break;
-            default:
-                break;
-        }
+
     }
 
-    private void changeToolbar() {
+    public void changeToolbar() {
         if (mTitleToolbar.isShown()) {
             mTitleToolbar.setVisibility(View.INVISIBLE);
         } else {
