@@ -32,9 +32,9 @@ public class MainFragment extends BaseFragment implements GankRecyclerAdapter.Im
     public final static String MENU_GANK = "menu_gank";
     public final static String MENU_ZHIHU = "menu_zhihu";
     public final static String MENU_ID = "menu_id";
-    public GankFragment mGankFragment;
-    public ZhihuDailyNewsFragment mDailyNewsFragment;
-    public ZhihuHotNewsFragment mHotNewsFragment;
+    private GankFragment mGankFragment;
+    private ZhihuDailyNewsFragment mDailyNewsFragment;
+    private ZhihuHotNewsFragment mHotNewsFragment;
     private MainAdapter adapter;
     private ViewPager mContentViewPager;
     private List<Fragment> mFragments = new ArrayList<>();

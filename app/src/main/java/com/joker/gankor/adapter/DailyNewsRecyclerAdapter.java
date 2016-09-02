@@ -1,6 +1,7 @@
 package com.joker.gankor.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import com.joker.gankor.R;
 import com.joker.gankor.model.ZhihuDailyNews;
+import com.joker.gankor.utils.API;
+import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.ImageUtil;
 
 import java.util.List;
@@ -20,14 +23,18 @@ import java.util.List;
 public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecyclerAdapter.ViewHolder> {
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_HEADER = 1;
+    public final CacheUtil mCache;
     private List<ZhihuDailyNews.StoriesBean> mBean;
     private LayoutInflater mInflater;
     private OnDailyItemClickListener mListener;
     private View mHeaderView;
+    private Context mContext;
 
     public DailyNewsRecyclerAdapter(Context context, List<ZhihuDailyNews.StoriesBean> storiesBeen) {
         mBean = storiesBeen;
         mInflater = LayoutInflater.from(context);
+        mCache = CacheUtil.getInstance(context);
+        mContext = context;
     }
 
     @Override
@@ -55,6 +62,13 @@ public class DailyNewsRecyclerAdapter extends RecyclerView.Adapter<DailyNewsRecy
                 }
             }
         });
+//        缓存不为空，改变颜色    (阅读标记)
+        if (!mCache.isCacheEmpty(API.ZHIHU_NEWS_FOUR + String.valueOf
+                (mBean.get(newPosition).getId()))) {
+            holder.mTextView.setTextColor(ContextCompat.getColor(mContext, R.color.have_read));
+        } else {
+            holder.mTextView.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+        }
     }
 
     @Override

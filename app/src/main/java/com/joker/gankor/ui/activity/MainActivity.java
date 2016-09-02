@@ -40,8 +40,8 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
         GankRecyclerAdapter.ImageViewListener, DailyNewsRecyclerAdapter.OnDailyItemClickListener,
         ZhihuDailyNewsFragment.OnBannerClickListener, HotNewsRecyclerAdapter.OnHotItemClickListener {
 
-    public MainFragment mContentGank;
-    public MainFragment mContentZhihu;
+    private MainFragment mContentGank;
+    private MainFragment mContentZhihu;
     private Toolbar mTitleToolbar;
     private TabLayout mTitleTabLayout;
     private NavigationView mContentNavigationView;

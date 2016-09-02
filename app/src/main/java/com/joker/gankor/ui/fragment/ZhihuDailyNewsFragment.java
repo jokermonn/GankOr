@@ -144,6 +144,7 @@ public class ZhihuDailyNewsFragment extends ContentFragment implements com.bigko
     @Override
     public void onResume() {
         super.onResume();
+        mAdapter.notifyDataSetChanged();
         mShowConvenientBanner.startTurning(4500);
     }
 
@@ -158,7 +159,7 @@ public class ZhihuDailyNewsFragment extends ContentFragment implements com.bigko
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && isDataLoaded && isViewCreated) {
-            mShowConvenientBanner.startTurning(4000);
+            mShowConvenientBanner.startTurning(4500);
         }
         if (!isVisibleToUser && isViewCreated) {
             mShowConvenientBanner.stopTurning();

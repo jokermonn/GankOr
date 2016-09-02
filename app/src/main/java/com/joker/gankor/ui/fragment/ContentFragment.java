@@ -160,4 +160,16 @@ public abstract class ContentFragment extends BaseFragment implements SwipeRefre
 //        refWatcher.watch(this);
         mActivity = null;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LazyUtil.log(getClass().getName() + "    onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LazyUtil.log(getClass().getName() + "    onPause");
+    }
 }

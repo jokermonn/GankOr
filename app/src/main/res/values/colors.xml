@@ -7,6 +7,8 @@
 
     <color name="dark_transparent">#ba000000</color>
     <color name="bdbdbd">#7e757575</color>
+    <color name="text_view_back">#6f757575</color>
+    <color name="have_read">@android:color/darker_gray</color>
 
     <color name="black">#000</color>
     <color name="primary">#F44336</color>

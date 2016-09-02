@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.squareup.leakcanary.LeakCanary;
 import com.umeng.analytics.MobclickAgent;
 
 /**
@@ -18,7 +17,7 @@ public class GankOrApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initImageLoader(getApplicationContext());
-        LeakCanary.install(this);
+//        LeakCanary.install(this);
         mContext = getApplicationContext();
         MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
     }
