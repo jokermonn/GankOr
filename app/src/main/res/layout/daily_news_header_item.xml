@@ -11,9 +11,10 @@
 
     <TextView
         android:id="@+id/tv_header"
-        android:textColor="@color/dark_transparent"
-        android:paddingBottom="20dp"
-        android:textSize="15sp"
+        android:background="@color/text_view_back"
+        android:textColor="@color/white"
+        android:layout_marginBottom="20dp"
+        android:textSize="20sp"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
