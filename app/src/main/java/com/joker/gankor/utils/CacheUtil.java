@@ -65,7 +65,8 @@ public class CacheUtil {
         return mCache.getAsString(key);
     }
 
+    // 缓存只保存一天
     public void put(String key, String value) {
-        mCache.put(key, value);
+        mCache.put(key, value, ASimpleCache.TIME_DAY);
     }
 }
