@@ -55,6 +55,12 @@ public class ZhihuHotNewsFragment extends ContentFragment implements SwipeRefres
                     .class).getRecent());
         } else {
             if (isNetConnect()) {
+                mContentSwipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mContentSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
                 loadDataFromNet("");
             } else {
                 LazyUtil.showToast("网络没有连接哦");

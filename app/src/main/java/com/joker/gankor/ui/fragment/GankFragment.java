@@ -91,6 +91,12 @@ public class GankFragment extends ContentFragment implements GankRecyclerAdapter
             mAdapter.addDataMap(dataMap);
         } else {
             if (isNetConnect()) {
+                mContentSwipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mContentSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
 //                缓存为空联网加载
                 loadDataFromNet(getFirstPageUrl());
             } else {
@@ -101,7 +107,7 @@ public class GankFragment extends ContentFragment implements GankRecyclerAdapter
 
     @Override
     public void loadDataFromNet(final String url) {
-        mContentSwipeRefreshLayout.setRefreshing(true);
+//        mContentSwipeRefreshLayout.setRefreshing(true);
         //        Gank 福利图片
         mOkUtil.okHttpGankGson(API.GANK_WELFARE + url, new OkUtil
                 .ResultCallback<GankWelfare>() {

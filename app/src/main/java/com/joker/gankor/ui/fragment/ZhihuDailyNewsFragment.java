@@ -98,6 +98,12 @@ public class ZhihuDailyNewsFragment extends ContentFragment implements com.bigko
             initBanner();
         } else {
             if (isNetConnect()) {
+                mContentSwipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mContentSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
                 loadDataFromNet(API.ZHIHU_LATEST);
             } else {
                 LazyUtil.showToast("网络没有连接哦");
