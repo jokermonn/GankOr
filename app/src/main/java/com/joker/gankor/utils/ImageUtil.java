@@ -74,7 +74,7 @@ public class ImageUtil {
                     .PERMISSION_GRANTED) {
                 activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest
-                        .permission.READ_EXTERNAL_STORAGE}, 300);
+                                .permission.READ_EXTERNAL_STORAGE}, 300);
             }
         }
         File saveFile = new File(Environment.getExternalStorageDirectory(), "GankOr");
@@ -83,10 +83,11 @@ public class ImageUtil {
         }
         if (copyImage(saveFile.getAbsolutePath() + "//" + name + ".jpg",
                 url)) {
-            LazyUtil.showToast(String.format(activity.getString(R.string.picture_save_on), saveFile
-                    .getAbsolutePath()));
+            LazyUtil.showToast(activity, String.format(activity.getString(R.string.picture_save_on),
+                    saveFile
+                            .getAbsolutePath()));
         } else {
-            LazyUtil.showToast("保存失败");
+            LazyUtil.showToast(activity, "保存失败");
         }
     }
 
