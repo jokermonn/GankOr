@@ -10,7 +10,8 @@ import android.util.AttributeSet;
 import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.NetUtil;
 
-/** 上拉加载更多 RecyclerView
+/**
+ * 上拉加载更多 RecyclerView
  * Created by joker on 2016/8/15.
  */
 public class PullLoadRecyclerView extends RecyclerView {
@@ -49,7 +50,7 @@ public class PullLoadRecyclerView extends RecyclerView {
         if (onPullLoadListener != null && mLastVisiblePosition + 1 == getAdapter().getItemCount() &&
                 !isLoading && dy > 0) {
             if (!NetUtil.isNetConnect(getContext())) {
-                LazyUtil.showToast( "网络没有连接，不能加载噢");
+                LazyUtil.showToast(getContext(), "网络没有连接，不能加载噢");
                 return;
             }
             isLoading = true;

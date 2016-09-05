@@ -1,6 +1,7 @@
 package com.joker.gankor.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import com.joker.gankor.R;
 import com.joker.gankor.model.ZhihuHotNews;
+import com.joker.gankor.utils.API;
+import com.joker.gankor.utils.CacheUtil;
 import com.joker.gankor.utils.ImageUtil;
 
 import java.util.List;
@@ -21,10 +24,14 @@ public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecycler
     private List<ZhihuHotNews.RecentBean> mBean;
     private LayoutInflater mInflater;
     private OnHotItemClickListener mListener;
+    private CacheUtil mCache;
+    private Context mContext;
 
     public HotNewsRecyclerAdapter(Context context, List<ZhihuHotNews.RecentBean> bean) {
         mBean = bean;
+        mContext = context;
         mInflater = LayoutInflater.from(context);
+        mCache = CacheUtil.getInstance(context);
     }
 
     @Override
@@ -45,6 +52,12 @@ public class HotNewsRecyclerAdapter extends RecyclerView.Adapter<HotNewsRecycler
                 }
             }
         });
+        if (!mCache.isCacheEmpty(API.ZHIHU_NEWS_TWO + String.valueOf
+                (mBean.get(position).getNewsId()))) {
+            holder.mTextView.setTextColor(ContextCompat.getColor(mContext, R.color.have_read));
+        } else {
+            holder.mTextView.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+        }
     }
 
     @Override
