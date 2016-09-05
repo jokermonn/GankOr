@@ -100,7 +100,7 @@ public class GankFragment extends ContentFragment implements GankRecyclerAdapter
 //                缓存为空联网加载
                 loadDataFromNet(getFirstPageUrl());
             } else {
-                LazyUtil.showToast("网络没有连接哦");
+                LazyUtil.showToast(mActivity, "网络没有连接哦");
             }
         }
     }

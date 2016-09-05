@@ -42,7 +42,7 @@ public abstract class ContentFragment extends BaseFragment implements SwipeRefre
             switch (msg.what) {
                 case 0x122:
                     mContentSwipeRefreshLayout.setRefreshing(false);
-                    LazyUtil.showToast("网络没有连接哦");
+                    LazyUtil.showToast(mActivity, "网络没有连接哦");
                     break;
                 case 0x121:
 //                    下拉刷新

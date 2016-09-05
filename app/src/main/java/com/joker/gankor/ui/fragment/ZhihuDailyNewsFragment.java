@@ -12,12 +12,12 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.joker.gankor.R;
 import com.joker.gankor.adapter.DailyNewsRecyclerAdapter;
+import com.joker.gankor.adapter.ZhihuTopNewsHolderView;
 import com.joker.gankor.model.ZhihuDailyNews;
 import com.joker.gankor.utils.API;
 import com.joker.gankor.utils.LazyUtil;
 import com.joker.gankor.utils.OkUtil;
 import com.joker.gankor.view.PullLoadRecyclerView;
-import com.joker.gankor.adapter.ZhihuTopNewsHolderView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +106,7 @@ public class ZhihuDailyNewsFragment extends ContentFragment implements com.bigko
                 });
                 loadDataFromNet(API.ZHIHU_LATEST);
             } else {
-                LazyUtil.showToast("网络没有连接哦");
+                LazyUtil.showToast(mActivity, "网络没有连接哦");
             }
         }
     }
@@ -180,7 +180,8 @@ public class ZhihuDailyNewsFragment extends ContentFragment implements com.bigko
         }
     }
 
-    public void setOnItemClickListener(DailyNewsRecyclerAdapter.OnDailyItemClickListener itemClickListener) {
+    public void setOnItemClickListener(DailyNewsRecyclerAdapter.OnDailyItemClickListener
+                                               itemClickListener) {
         mItemListener = itemClickListener;
     }
 

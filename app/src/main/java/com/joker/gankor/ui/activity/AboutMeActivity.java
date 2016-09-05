@@ -47,7 +47,7 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
         //        设置 toolBar
         mToolBar.setNavigationOnClickListener(this);
         contentLinearLayout.setOnClickListener(this);
-        mToolBar.setTitle(getString(R.string.about_me));
+        mToolBar.setTitle(getString(R.string.setting));
         setSupportActionBar(mToolBar);
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
@@ -106,7 +106,7 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
                 if (t < mTextViews.size() && !isStop) {
                     startAnimation(t);
                 } else {
-                    LazyUtil.showToast("GitHub 和 qq 可以直接点击");
+                    LazyUtil.showToast(AboutMeActivity.this, "GitHub 和 qq 可以直接点击");
                 }
             }
 
@@ -129,7 +129,7 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
                 ClipboardManager copy = (ClipboardManager) this
                         .getSystemService(Context.CLIPBOARD_SERVICE);
                 copy.setText("429094465");
-                LazyUtil.showToast("qq 已复制到粘贴板");
+                LazyUtil.showToast(AboutMeActivity.this, "qq 已复制到粘贴板");
                 break;
             case R.id.ll_content:
                 if (!isStop) {

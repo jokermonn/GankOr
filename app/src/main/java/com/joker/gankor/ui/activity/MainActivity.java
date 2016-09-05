@@ -94,6 +94,7 @@ public class MainActivity extends BaseActivity implements GankRecyclerAdapter.Te
             public boolean onNavigationItemSelected(MenuItem item) {
                 mMainDrawerLayout.closeDrawers();
                 if (item.getItemId() == R.id.menu_introduce) {
+//                    startActivity(new Intent(MainActivity.this, SettingActivity.class));
                     startActivity(new Intent(MainActivity.this, AboutMeActivity.class));
                     item.setChecked(false);
                 } else {

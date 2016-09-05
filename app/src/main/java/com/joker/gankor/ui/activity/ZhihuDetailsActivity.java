@@ -119,7 +119,7 @@ public class ZhihuDetailsActivity extends BaseActivity implements RevealBackgrou
             if (isNetConnect()) {
                 loadLatestData();
             } else {
-                LazyUtil.showToast("网络没有连接哦");
+                LazyUtil.showToast(ZhihuDetailsActivity.this, "网络没有连接哦");
             }
         }
     }

@@ -26,12 +26,12 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
     public static final String RESULTS_BEAN = "results_bean";
     public static final String IMG_POSITION = "img_position";
     public static final String TRANSIT_PIC = "transit_pic";
+    public PicturePagerAdapter mAdapter;
     private ArrayList<GankWelfare.ResultsBean> bean;
     private int firstPosition;
     private int currentPosition;
     private Toolbar mTitleToolbar;
     private ViewPager mPicViewPager;
-    public PicturePagerAdapter mAdapter;
 
     public static Intent newIntent(Context context, ArrayList<GankWelfare.ResultsBean> bean, int position) {
         Intent intent = new Intent(context, PictureActivity.class);
@@ -108,7 +108,7 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
                         (currentPosition).getUrl());
                 return true;
             case R.id.menu_share:
-                LazyUtil.showToast("暂时不支持分享功能哦");
+                LazyUtil.showToast(PictureActivity.this, "暂时不支持分享功能哦");
                 return true;
             default:
                 break;

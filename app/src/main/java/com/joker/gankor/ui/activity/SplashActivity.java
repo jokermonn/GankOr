@@ -30,7 +30,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setContentView(R.layout.activity_splash);
         mSplashImageView = (ImageView) findViewById(R.id.iv_splash);
     }
@@ -71,7 +71,7 @@ public class SplashActivity extends BaseActivity {
             if (mCache.isCacheEmpty(IMG)) {
                 startToMainActivity();
             }
-            LazyUtil.showToast("网络连接错误");
+            LazyUtil.showToast(SplashActivity.this, "网络连接错误");
         }
 
         ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.2f, 1.0f, 1.2f, Animation

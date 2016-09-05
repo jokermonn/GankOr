@@ -63,7 +63,7 @@ public class ZhihuHotNewsFragment extends ContentFragment implements SwipeRefres
                 });
                 loadDataFromNet("");
             } else {
-                LazyUtil.showToast("网络没有连接哦");
+                LazyUtil.showToast(mActivity, "网络没有连接哦");
             }
         }
     }
