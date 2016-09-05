@@ -18,4 +18,5 @@
     <color name="divider">#BDBDBD</color>
     <color name="fragment_background">#F0F0F0</color>
     <color name="white">#fff</color>
+    <color name="background">#F3F3F3</color>
 </resources>

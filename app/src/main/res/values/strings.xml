@@ -7,6 +7,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="picture_save_on">图片已保存至 %s 文件夹</string>
     <string name="about_me">关于我</string>
+    <string name="cache_size">%.2fMB</string>
+    <string name="setting">设置</string>
     <string name="secret">Secret</string>
     <string name="name1">怎么称呼?</string>
     <string name="name2">叫我 joker 就可以了</string>
