@@ -101,4 +101,10 @@ public class ZhihuHotNewsFragment extends ContentFragment implements SwipeRefres
     public void setOnItemClickListener(HotNewsRecyclerAdapter.OnHotItemClickListener itemClickListener) {
         mItemListener = itemClickListener;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
 }
