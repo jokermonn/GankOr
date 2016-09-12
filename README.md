@@ -16,17 +16,17 @@
 
 此项目会迭代下一个版本，迭代教程依旧会写出来
 
-## v1.0（截止到第91次 commits，教程已完结，位于项目的 documents 目录下） ##
+### v1.0（截止到第91次 commits，教程已完结，位于项目的 [documents](https://github.com/jokermonn/GankOr/tree/master/documents) 目录下） ###
 
-- [第一天教程](./documents/gankor_1st.md) 
+- [第一天教程](https://github.com/jokermonn/GankOr/blob/master/documents/gankor_1st.md) 
 
-- [第二天教程](./documents/gankor_2nd.md)
+- [第二天教程](https://github.com/jokermonn/GankOr/blob/master/documents/gankor_2nd.md)
 
-- [第三天教程](./documents/gankor_3th.md)
+- [第三天教程](https://github.com/jokermonn/GankOr/blob/master/documents/gankor_3th.md)
 
-- [第四天教程](./documents/gankor_4th.md)
+- [第四天教程](https://github.com/jokermonn/GankOr/blob/master/documents/gankor_4th.md)
 
-## v1.1（迭代中） ##
+### v1.1（迭代中） ###
 
 迭代中...
 
