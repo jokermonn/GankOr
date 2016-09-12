@@ -518,4 +518,4 @@ ZhihuDetailsActivity 代码如下：
 
 简单地解释一下：从 MainActivity 中传入图片的 url，然后在 PictureActivity 中解析 intent，获取到传过来的图片的 url 直接使用 U-I-L 来显示该图片即可。至此，v1.0 版本的干乎教程就到此结束了，大致内容我都已经讲解了，如果还有任何问题，欢迎提出 [issure](https://github.com/jokerZLemon/GankOr/issues)，我一定会热心解答。
 
-至此，感谢所有支持干乎的朋友们，接下来我讲进行干乎 v1.1 版本的升级。
+至此，感谢所有支持干乎的朋友们，接下来我将进行干乎 v1.1 版本的升级。
