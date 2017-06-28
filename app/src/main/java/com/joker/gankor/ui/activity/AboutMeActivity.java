@@ -106,7 +106,7 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
                 if (t < mTextViews.size() && !isStop) {
                     startAnimation(t);
                 } else {
-                    LazyUtil.showToast(AboutMeActivity.this, "GitHub 和 qq 可以直接点击");
+                    LazyUtil.showToast(AboutMeActivity.this, "GitHub 和 email 可以直接点击");
                 }
             }
 
@@ -128,8 +128,8 @@ public class AboutMeActivity extends BaseActivity implements View.OnClickListene
             case R.id.tvl_qq:
                 ClipboardManager copy = (ClipboardManager) this
                         .getSystemService(Context.CLIPBOARD_SERVICE);
-                copy.setText("429094465");
-                LazyUtil.showToast(AboutMeActivity.this, "qq 已复制到粘贴板");
+                copy.setText("jokerzoc.cn@gmail.com");
+                LazyUtil.showToast(AboutMeActivity.this, "email 已复制到粘贴板");
                 break;
             case R.id.ll_content:
                 if (!isStop) {
