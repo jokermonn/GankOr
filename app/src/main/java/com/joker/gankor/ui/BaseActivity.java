@@ -49,7 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LazyUtil.cancelToast(this);
+        LazyUtil.cancelToast();
         LazyUtil.log(getClass().getName(), "     onDestroy");
     }
 

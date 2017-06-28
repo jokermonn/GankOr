@@ -23,7 +23,7 @@ public class LazyUtil {
         toast.show();
     }
 
-    public static void cancelToast(Context context) {
+    public static void cancelToast() {
         if (toast != null) {
             toast.cancel();
         }

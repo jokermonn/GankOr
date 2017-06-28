@@ -1,6 +1,5 @@
 package com.joker.gankor.ui.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -19,14 +18,12 @@ public class SettingActivity extends BaseActivity {
     private File mDatabaseFile;
     private TextView mCacheTextView;
     private RelativeLayout mCacheRelativeLayout;
-    private RelativeLayout mAboutRelativeLayout;
 
     @Override
     protected void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_setting);
         mCacheTextView = (TextView) findViewById(R.id.tv_cache);
         mCacheRelativeLayout = (RelativeLayout) findViewById(R.id.rl_cache);
-        mAboutRelativeLayout = (RelativeLayout) findViewById(R.id.rl_about);
 
         mCache = CacheUtil.getInstance(this);
         mStorageCacheFile = getExternalCacheDir();
@@ -40,12 +37,6 @@ public class SettingActivity extends BaseActivity {
             public void onClick(View v) {
                 mCache.cleanApplicationData(SettingActivity.this);
                 mCacheTextView.setText(String.format(getString(R.string.cache_size), getFileSize()));
-            }
-        });
-        mAboutRelativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SettingActivity.this, AboutMeActivity.class));
             }
         });
     }

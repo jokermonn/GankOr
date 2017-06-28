@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_margin="10dp"
+    android:orientation="vertical"
     tools:context=".ui.activity.SettingActivity">
 
     <RelativeLayout
         android:id="@+id/rl_cache"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
         android:clickable="true">
 
@@ -33,15 +34,18 @@
     </RelativeLayout>
 
     <View
+        android:id="@+id/view_1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@id/rl_cache"
         android:background="@color/BDBDBD"/>
 
     <RelativeLayout
-        android:id="@+id/rl_about"
+        android:id="@+id/rl_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_below="@id/view_1"
+        android:layout_gravity="center_horizontal"
         android:clickable="true">
 
         <TextView
@@ -49,16 +53,48 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:padding="10dp"
-            android:text="关于我"/>
+            android:text="夜间模式"/>
 
-        <ImageView
-            android:src="@drawable/ic_next"
+        <CheckBox
+            android:id="@+id/cb_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:padding="10dp"/>
+            android:gravity="center_vertical"/>
     </RelativeLayout>
 
+    <View
+        android:id="@+id/view_2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/rl_mode"
+        android:background="@color/BDBDBD"/>
+
+    <!--    <RelativeLayout
+            android:id="@+id/rl_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/view_2"
+            android:layout_gravity="center_vertical"
+            android:clickable="true">-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        android:text="关于我"/>
+
+    <!--  <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentTop="true"
+          android:padding="5dp"
+          android:src="@drawable/ic_next"/>
+  </RelativeLayout>
+-->
 </LinearLayout>

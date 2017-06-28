@@ -1,6 +1,5 @@
 package com.joker.gankor.ui.fragment;
 
-
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
+import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.joker.gankor.R;
 import com.joker.gankor.adapter.DailyNewsRecyclerAdapter;
 import com.joker.gankor.adapter.ZhihuTopNewsHolderView;
@@ -27,8 +27,7 @@ import okhttp3.Call;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ZhihuDailyNewsFragment extends ContentFragment implements com.bigkoo.convenientbanner.listener
-        .OnItemClickListener,
+public class ZhihuDailyNewsFragment extends ContentFragment implements OnItemClickListener,
         DailyNewsRecyclerAdapter.OnDailyItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     public final static String DAILY_NEWS_JSON = "daily_news_json";
     public DailyNewsRecyclerAdapter mAdapter;

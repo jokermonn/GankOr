@@ -44,7 +44,7 @@ public class PicturePagerAdapter extends PagerAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mContext instanceof PictureActivity) {
+                if (mContext.getClass() == PictureActivity.class) {
                     ((PictureActivity) mContext).changeToolbar();
                 }
             }
